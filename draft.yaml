@@ -1,0 +1,41 @@
+models:
+  Sample:
+    device_id: id foreign nullable
+    group_id: id foreign nullable
+    identifier: string
+    tags (spatie):
+    solvent_id: id foreign nullable
+    molecule_id: id foreign nullable
+    spectram_type: string 
+    instructions: text nullable
+    media: 
+    priority: enum:high,medium,low
+    operator_id: id foreign nullable
+
+  Device:
+    name: string
+    manufacturer: string
+    model_no: string
+    spectrum_types: string
+
+  StectrumType:
+    neuclei: string
+    dimentionality: enum:1D,2D
+    name: string
+
+  Solvent:
+    name: string
+    description: text nullable
+    molecular_formula: string
+    molecular_weight: decimal:8,2
+    meta_data: jsonb
+
+  Molecule:
+
+
+  Property:
+
+  Structure:
+
+
+  

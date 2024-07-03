@@ -1,0 +1,14 @@
+name: Deploy to Production
+on:
+  push:
+    branches:
+        - main
+        
+jobs:
+  deploy-production:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      DEPLOY_ENVIRONMENT: production
+      PHP_VERSION: 8.3
+    secrets:
+      VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}

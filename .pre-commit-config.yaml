@@ -1,0 +1,14 @@
+repos:
+# - repo: https://github.com/matchory/pre-commit-laravel
+#   rev: v1.0.1
+#   hooks:
+#     - id: laravel-pint
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0  # Use the ref you want to point at
+  hooks:
+  -   id: check-yaml
+# - repo: https://github.com/matchory/pre-commit-laravel
+#   rev: v1.0.1
+#   hooks:
+#     - id: laravel-tests
+#       args: ["--parallel"]

@@ -1,0 +1,14 @@
+name: Deploy to staging
+on:
+  push:
+    branches:
+        - development
+
+jobs:
+  deploy-staging:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      DEPLOY_ENVIRONMENT: staging
+      PHP_VERSION: 8.3
+    secrets:
+      VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
