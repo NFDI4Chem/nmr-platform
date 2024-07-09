@@ -133,19 +133,19 @@ class FilamentCompaniesServiceProvider extends PanelProvider
         FilamentCompanies::deleteUsersUsing(DeleteUser::class);
 
         MediaLibraryItem::creating(function (MediaLibraryItem $mediaLibraryItem) {
-            $mediaLibraryItem->company_id ??= Filament::getTenant()->getKey();
+            $mediaLibraryItem->company_id ??= Filament::getTenant()?->getKey();
         });
 
         MediaLibraryItem::addGlobalScope('tenant', function (Builder $query) {
-            return $query->where('company_id', filament()->getTenant()->getKey());
+            return $query->where('company_id', filament()->getTenant()?->getKey());
         });
 
         MediaLibraryFolder::creating(function (MediaLibraryFolder $mediaLibraryFolder) {
-            $mediaLibraryFolder->company_id ??= Filament::getTenant()->getKey();
+            $mediaLibraryFolder->company_id ??= Filament::getTenant()?->getKey();
         });
 
         MediaLibraryFolder::addGlobalScope('tenant', function (Builder $query) {
-            return $query->where('company_id', filament()->getTenant()->getKey());
+            return $query->where('company_id', filament()->getTenant()?->getKey());
         });
     }
 
