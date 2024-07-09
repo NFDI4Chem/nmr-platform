@@ -35,6 +35,10 @@ use Wallo\FilamentCompanies\Pages\Auth\Register;
 use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
 use Wallo\FilamentCompanies\Pages\Company\CreateCompany;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
+use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
+use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {
@@ -127,6 +131,22 @@ class FilamentCompaniesServiceProvider extends PanelProvider
         FilamentCompanies::removeCompanyEmployeesUsing(RemoveCompanyEmployee::class);
         FilamentCompanies::deleteCompaniesUsing(DeleteCompany::class);
         FilamentCompanies::deleteUsersUsing(DeleteUser::class);
+
+        MediaLibraryItem::creating(function (MediaLibraryItem $mediaLibraryItem) {
+            $mediaLibraryItem->company_id ??= Filament::getTenant()->getKey();
+        });
+
+        MediaLibraryItem::addGlobalScope('tenant', function (Builder $query) {
+            return $query->where('company_id', filament()->getTenant()->getKey());
+        });
+
+        MediaLibraryFolder::creating(function (MediaLibraryFolder $mediaLibraryFolder) {
+            $mediaLibraryFolder->company_id ??= Filament::getTenant()->getKey();
+        });
+
+        MediaLibraryFolder::addGlobalScope('tenant', function (Builder $query) {
+            return $query->where('company_id', filament()->getTenant()->getKey());
+        });
     }
 
     /**

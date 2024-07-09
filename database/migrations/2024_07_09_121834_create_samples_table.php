@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('samples', function (Blueprint $table) {
             $table->id();
             $table->foreignId('device_id')->nullable()->constrained();
-            $table->foreignId('company_id')->nullable()->constrained();
+            $table->foreignId('company_id')->constrained();
             $table->string('identifier')->nullable();
             $table->foreignId('solvent_id')->nullable()->constrained();
             $table->foreignId('molecule_id')->nullable()->constrained();

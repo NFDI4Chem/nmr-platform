@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
 
 class Sample extends Model
 {
@@ -41,6 +42,7 @@ class Sample extends Model
         'solvent_id' => 'integer',
         'molecule_id' => 'integer',
         'operator_id' => 'integer',
+        'featured_image_id' => 'array',
     ];
 
     public function spectrumTypes(): BelongsToMany
@@ -72,4 +74,9 @@ class Sample extends Model
     {
         return $this->belongsTo(Operator::class);
     }
+
+    public function featuredImage(): BelongsTo
+	{
+		return $this->belongsTo(MediaLibraryItem::class, 'featured_image_id');
+	}
 }
