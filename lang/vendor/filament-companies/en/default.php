@@ -199,8 +199,8 @@ return [
     'pages' => [
         'titles' => [
             'tokens' => 'Personal Access Tokens',
-            'create_company' => 'Create Company',
-            'company_settings' => 'Company Settings',
+            'create_company' => 'Create Group',
+            'company_settings' => 'Group Settings',
             'profile' => 'Profile',
         ],
     ],
