@@ -20,7 +20,7 @@ return [
         'create_token' => 'Create Token',
         'delete' => 'Delete',
         'delete_account' => 'Delete Account',
-        'delete_company' => 'Delete Company',
+        'delete_company' => 'Delete Group',
         'disable' => 'Disable',
         'done' => 'Done.',
         'edit' => 'Edit',
@@ -49,8 +49,8 @@ return [
     ],
 
     'labels' => [
-        'company_name' => 'Company Name',
-        'company_owner' => 'Company Owner',
+        'company_name' => 'Group Name',
+        'company_owner' => 'Group Owner',
         'connected' => 'Connected',
         'created_at' => 'Created at',
         'last_active' => 'Last active',
@@ -79,19 +79,19 @@ return [
     ],
 
     'errors' => [
-        'cannot_leave_company' => 'You may not leave a company that you created.',
-        'company_deletion' => 'You may not delete your personal company.',
+        'cannot_leave_company' => 'You may not leave a group that you created.',
+        'company_deletion' => 'You may not delete your personal group.',
         'email_already_associated' => 'An account with that email address already exists. Please login to connect your :Provider account.',
         'email_not_found' => 'We were unable to find a registered user with this email address.',
-        'employee_already_belongs_to_company' => 'This employee already belongs to the company.',
-        'employee_already_invited' => 'This employee has already been invited to the company.',
+        'employee_already_belongs_to_company' => 'This member already belongs to the group.',
+        'employee_already_invited' => 'This member has already been invited to the group.',
         'invalid_password' => 'The password you entered is invalid.',
         'no_email_with_account' => 'No email address is associated with this :Provider account. Please try a different account.',
         'password_does_not_match' => 'The provided password does not match your current password.',
         'already_associated_account' => 'An account with that :Provider sign in already exists, please login.',
         'already_connected' => 'An account with that email address already exists. Please login to connect your :Provider account.',
         'signin_not_found' => 'An account with this :Provider sign in was not found. Please register or try a different sign in method.',
-        'user_belongs_to_company' => 'This user already belongs to the company.',
+        'user_belongs_to_company' => 'This user already belongs to the group.',
         'valid_role' => 'The :attribute must be a valid role.',
     ],
 
@@ -103,7 +103,7 @@ return [
     ],
 
     'banner' => [
-        'company_invitation_accepted' => 'Great! You have accepted the invitation to join **:company**.',
+        'company_invitation_accepted' => 'Great! You have accepted the invitation to join **:group**.',
     ],
 
     'notifications' => [
@@ -123,23 +123,23 @@ return [
         ],
 
         'company_created' => [
-            'title' => 'Company created',
-            'body' => 'A new company has been created with the name **:name**.',
+            'title' => 'Group created',
+            'body' => 'A new group has been created with the name **:name**.',
         ],
 
         'company_deleted' => [
-            'title' => 'Company deleted',
-            'body' => 'The company **:name** has been deleted.',
+            'title' => 'Group deleted',
+            'body' => 'The group **:name** has been deleted.',
         ],
 
         'company_invitation_sent' => [
             'title' => 'Invitation sent',
-            'body' => 'An invitation has been sent to **:email** to join your company.',
+            'body' => 'An invitation has been sent to **:email** to join your group.',
         ],
 
         'company_name_updated' => [
-            'title' => 'Company updated',
-            'body' => 'Your company name has been updated to **:name**.',
+            'title' => 'Group updated',
+            'body' => 'Your group name has been updated to **:name**.',
         ],
 
         'connected_account_removed' => [
@@ -185,14 +185,14 @@ return [
 
     'navigation' => [
         'headers' => [
-            'manage_company' => 'Manage Company',
+            'manage_company' => 'Manage Group',
             'switch_companies' => 'Switch Companies',
         ],
 
         'links' => [
             'tokens' => 'Personal Access Tokens',
-            'company_settings' => 'Company Settings',
-            'create_company' => 'Create Company',
+            'company_settings' => 'Group Settings',
+            'create_company' => 'Create Group',
         ],
     ],
 
@@ -206,11 +206,11 @@ return [
     ],
 
     'grid_section_titles' => [
-        'add_company_employee' => 'Add Company Employee',
+        'add_company_employee' => 'Add Group Member',
         'browser_sessions' => 'Browser Sessions',
-        'company_name' => 'Company Name',
+        'company_name' => 'Group Name',
         'create_token' => 'Create Personal Access Token',
-        'create_company' => 'Create Company',
+        'create_company' => 'Create Group',
         'delete_account' => 'Delete Account',
         'profile_information' => 'Profile Information',
         'set_password' => 'Set Password',
@@ -219,11 +219,11 @@ return [
     ],
 
     'grid_section_descriptions' => [
-        'add_company_employee' => 'Add a new company employee to your company, allowing them to collaborate with you.',
+        'add_company_employee' => 'Add a new group member to your group, allowing them to collaborate with you.',
         'browser_sessions' => 'Manage and log out your active sessions on other browsers and devices.',
-        'company_name' => "The company's name and owner information.",
+        'company_name' => "The group's name and owner information.",
         'create_token' => 'Personal Access Tokens allow third-party services to authenticate with our application on your behalf.',
-        'create_company' => 'Create a new company to collaborate with others on projects.',
+        'create_company' => 'Create a new group to collaborate with others on projects.',
         'delete_account' => 'Permanently delete your account.',
         'profile_information' => "Update your account's profile information and email address.",
         'set_password' => 'Ensure your account is using a long, random password to stay secure.',
@@ -232,17 +232,17 @@ return [
     ],
 
     'action_section_titles' => [
-        'company_employees' => 'Company Employees',
+        'company_employees' => 'Group Members',
         'connected_accounts' => 'Connected Accounts',
-        'delete_company' => 'Delete Company',
-        'pending_company_invitations' => 'Pending Company Invitations',
+        'delete_company' => 'Delete Group',
+        'pending_company_invitations' => 'Pending Group Invitations',
     ],
 
     'action_section_descriptions' => [
-        'company_employees' => 'All of the people that are part of this company.',
+        'company_employees' => 'All of the people that are part of this group.',
         'connected_accounts' => 'Manage and remove your connected accounts.',
-        'delete_company' => 'Permanently delete this company.',
-        'pending_company_invitations' => 'These people have been invited to your company and have been sent an invitation email. They may join the company by accepting the email invitation.',
+        'delete_company' => 'Permanently delete this group.',
+        'pending_company_invitations' => 'These people have been invited to your group and have been sent an invitation email. They may join the group by accepting the email invitation.',
     ],
 
     'modal_titles' => [
@@ -251,11 +251,11 @@ return [
         'confirm_password' => 'Confirm Password',
         'delete_token' => 'Delete Personal Access Token',
         'delete_account' => 'Delete Account',
-        'delete_company' => 'Delete Company',
-        'leave_company' => 'Leave Company',
+        'delete_company' => 'Delete Group',
+        'leave_company' => 'Leave Group',
         'logout_browser_sessions' => 'Log Out Other Browser Sessions',
         'manage_role' => 'Manage Role',
-        'remove_company_employee' => 'Remove Company Employee',
+        'remove_company_employee' => 'Remove Group Member',
         'remove_connected_account' => 'Remove Connected Account',
         'revoke_tokens' => 'Revoke Tokens',
     ],
@@ -265,10 +265,10 @@ return [
         'confirm_password' => 'For your security, please confirm your password to continue.',
         'delete_account' => 'Please enter your password to confirm you would like to delete your account.',
         'delete_token' => 'Are you sure you would like to delete this Personal Access Token?',
-        'delete_company' => 'Are you sure you want to delete this company?',
-        'leave_company' => 'Are you sure you would like to leave this company?',
+        'delete_company' => 'Are you sure you want to delete this group?',
+        'leave_company' => 'Are you sure you would like to leave this group?',
         'logout_browser_sessions' => 'Please enter your password to confirm you would like to log out of your other browser sessions.',
-        'remove_company_employee' => 'Are you sure you would like to remove this person from the company?',
+        'remove_company_employee' => 'Are you sure you would like to remove this person from the group?',
         'remove_connected_account' => 'Please confirm your removal of this account - this action cannot be undone.',
         'revoke_tokens' => 'Please enter your password to confirm.',
     ],
@@ -315,7 +315,7 @@ return [
 
         'companies' => [
             'company_employee_manager' => [
-                'manage_employees' => 'Manage Employees',
+                'manage_employees' => 'Manage Members',
                 'pending_invitations' => 'Pending Invitations',
             ],
         ],
@@ -342,8 +342,8 @@ return [
         ],
 
         'companies' => [
-            'company_employee_manager' => 'Please provide the email address of the person you would like to add to this company.',
-            'delete_company' => 'Once a company is deleted, all of its resources and data will be permanently deleted. Before deleting this company, please download any data or information regarding this company that you wish to retain.',
+            'company_employee_manager' => 'Please provide the email address of the person you would like to add to this group.',
+            'delete_company' => 'Once a group is deleted, all of its resources and data will be permanently deleted. Before deleting this group, please download any data or information regarding this group that you wish to retain.',
         ],
     ],
 ];
