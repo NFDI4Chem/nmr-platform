@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
+use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -45,6 +46,8 @@ class AdminPanelProvider extends PanelProvider
                 EnvironmentIndicatorPlugin::make(),
                 DebuggerPlugin::make(),
                 FilamentExceptionsPlugin::make(),
+                FilamentMediaLibrary::make()
+                    ->diskVisibilityPrivate(),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -76,6 +79,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
+            ->viteTheme('resources/css/filament/company/theme.css')
             ->renderHook(
                 'panels::body.end',
                 fn (): string => view('components.tawk-chat')

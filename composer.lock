@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da1832159536cf78ea1f466b909150d9",
+    "content-hash": "7a8a1c8fd63aabeddc0162487f43e5c4",
     "packages": [
         {
             "name": "andrewdwallo/filament-companies",
@@ -870,6 +870,87 @@
                 }
             ],
             "time": "2023-12-11T17:09:12+00:00"
+        },
+        {
+            "name": "composer/semver",
+            "version": "3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/semver.git",
+                "reference": "35e8d0af4486141bc745f23a29cc2091eb624a32"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/semver/zipball/35e8d0af4486141bc745f23a29cc2091eb624a32",
+                "reference": "35e8d0af4486141bc745f23a29cc2091eb624a32",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.4",
+                "symfony/phpunit-bridge": "^4.2 || ^5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Semver\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nils Adermann",
+                    "email": "naderman@naderman.de",
+                    "homepage": "http://www.naderman.de"
+                },
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                },
+                {
+                    "name": "Rob Bast",
+                    "email": "rob.bast@gmail.com",
+                    "homepage": "http://robbast.nl"
+                }
+            ],
+            "description": "Semver library that offers utilities, version constraint parsing and validation.",
+            "keywords": [
+                "semantic",
+                "semver",
+                "validation",
+                "versioning"
+            ],
+            "support": {
+                "irc": "ircs://irc.libera.chat:6697/composer",
+                "issues": "https://github.com/composer/semver/issues",
+                "source": "https://github.com/composer/semver/tree/3.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-08-31T09:50:34+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -1898,6 +1979,53 @@
             "time": "2023-10-06T06:47:41+00:00"
         },
         {
+            "name": "evenement/evenement",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorw/evenement.git",
+                "reference": "0a16b0d71ab13284339abb99d9d2bd813640efbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/igorw/evenement/zipball/0a16b0d71ab13284339abb99d9d2bd813640efbc",
+                "reference": "0a16b0d71ab13284339abb99d9d2bd813640efbc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9 || ^6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Evenement\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                }
+            ],
+            "description": "Événement is a very simple event dispatching library for PHP",
+            "keywords": [
+                "event-dispatcher",
+                "event-emitter"
+            ],
+            "support": {
+                "issues": "https://github.com/igorw/evenement/issues",
+                "source": "https://github.com/igorw/evenement/tree/v3.0.2"
+            },
+            "time": "2023-08-08T05:53:35+00:00"
+        },
+        {
             "name": "filament/actions",
             "version": "v3.2.61",
             "source": {
@@ -2173,6 +2301,43 @@
                 "source": "https://github.com/filamentphp/filament"
             },
             "time": "2024-03-27T12:36:01+00:00"
+        },
+        {
+            "name": "filament/spatie-laravel-media-library-plugin",
+            "version": "v3.2.92",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filamentphp/spatie-laravel-media-library-plugin.git",
+                "reference": "7bf9d40b132dfd07216da27b31cd1b24e006c151"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-media-library-plugin/zipball/7bf9d40b132dfd07216da27b31cd1b24e006c151",
+                "reference": "7bf9d40b132dfd07216da27b31cd1b24e006c151",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.45|^11.0",
+                "php": "^8.1",
+                "spatie/laravel-medialibrary": "^10.0|^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Filament\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament support for `spatie/laravel-medialibrary`.",
+            "homepage": "https://github.com/filamentphp/filament",
+            "support": {
+                "issues": "https://github.com/filamentphp/filament/issues",
+                "source": "https://github.com/filamentphp/filament"
+            },
+            "time": "2024-05-27T10:09:06+00:00"
         },
         {
             "name": "filament/spatie-laravel-tags-plugin",
@@ -4896,6 +5061,87 @@
             "time": "2024-03-14T14:03:32+00:00"
         },
         {
+            "name": "maennchen/zipstream-php",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maennchen/ZipStream-PHP.git",
+                "reference": "b8174494eda667f7d13876b4a7bfef0f62a7c0d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/b8174494eda667f7d13876b4a7bfef0f62a7c0d1",
+                "reference": "b8174494eda667f7d13876b4a7bfef0f62a7c0d1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-zlib": "*",
+                "php-64bit": "^8.1"
+            },
+            "require-dev": {
+                "ext-zip": "*",
+                "friendsofphp/php-cs-fixer": "^3.16",
+                "guzzlehttp/guzzle": "^7.5",
+                "mikey179/vfsstream": "^1.6",
+                "php-coveralls/php-coveralls": "^2.5",
+                "phpunit/phpunit": "^10.0",
+                "vimeo/psalm": "^5.0"
+            },
+            "suggest": {
+                "guzzlehttp/psr7": "^2.4",
+                "psr/http-message": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ZipStream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Duncan",
+                    "email": "pabs@pablotron.org"
+                },
+                {
+                    "name": "Jonatan Männchen",
+                    "email": "jonatan@maennchen.ch"
+                },
+                {
+                    "name": "Jesse Donat",
+                    "email": "donatj@gmail.com"
+                },
+                {
+                    "name": "András Kolesár",
+                    "email": "kolesar@kolesar.hu"
+                }
+            ],
+            "description": "ZipStream is a library for dynamically streaming dynamic zip files from PHP without writing to the disk at all on the server.",
+            "keywords": [
+                "stream",
+                "zip"
+            ],
+            "support": {
+                "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/maennchen",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/zipstream",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2023-06-21T14:59:35+00:00"
+        },
+        {
             "name": "masterminds/html5",
             "version": "2.8.1",
             "source": {
@@ -6043,6 +6289,95 @@
             "time": "2022-06-14T06:56:20+00:00"
         },
         {
+            "name": "php-ffmpeg/php-ffmpeg",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-FFMpeg/PHP-FFMpeg.git",
+                "reference": "785a5ba05dd88b3b8146f85f18476b259b23917c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/785a5ba05dd88b3b8146f85f18476b259b23917c",
+                "reference": "785a5ba05dd88b3b8146f85f18476b259b23917c",
+                "shasum": ""
+            },
+            "require": {
+                "evenement/evenement": "^3.0",
+                "php": "^8.0 || ^8.1 || ^8.2 || ^8.3",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "spatie/temporary-directory": "^2.0",
+                "symfony/cache": "^5.4 || ^6.0 || ^7.0",
+                "symfony/process": "^5.4 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5",
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "suggest": {
+                "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FFMpeg\\": "src/FFMpeg",
+                    "Alchemy\\BinaryDriver\\": "src/Alchemy/BinaryDriver"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                },
+                {
+                    "name": "Phraseanet Team",
+                    "email": "info@alchemy.fr",
+                    "homepage": "http://www.phraseanet.com/"
+                },
+                {
+                    "name": "Patrik Karisch",
+                    "email": "patrik@karisch.guru",
+                    "homepage": "http://www.karisch.guru"
+                },
+                {
+                    "name": "Romain Biard",
+                    "email": "romain.biard@gmail.com",
+                    "homepage": "https://www.strime.io/"
+                },
+                {
+                    "name": "Jens Hausdorf",
+                    "email": "hello@jens-hausdorf.de",
+                    "homepage": "https://jens-hausdorf.de"
+                },
+                {
+                    "name": "Pascal Baljet",
+                    "email": "pascal@protone.media",
+                    "homepage": "https://protone.media"
+                }
+            ],
+            "description": "FFMpeg PHP, an Object Oriented library to communicate with AVconv / ffmpeg",
+            "keywords": [
+                "audio",
+                "audio processing",
+                "avconv",
+                "avprobe",
+                "ffmpeg",
+                "ffprobe",
+                "video",
+                "video processing"
+            ],
+            "support": {
+                "issues": "https://github.com/PHP-FFMpeg/PHP-FFMpeg/issues",
+                "source": "https://github.com/PHP-FFMpeg/PHP-FFMpeg/tree/v1.2.0"
+            },
+            "time": "2024-01-02T10:37:01+00:00"
+        },
+        {
             "name": "phpoption/phpoption",
             "version": "1.9.2",
             "source": {
@@ -6816,6 +7151,229 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+            "name": "ralphjsmit/laravel-filament-media-library",
+            "version": "3.8.20",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:ralphjsmit/laravel-filament-media-library.git",
+                "reference": "fcfb03d4aaf6a600a32cfdc2aa457a2d437f3edc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://satis.ralphjsmit.com/dist/ralphjsmit/laravel-filament-media-library/ralphjsmit-laravel-filament-media-library-fcfb03d4aaf6a600a32cfdc2aa457a2d437f3edc-zip-8e14c0.zip",
+                "reference": "fcfb03d4aaf6a600a32cfdc2aa457a2d437f3edc",
+                "shasum": "b8d79702c04f0d9525011fc23459583079f23d7c"
+            },
+            "require": {
+                "filament/filament": "^3.2.34",
+                "filament/spatie-laravel-media-library-plugin": "^3.2.34",
+                "filament/spatie-laravel-tags-plugin": "^3.2.34",
+                "illuminate/contracts": "^10.48|^11.0",
+                "livewire/livewire": "^3.4.6",
+                "php": "^8.0",
+                "php-ffmpeg/php-ffmpeg": "^1.0",
+                "ralphjsmit/laravel-helpers": "^1.8.1",
+                "ralphjsmit/packages": "^1.4",
+                "spatie/laravel-collection-macros": "^7.10",
+                "spatie/laravel-medialibrary": "^9.0|^10.0.3|^11.0",
+                "spatie/laravel-package-tools": "^1.11.0",
+                "spatie/laravel-tags": "^4.3",
+                "spatie/pdf-to-image": "^2.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nesbot/carbon": "^2.64|^3.1",
+                "nunomaduro/collision": "^7.0|^8.0",
+                "orchestra/testbench": "^8.0|^9.0",
+                "pestphp/pest": "^1.21|^2.0",
+                "pestphp/pest-plugin-laravel": "^1.1|^2.0",
+                "pestphp/pest-plugin-livewire": "^1.2|^2.0",
+                "phpunit/phpunit": "^9.5|^10.0",
+                "spatie/laravel-ray": "^1.29",
+                "spatie/pest-plugin-test-time": "^1.0|^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RalphJSmit\\Filament\\MediaLibrary\\FilamentMediaLibraryServiceProvider"
+                    ],
+                    "aliases": {
+                        "MediaLibrary": "RalphJSmit\\Filament\\MediaLibrary\\Facades\\MediaLibrary"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RalphJSmit\\Filament\\MediaLibrary\\": "src",
+                    "RalphJSmit\\Filament\\MediaLibrary\\Database\\Factories\\": "database/factories"
+                },
+                "files": [
+                    "src/Support/helpers.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "RalphJSmit\\Filament\\MediaLibrary\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest coverage"
+                ],
+                "format": [
+                    "vendor/bin/pint"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph J. Smit",
+                    "email": "rjs@ralphjsmit.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A convenient media library for Filament Admin.",
+            "homepage": "https://github.com/ralphjsmit/laravel-filament-media-library",
+            "keywords": [
+                "laravel",
+                "laravel-filament-cms",
+                "ralphjsmit"
+            ],
+            "support": {
+                "source": "https://github.com/ralphjsmit/laravel-filament-media-library/tree/3.8.20",
+                "issues": "https://github.com/ralphjsmit/laravel-filament-media-library/issues"
+            },
+            "time": "2024-07-04T19:44:06+00:00"
+        },
+        {
+            "name": "ralphjsmit/laravel-helpers",
+            "version": "1.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralphjsmit/laravel-helpers.git",
+                "reference": "840b4979a92c7b676d25f56430823f12481f2914"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralphjsmit/laravel-helpers/zipball/840b4979a92c7b676d25f56430823f12481f2914",
+                "reference": "840b4979a92c7b676d25f56430823f12481f2914",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.4",
+                "illuminate/contracts": "^8.73|^9.0|^10.0|^11.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "livewire/livewire": "^2.9|^3.4",
+                "nesbot/carbon": "^2.66|^3.0",
+                "nunomaduro/collision": "^5.10|^6.1|^7.0|^8.0",
+                "orchestra/testbench": "^6.22|^7.0|^8.0|^9.0",
+                "pestphp/pest": "^1.21|^2.34",
+                "pestphp/pest-plugin-laravel": "^1.1|^2.3",
+                "phpunit/phpunit": "^9.5|^10.5",
+                "spatie/invade": "^1.0|^2.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RalphJSmit\\Helpers\\HelpersServiceProvider"
+                    ],
+                    "aliases": {
+                        "Helpers": "RalphJSmit\\Helpers\\Facades\\Helpers"
+                    }
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/Laravel/Support/helpers.php",
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "RalphJSmit\\Helpers\\": "src",
+                    "RalphJSmit\\Helpers\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph J. Smit",
+                    "email": "rjs@ralphjsmit.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A package containing handy helpers for your Laravel-application.",
+            "homepage": "https://github.com/ralphjsmit/laravel-helpers",
+            "keywords": [
+                "laravel",
+                "laravel-helpers",
+                "ralphjsmit"
+            ],
+            "support": {
+                "issues": "https://github.com/ralphjsmit/laravel-helpers/issues",
+                "source": "https://github.com/ralphjsmit/laravel-helpers/tree/1.9.0"
+            },
+            "time": "2024-03-14T08:30:30+00:00"
+        },
+        {
+            "name": "ralphjsmit/packages",
+            "version": "1.4.2",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:ralphjsmit/packages.git",
+                "reference": "69650da1603c282ee71bfac969293e3faca36e3f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://satis.ralphjsmit.com/dist/ralphjsmit/packages/ralphjsmit-packages-69650da1603c282ee71bfac969293e3faca36e3f-zip-06dcad.zip",
+                "reference": "69650da1603c282ee71bfac969293e3faca36e3f",
+                "shasum": "a1e35fea977f8e1bbfc6ac0d82ece7268aa11b10"
+            },
+            "require": {
+                "composer-plugin-api": "^2.0",
+                "php": "^8.0",
+                "spatie/url": "^2.4"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^2.30",
+                "spatie/ray": "^1.40"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "RalphJSmit\\Packages\\Plugin",
+                "plugin-modifies-downloads": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "RalphJSmit\\Packages\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest"
+                ]
+            },
+            "support": {
+                "source": "https://github.com/ralphjsmit/packages/tree/1.4.2",
+                "issues": "https://github.com/ralphjsmit/packages/issues"
+            },
+            "time": "2024-06-05T09:41:46+00:00"
+        },
+        {
             "name": "ramsey/collection",
             "version": "2.0.0",
             "source": {
@@ -7478,6 +8036,133 @@
             "time": "2024-03-29T14:03:47+00:00"
         },
         {
+            "name": "spatie/image",
+            "version": "3.6.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/image.git",
+                "reference": "324a7bfc7924f8dc7d90777e33097a63f0199b1c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/image/zipball/324a7bfc7924f8dc7d90777e33097a63f0199b1c",
+                "reference": "324a7bfc7924f8dc7d90777e33097a63f0199b1c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-exif": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^8.2",
+                "spatie/image-optimizer": "^1.7.5",
+                "spatie/temporary-directory": "^2.2",
+                "symfony/process": "^6.4|^7.0"
+            },
+            "require-dev": {
+                "ext-gd": "*",
+                "ext-imagick": "*",
+                "pestphp/pest": "^2.28",
+                "phpstan/phpstan": "^1.10.50",
+                "spatie/pest-plugin-snapshots": "^2.1",
+                "spatie/pixelmatch-php": "^1.0",
+                "spatie/ray": "^1.40.1",
+                "symfony/var-dumper": "^6.4|7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Image\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Manipulate images with an expressive API",
+            "homepage": "https://github.com/spatie/image",
+            "keywords": [
+                "image",
+                "spatie"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/image/tree/3.6.4"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-06-03T08:10:31+00:00"
+        },
+        {
+            "name": "spatie/image-optimizer",
+            "version": "1.7.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/image-optimizer.git",
+                "reference": "43aff6725cd87bb78ccd8532633cfa8bdc962505"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/image-optimizer/zipball/43aff6725cd87bb78ccd8532633cfa8bdc962505",
+                "reference": "43aff6725cd87bb78ccd8532633cfa8bdc962505",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": "^7.3|^8.0",
+                "psr/log": "^1.0 | ^2.0 | ^3.0",
+                "symfony/process": "^4.2|^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.21",
+                "phpunit/phpunit": "^8.5.21|^9.4.4",
+                "symfony/var-dumper": "^4.2|^5.0|^6.0|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\ImageOptimizer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily optimize images using PHP",
+            "homepage": "https://github.com/spatie/image-optimizer",
+            "keywords": [
+                "image-optimizer",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/image-optimizer/issues",
+                "source": "https://github.com/spatie/image-optimizer/tree/1.7.5"
+            },
+            "time": "2024-05-16T08:48:33+00:00"
+        },
+        {
             "name": "spatie/invade",
             "version": "2.0.0",
             "source": {
@@ -7535,6 +8220,85 @@
                 }
             ],
             "time": "2023-07-19T18:55:36+00:00"
+        },
+        {
+            "name": "spatie/laravel-collection-macros",
+            "version": "7.14.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-collection-macros.git",
+                "reference": "17dca9472ed115e270190ce2a21874673a99280c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-collection-macros/zipball/17dca9472ed115e270190ce2a21874673a99280c",
+                "reference": "17dca9472ed115e270190ce2a21874673a99280c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.0|^11.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "amphp/parallel": "^1.4.3|^2.2",
+                "amphp/parallel-functions": "^1.1.0|^2.0",
+                "mockery/mockery": "^1.6.2",
+                "orchestra/testbench": "^8.5.9|^9.0",
+                "pestphp/pest": "^2.0",
+                "phpunit/phpunit": "10.2.2|^10.5",
+                "spatie/laravel-ray": "^1.32.5",
+                "symfony/stopwatch": "^6.3|^7.0"
+            },
+            "suggest": {
+                "amphp/parallel-functions": "Required when using the parallel*-macros."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\CollectionMacros\\CollectionMacroServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\CollectionMacros\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://github.com/freekmurze",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://github.com/sebastiandedeyne",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A set of useful Laravel collection macros",
+            "homepage": "https://github.com/spatie/laravel-collection-macros",
+            "keywords": [
+                "laravel-collection-macros",
+                "spatie"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/laravel-collection-macros/tree/7.14.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-07-02T13:39:03+00:00"
         },
         {
             "name": "spatie/laravel-cookie-consent",
@@ -7705,6 +8469,115 @@
                 }
             ],
             "time": "2024-03-29T14:14:55+00:00"
+        },
+        {
+            "name": "spatie/laravel-medialibrary",
+            "version": "11.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-medialibrary.git",
+                "reference": "c3828e7558473d9df0803212c68d61d91173a3ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/c3828e7558473d9df0803212c68d61d91173a3ab",
+                "reference": "c3828e7558473d9df0803212c68d61d91173a3ab",
+                "shasum": ""
+            },
+            "require": {
+                "composer/semver": "^3.4",
+                "ext-exif": "*",
+                "ext-fileinfo": "*",
+                "ext-json": "*",
+                "illuminate/bus": "^10.0|^11.0",
+                "illuminate/conditionable": "^10.0|^11.0",
+                "illuminate/console": "^10.0|^11.0",
+                "illuminate/database": "^10.0|^11.0",
+                "illuminate/pipeline": "^10.0|^11.0",
+                "illuminate/support": "^10.0|^11.0",
+                "maennchen/zipstream-php": "^3.1",
+                "php": "^8.2",
+                "spatie/image": "^3.3.2",
+                "spatie/laravel-package-tools": "^1.16.1",
+                "spatie/temporary-directory": "^2.2",
+                "symfony/console": "^6.4.1|^7.0"
+            },
+            "conflict": {
+                "php-ffmpeg/php-ffmpeg": "<0.6.1"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^3.293.10",
+                "ext-imagick": "*",
+                "ext-pdo_sqlite": "*",
+                "ext-zip": "*",
+                "guzzlehttp/guzzle": "^7.8.1",
+                "larastan/larastan": "^2.7",
+                "league/flysystem-aws-s3-v3": "^3.22",
+                "mockery/mockery": "^1.6.7",
+                "orchestra/testbench": "^7.0|^8.17|^9.0",
+                "pestphp/pest": "^2.28",
+                "phpstan/extension-installer": "^1.3.1",
+                "spatie/laravel-ray": "^1.33",
+                "spatie/pdf-to-image": "^2.2|^3.0",
+                "spatie/pest-plugin-snapshots": "^2.1"
+            },
+            "suggest": {
+                "league/flysystem-aws-s3-v3": "Required to use AWS S3 file storage",
+                "php-ffmpeg/php-ffmpeg": "Required for generating video thumbnails",
+                "spatie/pdf-to-image": "Required for generating thumbnails of PDFs and SVGs"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\MediaLibrary\\MediaLibraryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\MediaLibrary\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Associate files with Eloquent models",
+            "homepage": "https://github.com/spatie/laravel-medialibrary",
+            "keywords": [
+                "cms",
+                "conversion",
+                "downloads",
+                "images",
+                "laravel",
+                "laravel-medialibrary",
+                "media",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-medialibrary/issues",
+                "source": "https://github.com/spatie/laravel-medialibrary/tree/11.7.3"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-07-02T13:37:35+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -8001,6 +8874,239 @@
             "time": "2024-05-14T11:35:51+00:00"
         },
         {
+            "name": "spatie/macroable",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/macroable.git",
+                "reference": "ec2c320f932e730607aff8052c44183cf3ecb072"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/macroable/zipball/ec2c320f932e730607aff8052c44183cf3ecb072",
+                "reference": "ec2c320f932e730607aff8052c44183cf3ecb072",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0|^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Macroable\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A trait to dynamically add methods to a class",
+            "homepage": "https://github.com/spatie/macroable",
+            "keywords": [
+                "macroable",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/macroable/issues",
+                "source": "https://github.com/spatie/macroable/tree/2.0.0"
+            },
+            "time": "2021-03-26T22:39:02+00:00"
+        },
+        {
+            "name": "spatie/pdf-to-image",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/pdf-to-image.git",
+                "reference": "7c68cc95c0a5e63d712b705ff55459071c2a7b54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/pdf-to-image/zipball/7c68cc95c0a5e63d712b705ff55459071c2a7b54",
+                "reference": "7c68cc95c0a5e63d712b705ff55459071c2a7b54",
+                "shasum": ""
+            },
+            "require": {
+                "ext-imagick": "*",
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.21"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\PdfToImage\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Convert a pdf to an image",
+            "homepage": "https://github.com/spatie/pdf-to-image",
+            "keywords": [
+                "convert",
+                "image",
+                "pdf",
+                "pdf-to-image",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/pdf-to-image/issues",
+                "source": "https://github.com/spatie/pdf-to-image/tree/2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-07T09:42:07+00:00"
+        },
+        {
+            "name": "spatie/temporary-directory",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/temporary-directory.git",
+                "reference": "76949fa18f8e1a7f663fd2eaa1d00e0bcea0752a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/temporary-directory/zipball/76949fa18f8e1a7f663fd2eaa1d00e0bcea0752a",
+                "reference": "76949fa18f8e1a7f663fd2eaa1d00e0bcea0752a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\TemporaryDirectory\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Vanderbist",
+                    "email": "alex@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily create, use and destroy temporary directories",
+            "homepage": "https://github.com/spatie/temporary-directory",
+            "keywords": [
+                "php",
+                "spatie",
+                "temporary-directory"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/temporary-directory/issues",
+                "source": "https://github.com/spatie/temporary-directory/tree/2.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-12-25T11:46:58+00:00"
+        },
+        {
+            "name": "spatie/url",
+            "version": "2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/url.git",
+                "reference": "93a51db743cdec22b081c64593e193887c9cd395"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/url/zipball/93a51db743cdec22b081c64593e193887c9cd395",
+                "reference": "93a51db743cdec22b081c64593e193887c9cd395",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "psr/http-message": "^1.0 || ^2.0",
+                "spatie/macroable": "^1.0 || ^2.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.21"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Url\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Parse, build and manipulate URL's",
+            "homepage": "https://github.com/spatie/url",
+            "keywords": [
+                "spatie",
+                "url"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/url/issues",
+                "source": "https://github.com/spatie/url/tree/2.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-08T11:35:19+00:00"
+        },
+        {
             "name": "stechstudio/filament-impersonate",
             "version": "3.8",
             "source": {
@@ -8168,6 +9274,179 @@
                 "source": "https://github.com/swagger-api/swagger-ui/tree/v5.13.0"
             },
             "time": "2024-03-29T13:42:47+00:00"
+        },
+        {
+            "name": "symfony/cache",
+            "version": "v7.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/cache.git",
+                "reference": "e933e1d947ffb88efcdd34a2bd51561cab7deaae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/e933e1d947ffb88efcdd34a2bd51561cab7deaae",
+                "reference": "e933e1d947ffb88efcdd34a2bd51561cab7deaae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/cache": "^2.0|^3.0",
+                "psr/log": "^1.1|^2|^3",
+                "symfony/cache-contracts": "^2.5|^3",
+                "symfony/deprecation-contracts": "^2.5|^3.0",
+                "symfony/service-contracts": "^2.5|^3",
+                "symfony/var-exporter": "^6.4|^7.0"
+            },
+            "conflict": {
+                "doctrine/dbal": "<3.6",
+                "symfony/dependency-injection": "<6.4",
+                "symfony/http-kernel": "<6.4",
+                "symfony/var-dumper": "<6.4"
+            },
+            "provide": {
+                "psr/cache-implementation": "2.0|3.0",
+                "psr/simple-cache-implementation": "1.0|2.0|3.0",
+                "symfony/cache-implementation": "1.1|2.0|3.0"
+            },
+            "require-dev": {
+                "cache/integration-tests": "dev-master",
+                "doctrine/dbal": "^3.6|^4",
+                "predis/predis": "^1.1|^2.0",
+                "psr/simple-cache": "^1.0|^2.0|^3.0",
+                "symfony/config": "^6.4|^7.0",
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/filesystem": "^6.4|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/messenger": "^6.4|^7.0",
+                "symfony/var-dumper": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Cache\\": ""
+                },
+                "classmap": [
+                    "Traits/ValueWrapper.php"
+                ],
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides extended PSR-6, PSR-16 (and tags) implementations",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "caching",
+                "psr6"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/cache/tree/v7.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-06-11T13:32:38+00:00"
+        },
+        {
+            "name": "symfony/cache-contracts",
+            "version": "v3.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/cache-contracts.git",
+                "reference": "df6a1a44c890faded49a5fca33c2d5c5fd3c2197"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/cache-contracts/zipball/df6a1a44c890faded49a5fca33c2d5c5fd3c2197",
+                "reference": "df6a1a44c890faded49a5fca33c2d5c5fd3c2197",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "psr/cache": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.5-dev"
+                },
+                "thanks": {
+                    "name": "symfony/contracts",
+                    "url": "https://github.com/symfony/contracts"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Contracts\\Cache\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Generic abstractions related to caching",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "abstractions",
+                "contracts",
+                "decoupling",
+                "interfaces",
+                "interoperability",
+                "standards"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/cache-contracts/tree/v3.5.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-04-18T09:32:20+00:00"
         },
         {
             "name": "symfony/clock",
@@ -10604,6 +11883,82 @@
             ],
             "support": {
                 "source": "https://github.com/symfony/var-dumper/tree/v7.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-06-28T08:00:31+00:00"
+        },
+        {
+            "name": "symfony/var-exporter",
+            "version": "v7.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/var-exporter.git",
+                "reference": "b80a669a2264609f07f1667f891dbfca25eba44c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/b80a669a2264609f07f1667f891dbfca25eba44c",
+                "reference": "b80a669a2264609f07f1667f891dbfca25eba44c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "symfony/property-access": "^6.4|^7.0",
+                "symfony/serializer": "^6.4|^7.0",
+                "symfony/var-dumper": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\VarExporter\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Allows exporting any serializable PHP data structure to plain PHP code",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "clone",
+                "construct",
+                "export",
+                "hydrate",
+                "instantiate",
+                "lazy-loading",
+                "proxy",
+                "serialize"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/var-exporter/tree/v7.1.2"
             },
             "funding": [
                 {

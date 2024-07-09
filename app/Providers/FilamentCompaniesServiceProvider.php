@@ -34,6 +34,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Auth\Register;
 use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
 use Wallo\FilamentCompanies\Pages\Company\CreateCompany;
+use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {
@@ -45,13 +46,17 @@ class FilamentCompaniesServiceProvider extends PanelProvider
             ->default()
             ->passwordReset()
             ->homeUrl(static fn (): string => url(Pages\Dashboard::getUrl(panel: 'company', tenant: Auth::user()?->personalCompany())))
-            ->plugin(
-                FilamentCompanies::make()
-                    ->switchCurrentCompany()
-                    ->companies(invitations: true)
-                    ->notifications()
-                    ->modals(),
-                EnvironmentIndicatorPlugin::make(),
+            ->plugins(
+                [
+                    FilamentMediaLibrary::make()
+                        ->diskVisibilityPrivate(),
+                    FilamentCompanies::make()
+                        ->switchCurrentCompany()
+                        ->companies(invitations: true)
+                        ->notifications()
+                        ->modals(),
+                    EnvironmentIndicatorPlugin::make(),
+                ]
             )
             ->colors([
                 'primary' => Color::Amber,
@@ -97,6 +102,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
+            ->viteTheme('resources/css/filament/company/theme.css')
             ->renderHook(
                 'panels::body.end',
                 fn (): string => view('components.tawk-chat')
