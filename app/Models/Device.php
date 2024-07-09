@@ -32,9 +32,9 @@ class Device extends Model
         'id' => 'integer',
     ];
 
-    public function stectrumTypes(): BelongsToMany
+    public function spectrumTypes(): BelongsToMany
     {
-        return $this->belongsToMany(StectrumType::class);
+        return $this->belongsToMany(SpectrumType::class);
     }
 
     public function samples(): HasMany

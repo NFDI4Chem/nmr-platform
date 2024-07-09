@@ -11,7 +11,7 @@ models:
     priority: enum:high,medium,low
     operator_id: id foreign nullable
     relationships:
-      belongsToMany: StectrumType
+      belongsToMany: SpectrumType
       belongsTo: Device,Solvent
 
   Device:
@@ -20,10 +20,10 @@ models:
     model_no: string
     spectrum_types: string
     relationships:
-      belongsToMany: StectrumType
+      belongsToMany: SpectrumType
       HasMany: Sample
 
-  StectrumType:
+  SpectrumType:
     neuclei: string
     dimentionality: enum:1D,2D
     name: string

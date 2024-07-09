@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('stectrum_types', function (Blueprint $table) {
+        Schema::create('spectrum_types', function (Blueprint $table) {
             $table->id();
             $table->string('neuclei');
             $table->enum('dimentionality', ["1D","2D"]);
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stectrum_types');
+        Schema::dropIfExists('spectrum_types');
     }
 };

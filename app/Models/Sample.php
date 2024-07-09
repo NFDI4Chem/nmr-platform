@@ -43,9 +43,9 @@ class Sample extends Model
         'operator_id' => 'integer',
     ];
 
-    public function stectrumTypes(): BelongsToMany
+    public function spectrumTypes(): BelongsToMany
     {
-        return $this->belongsToMany(StectrumType::class);
+        return $this->belongsToMany(SpectrumType::class);
     }
 
     public function device(): BelongsTo

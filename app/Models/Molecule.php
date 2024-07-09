@@ -49,7 +49,8 @@ class Molecule extends Model implements Auditable
         'has_stereo',
         'is_tautomer',
         'is_parent',
-        'is_placeholder'];
+        'is_placeholder',
+    ];
 
     /**
      * The attributes that should be cast.
