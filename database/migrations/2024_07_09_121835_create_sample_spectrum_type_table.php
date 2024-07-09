@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('sample_stectrum_type', function (Blueprint $table) {
+        Schema::create('sample_spectrum_type', function (Blueprint $table) {
             $table->foreignId('sample_id');
-            $table->foreignId('stectrum_type_id');
+            $table->foreignId('spectrum_type_id');
         });
 
         Schema::enableForeignKeyConstraints();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sample_stectrum_type');
+        Schema::dropIfExists('sample_spectrum_type');
     }
 };
