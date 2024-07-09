@@ -6,6 +6,7 @@ use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Filament\Facades\Filament;
 use Filament\Navigation\UserMenuItem;
 use Illuminate\Support\ServiceProvider;
+use BezhanSalleh\PanelSwitch\PanelSwitch;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,26 @@ class AppServiceProvider extends ServiceProvider
                     ->icon('heroicon-s-cog'),
                 // ...
             ]);
+        });
+
+        PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
+            $panelSwitch
+                ->modalWidth('sm')
+                ->slideOver()
+                ->icons([
+                    'admin' => 'heroicon-s-cog',
+                    'company' => 'heroicon-s-building-office-2',
+                ])
+                ->iconSize(16)
+                ->labels([
+                    'admin' => 'Control Panel',
+                    'company' => 'Company Dashboard',
+                ])
+                ->visible(fn (): bool => auth()->user()?->hasAnyRole([
+                    'super_admin',
+                    'admin',
+                    'dev',
+                ]));
         });
     }
 }

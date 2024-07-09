@@ -9,6 +9,7 @@
         "andrewdwallo/filament-companies": "^4.0",
         "bezhansalleh/filament-exceptions": "^2.1.1",
         "bezhansalleh/filament-language-switch": "^3.0",
+        "bezhansalleh/filament-panel-switch": "^1.0",
         "bezhansalleh/filament-shield": "^3.2",
         "darkaonline/l5-swagger": "^8.6",
         "filament/filament": "^3.2",
