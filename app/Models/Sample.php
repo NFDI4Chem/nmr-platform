@@ -72,7 +72,7 @@ class Sample extends Model
 
     public function operator(): BelongsTo
     {
-        return $this->belongsTo(Operator::class);
+        return $this->belongsTo(User::class);
     }
 
     public function featuredImage(): BelongsTo

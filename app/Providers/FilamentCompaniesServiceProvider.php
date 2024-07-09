@@ -53,7 +53,8 @@ class FilamentCompaniesServiceProvider extends PanelProvider
             ->plugins(
                 [
                     FilamentMediaLibrary::make()
-                        ->diskVisibilityPrivate(),
+                        ->diskVisibilityPrivate()
+                        ->navigationIcon('heroicon-o-folder-open'),
                     FilamentCompanies::make()
                         ->switchCurrentCompany()
                         ->companies(invitations: true)
