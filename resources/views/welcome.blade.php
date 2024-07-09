@@ -6,24 +6,10 @@
                     <div>
                         <x-application-logo class="h-12 w-auto" />
                         <div class="mt-10">
-                            <div>
-                                <a href="#" class="inline-flex space-x-4">
-                                    <span
-                                        class="rounded bg-rose-50 px-2.5 py-1 text-sm font-semibold text-rose-500">What's
-                                        new</span>
-                                    <span class="inline-flex items-center space-x-1 text-sm font-medium text-rose-500">
-                                        <span>Just shipped v0.1.0</span>
-                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </span>
-                                </a>
-                            </div>
+             
                             <div class="mt-6 sm:max-w-xl">
-                                <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">A unified solution for NMR sample submission</h1>
-                                <p class="mt-6 text-xl text-gray-500">NMR platform supports a seamlessly smooth submission process for your NMR samples.</p>
+                                <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Supports seamlessly smooth submission of your NMR samples</h1>
+                                <!-- <p class="mt-6 text-xl text-gray-500">Supports seamlessly smooth submission of your NMR samples.</p> -->
                             </div>
                             <div class="mt-4 sm:mt-0">
                                 <div class="mt-10 flex items-center gap-x-6">
@@ -39,7 +25,6 @@
                                         <span aria-hidden="true">→</span></a>
                                 </div>
                             </div>
-                            <div class="mt-6">
                                 <div class="inline-flex items-center divide-x divide-gray-300">
                                     <div class="flex flex-shrink-0 pr-5">
                                         <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
@@ -77,7 +62,7 @@
                                             class="font-medium text-gray-900">Rated 5 stars</span> by over <span
                                             class="font-medium text-rose-500">500 beta users</span></div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
