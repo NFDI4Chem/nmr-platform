@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\SpectrumType;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SpectrumTypeFactory extends Factory
 {
@@ -22,7 +21,7 @@ class SpectrumTypeFactory extends Factory
     {
         return [
             'neuclei' => $this->faker->word(),
-            'dimentionality' => $this->faker->randomElement(["1D","2D"]),
+            'dimentionality' => $this->faker->randomElement(['1D', '2D']),
             'name' => $this->faker->name(),
         ];
     }

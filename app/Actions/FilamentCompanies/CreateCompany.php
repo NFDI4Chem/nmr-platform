@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Wallo\FilamentCompanies\Contracts\CreatesCompanies;
 use Wallo\FilamentCompanies\Events\AddingCompany;
 use Wallo\FilamentCompanies\FilamentCompanies;
-use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
-use Illuminate\Support\Str;
 
 class CreateCompany implements CreatesCompanies
 {
@@ -38,21 +36,6 @@ class CreateCompany implements CreatesCompanies
         ]);
 
         $user->switchCompany($company);
-
-        // Create required folders
-
-        $folderNames = [
-            Str::slug($company->name. ' '. $company->id, '-'),
-        ];
-
-        foreach ($folderNames as $folderName) {
-            MediaLibraryFolder::create(
-                [
-                    'name' => $folderName,
-                    'company_id' => $company->id,
-                ]
-            );
-        }
 
         return $company;
     }

@@ -76,7 +76,7 @@ class Sample extends Model
     }
 
     public function featuredImage(): BelongsTo
-	{
-		return $this->belongsTo(MediaLibraryItem::class, 'featured_image_id');
-	}
+    {
+        return $this->belongsTo(MediaLibraryItem::class, 'featured_image_id');
+    }
 }

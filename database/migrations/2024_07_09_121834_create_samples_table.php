@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('spectrum_type')->nullable();
             $table->text('instructions')->nullable();
             $table->string('featured_image_id')->nullable();
-            $table->enum('priority', ["high","medium","low"]);
+            $table->enum('priority', ['high', 'medium', 'low']);
             $table->foreignId('operator_id')->nullable();
             $table->timestamps();
         });

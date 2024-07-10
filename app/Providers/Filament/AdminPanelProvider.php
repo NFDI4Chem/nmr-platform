@@ -22,8 +22,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
-use Stephenjude\FilamentDebugger\DebuggerPlugin;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
+use Stephenjude\FilamentDebugger\DebuggerPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {

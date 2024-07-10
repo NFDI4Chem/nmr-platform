@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Filament\Facades\Filament;
 use Filament\Navigation\UserMenuItem;
 use Illuminate\Support\ServiceProvider;
-use BezhanSalleh\PanelSwitch\PanelSwitch;
 
 class AppServiceProvider extends ServiceProvider
 {

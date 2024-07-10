@@ -3,21 +3,17 @@
 namespace App\Filament\Company\Resources;
 
 use App\Filament\Company\Resources\SampleResource\Pages;
-use App\Filament\Company\Resources\SampleResource\RelationManagers;
-use App\Models\Sample;
-use App\Models\SpectrumType;
 use App\Models\Device;
+use App\Models\Sample;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
-use Filament\Forms\Get;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
 
 class SampleResource extends Resource
 {
@@ -35,7 +31,7 @@ class SampleResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('reference_id')
                             ->label('Sample ID')
-                            ->prefix('NMR-' . date("Ym") . '-ID-')
+                            ->prefix('NMR-'.date('Ym').'-ID-')
                             ->placeholder('Enter a keyword for personal use'),
                     ])
                     ->columns(2),
@@ -72,10 +68,10 @@ class SampleResource extends Resource
                 Section::make('Structure info')
                     ->schema([
                         Fieldset::make('Attach a mol file')
-                        ->schema([
-                            MediaPicker::make('featured_molecule_id')
-                                ->label(''),
-                        ])
+                            ->schema([
+                                MediaPicker::make('featured_molecule_id')
+                                    ->label(''),
+                            ]),
                     ])
                     ->columns(2),
                 Section::make('Sample info')
@@ -91,15 +87,9 @@ class SampleResource extends Resource
                             ->schema([
                                 MediaPicker::make('featured_image_id')
                                     ->label(''),
-                            ])
+                            ]),
                     ])
                     ->columns(2),
-
-
-
-
-
-
 
                 // Forms\Components\Select::make('operator_id')
                 //     ->relationship('user', 'name'),

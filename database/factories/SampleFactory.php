@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Company;
 use App\Models\Device;
 use App\Models\Molecule;
 use App\Models\Operator;
 use App\Models\Sample;
 use App\Models\Solvent;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SampleFactory extends Factory
 {
@@ -34,7 +33,7 @@ class SampleFactory extends Factory
             'spectrum_type' => $this->faker->word(),
             'instructions' => $this->faker->text(),
             'featured_image_id' => $this->faker->word(),
-            'priority' => $this->faker->randomElement(["high","medium","low"]),
+            'priority' => $this->faker->randomElement(['high', 'medium', 'low']),
             'operator_id' => Operator::factory(),
         ];
     }
