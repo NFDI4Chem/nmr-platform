@@ -48,7 +48,8 @@ class AdminPanelProvider extends PanelProvider
                 FilamentExceptionsPlugin::make(),
                 FilamentMediaLibrary::make()
                     ->diskVisibilityPrivate()
-                    ->navigationIcon('heroicon-o-folder-open'),
+                    ->navigationIcon('heroicon-o-folder-open')
+                    ->navigationLabel('File Browser'),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
