@@ -75,6 +75,7 @@ class CreateCompany extends FilamentCreateCompany
                 [
                     'name' => $folderName,
                     'company_id' => $company->id,
+                    'user_id' => $user->id,
                 ]
             );
         }

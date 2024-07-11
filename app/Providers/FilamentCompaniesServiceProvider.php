@@ -30,7 +30,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
@@ -39,6 +38,7 @@ use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Auth\Register;
 use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
+use Auth;
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {
@@ -136,6 +136,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
 
         MediaLibraryItem::creating(function (MediaLibraryItem $mediaLibraryItem) {
             $mediaLibraryItem->company_id ??= Filament::getTenant()?->getKey();
+            $mediaLibraryItem->user_id ??= Auth::user()->id;
         });
 
         MediaLibraryItem::addGlobalScope('tenant', function (Builder $query) {
@@ -144,6 +145,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
 
         MediaLibraryFolder::creating(function (MediaLibraryFolder $mediaLibraryFolder) {
             $mediaLibraryFolder->company_id ??= Filament::getTenant()?->getKey();
+            $mediaLibraryFolder->company_id ??= Auth::user()->id;
         });
 
         MediaLibraryFolder::addGlobalScope('tenant', function (Builder $query) {
