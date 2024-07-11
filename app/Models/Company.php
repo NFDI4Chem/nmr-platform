@@ -21,6 +21,8 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     protected $fillable = [
         'name',
         'personal_company',
+        'slug',
+        'user_id'
     ];
 
     /**
