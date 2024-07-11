@@ -13,6 +13,7 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('parent_id')->nullable();
                 $table->string('name');
+                $table->foreignId('company_id')->constrained();
                 $table->timestamps();
             });
         }

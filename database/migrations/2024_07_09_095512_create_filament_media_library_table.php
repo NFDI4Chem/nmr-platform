@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('uploaded_by_user_id')->nullable()->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->string('caption')->nullable();
             $table->string('alt_text')->nullable();
+            $table->foreignId('company_id')->constrained();
 
             $table->timestamps();
         });
