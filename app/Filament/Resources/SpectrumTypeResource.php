@@ -16,7 +16,7 @@ class SpectrumTypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-light-bulb';
 
-    protected static ?string $navigationGroup = 'Resources';
+    protected static ?string $navigationGroup = 'Configure';
 
     public static function form(Form $form): Form
     {

@@ -16,8 +16,6 @@ class SampleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-cube-transparent';
 
-    protected static ?string $navigationGroup = 'Resources';
-
     public static function form(Form $form): Form
     {
         return $form

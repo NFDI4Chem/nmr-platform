@@ -16,7 +16,7 @@ class SolventResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
-    protected static ?string $navigationGroup = 'Resources';
+    protected static ?string $navigationGroup = 'Configure';
 
     public static function form(Form $form): Form
     {
