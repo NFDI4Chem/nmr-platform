@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('sample_spectrum_type', function (Blueprint $table) {
             $table->foreignId('sample_id');
             $table->foreignId('spectrum_type_id');
+            $table->foreignId('device_id')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();
