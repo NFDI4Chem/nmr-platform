@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Forms;
 
 class Device extends Model
 {
@@ -20,7 +21,7 @@ class Device extends Model
         'name',
         'manufacturer',
         'model_no',
-        'spectrum_types',
+        'status',
     ];
 
     /**
@@ -40,5 +41,26 @@ class Device extends Model
     public function samples(): HasMany
     {
         return $this->hasMany(Sample::class);
+    }
+
+    public static function getForm(): array
+    {
+        return [
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('manufacturer')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('model_no')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\Select::make('spectrum_type')
+                ->relationship('spectrumTypes', 'name')
+                ->multiple()
+                ->options(function () {
+                    return SpectrumType::all()?->pluck('name', 'id');
+                }),
+        ];
     }
 }

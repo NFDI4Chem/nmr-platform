@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('manufacturer');
             $table->string('model_no');
-            $table->string('spectrum_types');
+            $table->enum('status', ['ACTIVE', 'INACTIVE'])->default('ACTIVE');
             $table->timestamps();
         });
 
