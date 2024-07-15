@@ -26,74 +26,7 @@ class SampleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('Tracking info')
-                    ->schema([
-                        Forms\Components\TextInput::make('reference_id')
-                            ->label('Sample ID')
-                            ->prefix('NMR-'.date('Ym').'-ID-')
-                            ->placeholder('Enter a keyword for personal use'),
-                    ])
-                    ->columns(2),
-                Section::make('Configuration')
-                    ->schema([
-
-                        Forms\Components\Select::make('device_id')
-                            ->relationship('device', 'name')
-                            ->live(),
-                        // Forms\Components\Select::make('company_id')
-                        //     ->relationship('company', 'name')
-                        //     ->label('Group Name')
-                        //     ->required(),
-                        // Forms\Components\TextInput::make('identifier')
-                        //     ->maxLength(255),
-
-                        Forms\Components\TextInput::make('priority')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Select::make('spectrum_type')
-                            ->multiple()
-                            ->options(function (Get $get) {
-                                return Device::find($get('device_id'))?->spectrumTypes()->pluck('name', 'id');
-                            }),
-                        Forms\Components\TextInput::make('other_nuclei')
-                            ->label('Other Nuclei (please specify)')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Checkbox::make('is_automation')
-                            ->label('Automation')
-                            ->helperText('Do you want to process this sample automatically?'),
-                    ])
-                    ->columns(2),
-                Section::make('Structure info')
-                    ->schema([
-                        Fieldset::make('Attach a mol file')
-                            ->schema([
-                                MediaPicker::make('featured_molecule_id')
-                                    ->label(''),
-                            ]),
-                    ])
-                    ->columns(2),
-                Section::make('Sample info')
-                    ->schema([
-                        Forms\Components\Select::make('solvent_id')
-                            ->relationship('solvent', 'name'),
-                        Forms\Components\Select::make('molecule_id')
-                            ->relationship('molecule', 'name'),
-                        Forms\Components\Textarea::make('instructions')
-                            ->label('Special care for sample')
-                            ->columnSpanFull(),
-                        Fieldset::make('Attach a file for the operator')
-                            ->schema([
-                                MediaPicker::make('featured_image_id')
-                                    ->label(''),
-                            ]),
-                    ])
-                    ->columns(2),
-
-                // Forms\Components\Select::make('operator_id')
-                //     ->relationship('user', 'name'),
-            ]);
+            ->schema(Sample::getForm());
     }
 
     public static function table(Table $table): Table

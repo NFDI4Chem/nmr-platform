@@ -19,30 +19,7 @@ class SampleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\Select::make('device_id')
-                    ->relationship('device', 'name'),
-                Forms\Components\Select::make('company_id')
-                    ->relationship('company', 'name')
-                    ->required(),
-                Forms\Components\TextInput::make('identifier')
-                    ->maxLength(255),
-                Forms\Components\Select::make('solvent_id')
-                    ->relationship('solvent', 'name'),
-                Forms\Components\Select::make('molecule_id')
-                    ->relationship('molecule', 'name'),
-                Forms\Components\TextInput::make('spectrum_type')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('instructions')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('featured_image_id')
-                    ->relationship('featuredImage', 'id'),
-                Forms\Components\TextInput::make('priority')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('operator_id')
-                    ->relationship('operator', 'name'),
-            ]);
+            ->schema(Sample::getForm());
     }
 
     public static function table(Table $table): Table
