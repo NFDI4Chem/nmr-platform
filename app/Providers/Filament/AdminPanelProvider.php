@@ -60,8 +60,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 MenuItem::make()
-                    ->label('Businesses')
-                    ->icon('heroicon-o-building-office')
+                    ->label('Group')
+                    ->icon('heroicon-o-user-group')
                     ->url(static fn () => url(Pages\Dashboard::getUrl(panel: 'company', tenant: Auth::user()->personalCompany()))),
             ])
             ->middleware([

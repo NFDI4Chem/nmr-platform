@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('featured_image_id')->nullable();
             $table->enum('priority', ['HIGH', 'MEDIUM', 'LOW'])->default('LOW');
             $table->foreignId('operator_id')->nullable();
-            $table->enum('status', ['DRAFT', 'SUBMITTED', 'REJECTED', 'RECEIVED', 'PROCESSING', 'FINISHED'])->default('DRAFT');
+            $table->string('status');
             $table->timestamps();
         });
 
