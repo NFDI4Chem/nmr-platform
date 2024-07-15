@@ -4,11 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DeviceResource\Pages;
 use App\Models\Device;
+use App\Models\SpectrumType;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Get;
 
 class DeviceResource extends Resource
 {
@@ -21,20 +23,7 @@ class DeviceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('manufacturer')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('model_no')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('spectrum_types')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+            ->schema(Device::getForm());
     }
 
     public static function table(Table $table): Table
@@ -47,8 +36,11 @@ class DeviceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('model_no')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('spectrum_types')
-                    ->searchable(),
+                // Tables\Columns\SelectColumn::make('spectrum_types')
+                //     ->options(function (Get $get) {
+                //         return SpectrumType::all()?->pluck('name', $record->id);
+                //     })
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
