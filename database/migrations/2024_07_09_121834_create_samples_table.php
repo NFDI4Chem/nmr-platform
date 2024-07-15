@@ -17,14 +17,18 @@ return new class extends Migration
             $table->id();
             $table->foreignId('device_id')->nullable()->constrained();
             $table->foreignId('company_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->string('identifier')->nullable();
             $table->foreignId('solvent_id')->nullable()->constrained();
             $table->foreignId('molecule_id')->nullable()->constrained();
-            $table->string('spectrum_type')->nullable();
+            $table->string('other_nuclei')->nullable();
+            $table->boolean('automation')->default(false);
+            $table->string('featured_molfile_id')->nullable();
             $table->text('instructions')->nullable();
             $table->string('featured_image_id')->nullable();
-            $table->enum('priority', ['high', 'medium', 'low']);
+            $table->enum('priority', ['HIGH', 'MEDIUM', 'LOW'])->default('LOW');
             $table->foreignId('operator_id')->nullable();
+            $table->enum('status', ['DRAFT', 'SUBMITTED', 'REJECTED', 'RECEIVED', 'PROCESSING', 'FINISHED'])->default('DRAFT');
             $table->timestamps();
         });
 
