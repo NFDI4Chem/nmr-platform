@@ -9,6 +9,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Maartenpaauw\Filament\ModelStates\StateTableAction;
+use App\States\Sample\ToRejected;
+use Filament\Tables\Actions\ActionGroup;
+use Illuminate\Support\Facades\Auth;
+use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
+use Illuminate\Support\Facades\DB;
 
 class SampleResource extends Resource
 {
@@ -25,44 +31,60 @@ class SampleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('device.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('company.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('identifier')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('solvent.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('molecule.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('spectrum_type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('featuredImage.id')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('operator.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ->columns(Sample::getTableColumns())
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('reject')
+                        ->requiresConfirmation()
+                        ->form([
+                            Forms\Components\Textarea::make('comments')
+                                ->label('Reject reason')
+                                ->columnSpanFull(),
+                        ])
+                        ->action(function (array $data, Sample $record): void {
+                            $record->comments = $data['comments'];
+                            $record->save();
+                        }),
+                    Tables\Actions\Action::make('finish')
+                        ->requiresConfirmation()
+                        ->form([
+                            MediaPicker::make('finished_file_id')
+                                ->label('Choose the file')
+                                ->required(),
+                        ])
+                        ->action(function (array $data, Sample $record): void {
+                            // Featured image details for the record
+                            $filament_media_library_item = DB::table('filament_media_library')->find($record->featured_image_id);
+                            $company_id = $filament_media_library_item->company_id;
+                            // $user_id = $filament_media_library_item->user_id;
+                            $folder_id = $filament_media_library_item->folder_id;
+
+                            // Save the record to get the file's filament_media_library_item id
+                            $record->finished_file_id = $data['finished_file_id'];
+                            $record->save();
+
+                            // Place the file in the folder of the user (use detials from above)
+                            DB::table('filament_media_library')
+                                ->where('id', $record->finished_file_id)
+                                ->update(['company_id' => $company_id,
+                                    'user_id' => Auth::user()->id,
+                                    'folder_id' => $folder_id]);
+                            // $filament_media_library_item = DB::table('filament_media_library')->where('id', $record->finished_file_id)->get()[0];
+                            // dd($filament_media_library_item);
+                            // $filament_media_library_item->company_id = $company_id;
+                            // $filament_media_library_item->user_id = Auth::user()->id;
+                            // $filament_media_library_item->folder_id = $folder_id;
+                            // $filament_media_library_item->save();
+                        }),
+                    // StateTableAction::make('reject')
+                    //     ->transitionTo(ToRejected::class),
+                ])
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -34,7 +34,7 @@ class CreateCompany extends FilamentCreateCompany
                                 ->required()
                                 ->maxLength(400)
                                 ->live()
-                                ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Please enter the full legal name of your business as it will appear on all official documents and communications.'),
+                                ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'Please enter the full name of your group.'),
                             Forms\Components\TextInput::make('slug')
                                 ->required()
                                 ->hidden()

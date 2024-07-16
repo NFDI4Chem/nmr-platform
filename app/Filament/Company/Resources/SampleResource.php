@@ -14,6 +14,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
+use Maartenpaauw\Filament\ModelStates\StateColumn;
+use Maartenpaauw\Filament\ModelStates\StateSelectColumn;
+use Maartenpaauw\Filament\ModelStates\StateTableAction;
+use App\States\Sample\SubmittedState;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
 
 class SampleResource extends Resource
 {
@@ -32,48 +38,26 @@ class SampleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('device.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('company.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('identifier')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('solvent.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('molecule.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('spectrum_type')
-                    ->searchable(),
-                // Tables\Columns\TextColumn::make('featured_image_id')
-                //     ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('operator.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ->columns(Sample::getTableColumns())
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // StateTableAction::make('submit')
+                //     ->transitionTo(SubmittedState::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('submit')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            foreach ($records as $record) {
+                                $record->status = new SubmittedState($record);
+                                $record->save();
+                            }
+                        })
                 ]),
             ]);
     }

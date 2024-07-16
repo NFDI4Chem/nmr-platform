@@ -29,6 +29,8 @@ return new class extends Migration
             $table->enum('priority', ['HIGH', 'MEDIUM', 'LOW'])->default('LOW');
             $table->foreignId('operator_id')->nullable();
             $table->string('status');
+            $table->string('finished_file_id');
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
 

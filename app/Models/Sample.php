@@ -17,11 +17,18 @@ use Auth;
 use Filament\Facades\Filament;
 use App\Filament\Traits\MutatesSampleFormData;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Spatie\ModelStates\HasStates;
+use App\States\Sample\SampleState;
+use App\States\Sample\ToRejected;
+use Filament\Tables;
+use Maartenpaauw\Filament\ModelStates\StateSelectColumn;
+use Maartenpaauw\Filament\ModelStates\StateSelect;
 
 class Sample extends Model
 {
     use HasFactory;
     use MutatesSampleFormData;
+    use HasStates;
 
     /**
      * The attributes that are mass assignable.
@@ -44,6 +51,8 @@ class Sample extends Model
         'priority',
         'operator_id',
         'status',
+        'finished_file_id',
+        'comments',
     ];
 
     /**
@@ -58,6 +67,7 @@ class Sample extends Model
         'solvent_id' => 'integer',
         'molecule_id' => 'integer',
         'operator_id' => 'integer',
+        'status' => SampleState::class,
         // 'featured_image_id' => 'array',
         // 'featured_molfile_id' => 'array',
     ];
@@ -109,8 +119,21 @@ class Sample extends Model
                 ->schema([
                     Forms\Components\TextInput::make('identifier')
                         ->label('Sample ID')
-                        ->prefix('NMR-'.date('Ym').'-ID-')
-                        ->placeholder('Enter a keyword for your personal use'),
+                        ->prefix(function (string $operation) {
+                            if ($operation == 'create') {
+                                return 'NMR-' . date('Ym') . '-ID-';
+                            } else {
+                                return '';
+                            }
+                        })
+                        ->placeholder('Enter a keyword for your personal use')
+                        ->readOnly(function (string $operation) {
+                            if ($operation == 'edit') {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }),
                 ])
                 ->columns(2),
             Section::make('Configuration')
@@ -135,8 +158,7 @@ class Sample extends Model
                         ->multiple()
                         ->options(function (Get $get) {
                             return SpectrumType::all()->pluck('name', 'id');
-                        })
-                        ,
+                        }),
                     Forms\Components\TextInput::make('other_nuclei')
                         ->label('Other Nuclei (please specify)')
                         ->maxLength(255),
@@ -150,19 +172,12 @@ class Sample extends Model
                         ->schema([
                             MediaPicker::make('featured_molfile_id')
                                 ->label('')
-                                ->folder(function(MediaLibraryFolder $folder) {
-                                    // dd(Filament::getTenant());
-                                    $group_folder_slug = Filament::getTenant()->slug.'-'.Filament::getTenant()->id;
+                                ->folder(function (MediaLibraryFolder $folder) {
+                                    $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
                                     $found_folder_id = MediaLibraryFolder::where([
                                         ['name', $group_folder_slug],
                                         ['company_id', Filament::getTenant()->id],
-                                        ])->get()[0]->id;
-                                    // $media_folder = MediaLibraryFolder::where([
-                                    //     ['parent_id', $found_folder_id],
-                                    // ]);
-
-                                    // dd($group_folder_name,MediaLibraryFolder::where('name', $group_folder_name)->get()[0]->id);
-                                    // $user_id = Auth::user()->id;
+                                    ])->get()[0]->id;
                                     return $folder->find($found_folder_id);
                                 }),
                         ]),
@@ -181,33 +196,79 @@ class Sample extends Model
                         ->schema([
                             MediaPicker::make('featured_image_id')
                                 ->label('')
-                                ->folder(function(MediaLibraryFolder $folder) {
-                                    // dd(Filament::getTenant());
-                                    $group_folder_slug = Filament::getTenant()->slug.'-'.Filament::getTenant()->id;
+                                ->folder(function (MediaLibraryFolder $folder) {
+                                    $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
                                     $found_folder_id = MediaLibraryFolder::where([
                                         ['name', $group_folder_slug],
                                         ['company_id', Filament::getTenant()->id],
-                                        ])->get()[0]->id;
-                                    // $media_folder = MediaLibraryFolder::where([
-                                    //     ['parent_id', $found_folder_id],
-                                    // ]);
-
-                                    // dd($group_folder_name,MediaLibraryFolder::where('name', $group_folder_name)->get()[0]->id);
-                                    // $user_id = Auth::user()->id;
+                                    ])->get()[0]->id;
                                     return $folder->find($found_folder_id);
                                 }),
                         ]),
-                    Forms\Components\select::make('status')
+                    StateSelect::make('status')
                         ->label('Sample Status')
-                        ->options(getSampleStatus())
-                        ->default('DRAFT')
-                        ->disabled(),
-                    
+                        ->disabled(function (string $operation) {
+                            if ($operation == 'edit') {
+                                return false;
+                            }
+                            return true;
+                        }),
+
                 ])
                 ->columns(2),
 
             // Forms\Components\Select::make('operator_id')
             //     ->relationship('user', 'name'),
+        ];
+    }
+
+    public static function getTableColumns(): array
+    {
+        return [
+            Tables\Columns\TextColumn::make('device.name')
+                ->numeric()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('company.name')
+                ->numeric()
+                ->sortable()
+                ->hidden(function () {
+                    return Filament::getTenant() ? true : false;
+                }),
+            Tables\Columns\TextColumn::make('identifier')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('solvent.name')
+                ->numeric()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('molecule.name')
+                ->numeric()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('spectrum_type')
+                ->searchable(),
+            // Tables\Columns\TextColumn::make('featured_image_id')
+            //     ->searchable(),
+            Tables\Columns\TextColumn::make('priority')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('operator.name')
+                ->numeric()
+                ->sortable(),
+            StateSelectColumn::make('status'),
+            // Tables\Columns\TextColumn::make('reject')
+            //     ->badge()
+            //     ->default('REJECT')
+            //     ->action(function (Sample $record): void {
+            //         $this->dispatch('open-post-edit-modal', post: $record->getKey());
+            //     }),
+
+
+
+            // Tables\Columns\TextColumn::make('created_at')
+            //     ->dateTime()
+            //     ->sortable()
+            //     ->toggleable(isToggledHiddenByDefault: true),
+            // Tables\Columns\TextColumn::make('updated_at')
+            //     ->dateTime()
+            //     ->sortable()
+            //     ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
 }
