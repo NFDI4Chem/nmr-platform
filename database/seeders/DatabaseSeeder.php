@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->command->line('');
 
         $this->call(ShieldSeeder::class);
+        $this->call(SolventSeeder::class);
 
         $admin->assignRole('super_admin');
     }
