@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Wallo\FilamentCompanies\Company as FilamentCompaniesCompany;
 use Wallo\FilamentCompanies\Events\CompanyCreated;
 use Wallo\FilamentCompanies\Events\CompanyDeleted;
 use Wallo\FilamentCompanies\Events\CompanyUpdated;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends FilamentCompaniesCompany implements HasAvatar
 {
@@ -23,7 +23,7 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         'name',
         'personal_company',
         'slug',
-        'user_id'
+        'user_id',
     ];
 
     /**

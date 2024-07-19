@@ -4,17 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SampleResource\Pages;
 use App\Models\Sample;
+use App\States\Sample\ToRejected;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Maartenpaauw\Filament\ModelStates\StateTableAction;
-use App\States\Sample\ToRejected;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
-use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
 use Illuminate\Support\Facades\DB;
+use Maartenpaauw\Filament\ModelStates\StateTableAction;
+use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
 
 class SampleResource extends Resource
 {
@@ -82,8 +82,7 @@ class SampleResource extends Resource
                         }),
                     // StateTableAction::make('reject')
                     //     ->transitionTo(ToRejected::class),
-                ])
-
+                ]),
 
             ])
             ->bulkActions([

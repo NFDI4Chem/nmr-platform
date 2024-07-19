@@ -13,6 +13,7 @@ use App\Actions\FilamentCompanies\UpdateUserPassword;
 use App\Actions\FilamentCompanies\UpdateUserProfileInformation;
 use App\Filament\Company\Pages\CreateCompany;
 use App\Models\Company;
+use Auth;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -38,7 +39,6 @@ use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Auth\Register;
 use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
-use Auth;
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {

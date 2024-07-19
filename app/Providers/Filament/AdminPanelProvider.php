@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -24,7 +25,6 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
-use Filament\Facades\Filament;
 
 class AdminPanelProvider extends PanelProvider
 {

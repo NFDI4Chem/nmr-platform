@@ -2,11 +2,11 @@
 
 namespace App\States\Sample;
 
+use Filament\Facades\Filament;
+use Maartenpaauw\Filament\ModelStates\Concerns\ProvidesSpatieStateToFilament;
+use Maartenpaauw\Filament\ModelStates\Contracts\FilamentSpatieState;
 use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
-use Maartenpaauw\Filament\ModelStates\Contracts\FilamentSpatieState;
-use Maartenpaauw\Filament\ModelStates\Concerns\ProvidesSpatieStateToFilament;
-use Filament\Facades\Filament;
 
 /**
  * @extends State<\App\Models\Payment>
@@ -18,7 +18,7 @@ abstract class SampleState extends State implements FilamentSpatieState
 
     public static function config(): StateConfig
     {
-        if(Filament::getTenant()) {
+        if (Filament::getTenant()) {
             return parent::config()
                 ->default(DraftState::class)
                 ->allowTransition(DraftState::class, SubmittedState::class);
@@ -31,10 +31,9 @@ abstract class SampleState extends State implements FilamentSpatieState
                 // ->allowTransition(SubmittedState::class, RejectedState::class, ToRejected::class)
                 // ->allowTransition(RejectedState::class, SubmittedState::class)
                 ->allowTransition(ReceivedState::class, ProcessingState::class);
-                // ->allowTransition(ProcessingState::class, FinishedState::class)
-                // ->allowTransition(FinishedState::class, ProcessingState::class);
+            // ->allowTransition(ProcessingState::class, FinishedState::class)
+            // ->allowTransition(FinishedState::class, ProcessingState::class);
         }
-        
-        ;
+
     }
 }

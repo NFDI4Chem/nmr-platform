@@ -10,8 +10,8 @@ class Ticker extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type', 
-        'index', 
+        'type',
+        'index',
         'meta',
     ];
 }

@@ -3,8 +3,8 @@
 namespace App\Filament\Company\Resources\SampleResource\Pages;
 
 use App\Filament\Company\Resources\SampleResource;
-use Filament\Resources\Pages\CreateRecord;
 use App\Models\Sample;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateSample extends CreateRecord
 {

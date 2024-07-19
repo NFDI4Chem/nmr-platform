@@ -2,33 +2,31 @@
 
 namespace App\Models;
 
+use App\Filament\Traits\MutatesSampleFormData;
+use App\States\Sample\SampleState;
+use Filament\Facades\Filament;
+use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Get;
+use Filament\Tables;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
-use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
-use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
-use Filament\Forms\Get;
-use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
-use Auth;
-use Filament\Facades\Filament;
-use App\Filament\Traits\MutatesSampleFormData;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Spatie\ModelStates\HasStates;
-use App\States\Sample\SampleState;
-use App\States\Sample\ToRejected;
-use Filament\Tables;
-use Maartenpaauw\Filament\ModelStates\StateSelectColumn;
 use Maartenpaauw\Filament\ModelStates\StateSelect;
+use Maartenpaauw\Filament\ModelStates\StateSelectColumn;
+use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
+use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
+use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
+use Spatie\ModelStates\HasStates;
 
 class Sample extends Model
 {
     use HasFactory;
-    use MutatesSampleFormData;
     use HasStates;
+    use MutatesSampleFormData;
 
     /**
      * The attributes that are mass assignable.
@@ -123,7 +121,7 @@ class Sample extends Model
                         ->label('Sample ID')
                         ->prefix(function (string $operation) {
                             if ($operation == 'create') {
-                                return 'NMR-' . date('Ym') . '-ID-';
+                                return 'NMR-'.date('Ym').'-ID-';
                             } else {
                                 return '';
                             }
@@ -176,13 +174,14 @@ class Sample extends Model
                                 ->label('')
                                 ->folder(function (MediaLibraryFolder $folder) {
                                     if (Filament::getTenant()) {
-                                        $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
+                                        $group_folder_slug = Filament::getTenant()->slug.'-'.Filament::getTenant()->id;
                                         $found_folder_id = MediaLibraryFolder::where([
                                             ['name', $group_folder_slug],
                                             ['company_id', Filament::getTenant()->id],
                                         ])->get()[0]->id;
+
                                         return $folder->find($found_folder_id);
-                                    };
+                                    }
                                 }),
                         ]),
                 ])
@@ -202,11 +201,12 @@ class Sample extends Model
                                 ->label('')
                                 ->folder(function (MediaLibraryFolder $folder) {
                                     if (Filament::getTenant()) {
-                                        $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
+                                        $group_folder_slug = Filament::getTenant()->slug.'-'.Filament::getTenant()->id;
                                         $found_folder_id = MediaLibraryFolder::where([
                                             ['name', $group_folder_slug],
                                             ['company_id', Filament::getTenant()->id],
                                         ])->get()[0]->id;
+
                                         return $folder->find($found_folder_id);
                                     }
                                 }),
@@ -217,6 +217,7 @@ class Sample extends Model
                             if ($operation == 'edit') {
                                 return false;
                             }
+
                             return true;
                         }),
 
@@ -264,8 +265,6 @@ class Sample extends Model
             //     ->action(function (Sample $record): void {
             //         $this->dispatch('open-post-edit-modal', post: $record->getKey());
             //     }),
-
-
 
             // Tables\Columns\TextColumn::make('created_at')
             //     ->dateTime()

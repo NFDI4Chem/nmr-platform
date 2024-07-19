@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Filament\Forms;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Filament\Forms;
 
 class Device extends Model
 {

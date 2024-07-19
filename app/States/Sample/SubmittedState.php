@@ -2,7 +2,6 @@
 
 namespace App\States\Sample;
 
-use App\States\Sample\SampleState;
 use Filament\Support\Contracts\HasLabel;
 
 class SubmittedState extends SampleState implements HasLabel

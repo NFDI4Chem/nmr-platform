@@ -3,23 +3,15 @@
 namespace App\Filament\Company\Resources;
 
 use App\Filament\Company\Resources\SampleResource\Pages;
-use App\Models\Device;
 use App\Models\Sample;
-use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
+use App\States\Sample\SubmittedState;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
-use Maartenpaauw\Filament\ModelStates\StateColumn;
-use Maartenpaauw\Filament\ModelStates\StateSelectColumn;
-use Maartenpaauw\Filament\ModelStates\StateTableAction;
-use App\States\Sample\SubmittedState;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Maartenpaauw\Filament\ModelStates\StateTableAction;
 
 class SampleResource extends Resource
 {
@@ -57,7 +49,7 @@ class SampleResource extends Resource
                                 $record->status = new SubmittedState($record);
                                 $record->save();
                             }
-                        })
+                        }),
                 ]),
             ]);
     }
