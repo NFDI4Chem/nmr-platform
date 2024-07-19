@@ -72,6 +72,8 @@ class Sample extends Model
         // 'featured_molfile_id' => 'array',
     ];
 
+    protected $group_folder_slug = '';
+
     public function spectrumTypesOfDevices(): HasManyThrough
     {
         return $this->hasManyThrough(SpectrumType::class, Device::class);
@@ -173,12 +175,14 @@ class Sample extends Model
                             MediaPicker::make('featured_molfile_id')
                                 ->label('')
                                 ->folder(function (MediaLibraryFolder $folder) {
-                                    $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
-                                    $found_folder_id = MediaLibraryFolder::where([
-                                        ['name', $group_folder_slug],
-                                        ['company_id', Filament::getTenant()->id],
-                                    ])->get()[0]->id;
-                                    return $folder->find($found_folder_id);
+                                    if (Filament::getTenant()) {
+                                        $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
+                                        $found_folder_id = MediaLibraryFolder::where([
+                                            ['name', $group_folder_slug],
+                                            ['company_id', Filament::getTenant()->id],
+                                        ])->get()[0]->id;
+                                        return $folder->find($found_folder_id);
+                                    };
                                 }),
                         ]),
                 ])
@@ -197,12 +201,14 @@ class Sample extends Model
                             MediaPicker::make('featured_image_id')
                                 ->label('')
                                 ->folder(function (MediaLibraryFolder $folder) {
-                                    $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
-                                    $found_folder_id = MediaLibraryFolder::where([
-                                        ['name', $group_folder_slug],
-                                        ['company_id', Filament::getTenant()->id],
-                                    ])->get()[0]->id;
-                                    return $folder->find($found_folder_id);
+                                    if (Filament::getTenant()) {
+                                        $group_folder_slug = Filament::getTenant()->slug . '-' . Filament::getTenant()->id;
+                                        $found_folder_id = MediaLibraryFolder::where([
+                                            ['name', $group_folder_slug],
+                                            ['company_id', Filament::getTenant()->id],
+                                        ])->get()[0]->id;
+                                        return $folder->find($found_folder_id);
+                                    }
                                 }),
                         ]),
                     StateSelect::make('status')
