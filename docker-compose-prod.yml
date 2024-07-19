@@ -1,11 +1,12 @@
 services:
     app:
         build:
-            context: ./docker/8.3
+            context: ./resource/ops/production/
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: nmrplatform-8.3/app
+        container_name: nmrplatform_app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -24,6 +25,13 @@ services:
             - pgsql
             - redis
             # - typesense
+    php:
+        image: php:8.3-fpm
+        container_name: nmrplatform_php
+        volumes:
+            - ./:/var/www/html
+        networks:
+            - nmrplatform
     pgsql:
         image: "informaticsmatters/rdkit-cartridge-debian:latest"
         ports:
@@ -66,15 +74,17 @@ services:
             timeout: 5s
     nginx:
         image: nginx:1.17-alpine
-        container_name: nmrplatform-nginx
+        container_name: nmrplatform_nginx
         restart: unless-stopped
         ports:
-            - 8000:80
+            - 80:80
         volumes:
             - ./:/var/www
             - ./resources/ops/nginx:/etc/nginx/conf.d
         networks:
             - nmrplatform
+        depends_on:
+            - php
     # typesense:
     #     image: 'typesense/typesense:0.25.2'
     #     ports:
