@@ -1,7 +1,5 @@
 FROM ubuntu:22.04
 
-LABEL maintainer="Taylor Otwell"
-
 ARG WWWGROUP
 ARG NODE_VERSION=20
 ARG POSTGRES_VERSION=15
@@ -21,7 +19,7 @@ RUN apt-get update \
     && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
-    && apt-get install -y php8.3-cli php8.3-dev \
+    && apt-get install -y php8.3-cli php8.3-dev php8.3-fpm \
        php8.3-pgsql php8.3-sqlite3 php8.3-gd \
        php8.3-curl \
        php8.3-imap php8.3-mysql php8.3-mbstring \
@@ -60,6 +58,14 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
+# Install Composer dependencies
+RUN composer install --optimize-autoloader --no-dev
+
+# Build NPM packages
+RUN npm install && npm run prod
+
 EXPOSE 9000
+
+CMD ["php-fpm"]
 
 ENTRYPOINT ["start-container"]
