@@ -1,0 +1,109 @@
+services:
+    nmrplatform:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: nmrplatform-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - nmrplatform
+        depends_on:
+            - pgsql
+            - redis
+            # - typesense
+    pgsql:
+        image: "informaticsmatters/rdkit-cartridge-debian:latest"
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'nmrplatform-pgsql:/var/lib/postgresql/data'
+            - './docker/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+        networks:
+            - nmrplatform
+        healthcheck:
+            test:
+                - CMD
+                - pg_isready
+                - '-q'
+                - '-d'
+                - '${DB_DATABASE}'
+                - '-U'
+                - '${DB_USERNAME}'
+            retries: 3
+            timeout: 5s
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'nmrplatform-redis:/data'
+        networks:
+            - nmrplatform
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+    nginx:
+        image: nginx:1.17-alpine
+        container_name: nmrplatform-nginx
+        restart: unless-stopped
+        ports:
+            - 8000:80
+        volumes:
+            - ./:/var/www
+            - ./resources/ops/nginx:/etc/nginx/conf.d
+        networks:
+            - nmrplatform
+    # typesense:
+    #     image: 'typesense/typesense:0.25.2'
+    #     ports:
+    #         - '${FORWARD_TYPESENSE_PORT:-8108}:8108'
+    #     environment:
+    #         TYPESENSE_DATA_DIR: '${TYPESENSE_DATA_DIR:-/typesense-data}'
+    #         TYPESENSE_API_KEY: '${TYPESENSE_API_KEY:-xyz}'
+    #         TYPESENSE_ENABLE_CORS: '${TYPESENSE_ENABLE_CORS:-true}'
+    #     volumes:
+    #         - 'nmrplatform-typesense:/typesense-data'
+    #     networks:
+    #         - nmrplatform
+    #     healthcheck:
+    #         test:
+    #             - CMD
+    #             - wget
+    #             - '--no-verbose'
+    #             - '--spider'
+    #             - 'http://localhost:8108/health'
+    #         retries: 5
+    #         timeout: 7s
+networks:
+    nmrplatform:
+        driver: bridge
+volumes:
+    nmrplatform-pgsql:
+        driver: local
+    nmrplatform-redis:
+        driver: local
+    # nmrplatform-typesense:
+    #     driver: local
