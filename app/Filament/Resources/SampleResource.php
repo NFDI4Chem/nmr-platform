@@ -52,28 +52,28 @@ class SampleResource extends Resource
                     Tables\Actions\Action::make('finish')
                         ->requiresConfirmation()
                         ->form([
-                            MediaPicker::make('finished_file_id')
+                            MediaPicker::make('rawdata_file_id')
                                 ->label('Choose the file')
                                 ->required(),
                         ])
                         ->action(function (array $data, Sample $record): void {
                             // Featured image details for the record
-                            $filament_media_library_item = DB::table('filament_media_library')->find($record->featured_image_id);
+                            $filament_media_library_item = DB::table('filament_media_library')->find($record->additional_infofile_id);
                             $company_id = $filament_media_library_item->company_id;
                             // $user_id = $filament_media_library_item->user_id;
                             $folder_id = $filament_media_library_item->folder_id;
 
                             // Save the record to get the file's filament_media_library_item id
-                            $record->finished_file_id = $data['finished_file_id'];
+                            $record->rawdata_file_id = $data['rawdata_file_id'];
                             $record->save();
 
                             // Place the file in the folder of the user (use detials from above)
                             DB::table('filament_media_library')
-                                ->where('id', $record->finished_file_id)
+                                ->where('id', $record->rawdata_file_id)
                                 ->update(['company_id' => $company_id,
                                     'user_id' => Auth::user()->id,
                                     'folder_id' => $folder_id]);
-                            // $filament_media_library_item = DB::table('filament_media_library')->where('id', $record->finished_file_id)->get()[0];
+                            // $filament_media_library_item = DB::table('filament_media_library')->where('id', $record->rawdata_file_id)->get()[0];
                             // dd($filament_media_library_item);
                             // $filament_media_library_item->company_id = $company_id;
                             // $filament_media_library_item->user_id = Auth::user()->id;

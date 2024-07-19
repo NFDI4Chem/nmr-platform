@@ -2,12 +2,12 @@ models:
   Sample:
     device_id: id foreign nullable
     company_id: id foreign nullable
-    identifier: string nullable
+    reference: string nullable
     solvent_id: id foreign nullable
     molecule_id: id foreign nullable
     spectrum_type: string nullable
     instructions: text nullable
-    featured_image_id: string nullable
+    additional_infofile_id: string nullable
     priority: enum:high,medium,low
     operator_id: id foreign nullable
     relationships:
