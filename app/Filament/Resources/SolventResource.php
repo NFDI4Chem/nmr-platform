@@ -16,7 +16,7 @@ class SolventResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
-    protected static ?string $navigationGroup = 'Resources';
+    protected static ?string $navigationGroup = 'Configure';
 
     public static function form(Form $form): Form
     {
@@ -33,8 +33,7 @@ class SolventResource extends Resource
                 Forms\Components\TextInput::make('molecular_weight')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('meta_data')
-                    ->required(),
+                Forms\Components\TextInput::make('meta_data'),
             ]);
     }
 

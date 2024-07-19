@@ -24,6 +24,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
+use Filament\Facades\Filament;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -49,7 +50,8 @@ class AdminPanelProvider extends PanelProvider
                 FilamentMediaLibrary::make()
                     ->diskVisibilityPrivate()
                     ->navigationIcon('heroicon-o-folder-open')
-                    ->navigationLabel('File Browser'),
+                    ->navigationLabel('File Browser')
+                    ->navigationGroup(''),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -58,8 +60,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 MenuItem::make()
-                    ->label('Businesses')
-                    ->icon('heroicon-o-building-office')
+                    ->label('Group')
+                    ->icon('heroicon-o-user-group')
                     ->url(static fn () => url(Pages\Dashboard::getUrl(panel: 'company', tenant: Auth::user()->personalCompany()))),
             ])
             ->middleware([
@@ -86,5 +88,13 @@ class AdminPanelProvider extends PanelProvider
                 'panels::body.end',
                 fn (): string => view('components.tawk-chat')
             );
+    }
+
+    public function boot(): void
+    {
+        Filament::registerNavigationGroups([
+            'Configure',
+            'Settings',
+        ]);
     }
 }

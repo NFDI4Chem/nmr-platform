@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('molecular_formula');
             $table->decimal('molecular_weight', 8, 2);
-            $table->jsonb('meta_data');
+            $table->jsonb('meta_data')->nullable();
             $table->timestamps();
         });
 

@@ -22,10 +22,12 @@
         "laravel/vapor-cli": "^1.64",
         "laravel/vapor-core": "^2.37",
         "livewire/livewire": "^3.0",
+        "maartenpaauw/model-states-for-filament": "^1.4",
         "pxlrbt/filament-environment-indicator": "^2.0",
         "ralphjsmit/laravel-filament-media-library": "^3.8",
         "spatie/laravel-cookie-consent": "^3.3",
         "spatie/laravel-medialibrary": "^11.7",
+        "spatie/laravel-model-states": "^2.7",
         "stechstudio/filament-impersonate": "^3.8",
         "stephenjude/filament-debugger": "^3.0",
         "tapp/filament-auditing": "^3.0"
@@ -41,6 +43,9 @@
         "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
+        "files": [
+            "app/Helper.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
@@ -91,6 +96,10 @@
         {
             "type": "composer",
             "url": "https://satis.ralphjsmit.com"
+        },
+        {
+            "type": "composer",
+            "url": "https://model-states-for-filament.composer.sh"
         }
     ]
 }

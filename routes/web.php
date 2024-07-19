@@ -22,7 +22,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         if (! Auth::user()->personalCompany()) {
-            return redirect(url('company\new'));
+            return redirect(url('group\new'));
         } else {
             return redirect(url(Pages\Dashboard::getUrl(panel: 'company', tenant: Auth::user()->personalCompany())));
         }

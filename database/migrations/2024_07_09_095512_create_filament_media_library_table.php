@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('caption')->nullable();
             $table->string('alt_text')->nullable();
             $table->foreignId('company_id')->constrained();
+            $table->foreignId('user_id')->constrained();
 
             $table->timestamps();
         });
