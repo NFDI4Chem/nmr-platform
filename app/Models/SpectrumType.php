@@ -17,6 +17,7 @@ class SpectrumType extends Model
      */
     protected $fillable = [
         'neuclei',
+        'description',
         'dimentionality',
         'name',
     ];

@@ -155,5 +155,22 @@ class DeviceSeeder extends Seeder
         });
 
         DB::table('devices')->insert($selectedDevices->toArray());
+
+        // Get all device IDs
+        $deviceIds = DB::table('devices')->pluck('id');
+
+        // Spectrum types mapping
+        $spectrumTypes = DB::table('spectrum_types')->pluck('id');
+
+        // Assign random spectrum types to each device
+        foreach ($deviceIds as $deviceId) {
+            $assignedSpectrumTypes = $spectrumTypes->random(rand(1, 3))->all();
+            foreach ($assignedSpectrumTypes as $spectrumTypeId) {
+                DB::table('device_spectrum_type')->insert([
+                    'device_id' => $deviceId,
+                    'spectrum_type_id' => $spectrumTypeId,
+                ]);
+            }
+        }
     }
 }

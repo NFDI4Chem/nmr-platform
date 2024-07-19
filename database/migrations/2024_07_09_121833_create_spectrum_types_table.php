@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('spectrum_types', function (Blueprint $table) {
             $table->id();
             $table->string('neuclei');
+            $table->string('description');
             $table->enum('dimentionality', ['1D', '2D']);
             $table->string('name');
             $table->timestamps();
