@@ -37,19 +37,21 @@ class Sample extends Model
         'device_id',
         'company_id',
         'user_id',
-        'identifier',
+        'reference',
+        'ticker_id',
+        'personal_key',
         'solvent_id',
         'molecule_id',
         'spectrum_type',
         'other_nuclei',
         'automation',
-        'featured_molfile_id',
+        'molfile_id',
         'instructions',
-        'featured_image_id',
+        'additional_infofile_id',
         'priority',
         'operator_id',
         'status',
-        'finished_file_id',
+        'rawdata_file_id',
         'comments',
     ];
 
@@ -66,8 +68,8 @@ class Sample extends Model
         'molecule_id' => 'integer',
         'operator_id' => 'integer',
         'status' => SampleState::class,
-        // 'featured_image_id' => 'array',
-        // 'featured_molfile_id' => 'array',
+        // 'additional_infofile_id' => 'array',
+        // 'molfile_id' => 'array',
     ];
 
     protected $group_folder_slug = '';
@@ -109,7 +111,7 @@ class Sample extends Model
 
     public function featuredImage(): BelongsTo
     {
-        return $this->belongsTo(MediaLibraryItem::class, 'featured_image_id');
+        return $this->belongsTo(MediaLibraryItem::class, 'additional_infofile_id');
     }
 
     public static function getForm(): array
@@ -117,7 +119,7 @@ class Sample extends Model
         return [
             Section::make('Tracking info')
                 ->schema([
-                    Forms\Components\TextInput::make('identifier')
+                    Forms\Components\TextInput::make('reference')
                         ->label('Sample ID')
                         ->prefix(function (string $operation) {
                             if ($operation == 'create') {
@@ -146,7 +148,7 @@ class Sample extends Model
                     //     ->relationship('company', 'name')
                     //     ->label('Group Name')
                     //     ->required(),
-                    // Forms\Components\TextInput::make('identifier')
+                    // Forms\Components\TextInput::make('reference')
                     //     ->maxLength(255),
 
                     Forms\Components\Select::make('spectrum_type')
@@ -168,7 +170,7 @@ class Sample extends Model
                         ->relationship('molecule', 'name'),
                     Fieldset::make('Attach a mol file')
                         ->schema([
-                            MediaPicker::make('featured_molfile_id')
+                            MediaPicker::make('molfile_id')
                                 ->label('')
                                 ->folder(function (MediaLibraryFolder $folder) {
                                     if (Filament::getTenant()) {
@@ -195,7 +197,7 @@ class Sample extends Model
                         ->columnSpanFull(),
                     Fieldset::make('Attach a file for the operator')
                         ->schema([
-                            MediaPicker::make('featured_image_id')
+                            MediaPicker::make('additional_infofile_id')
                                 ->label('')
                                 ->folder(function (MediaLibraryFolder $folder) {
                                     if (Filament::getTenant()) {
@@ -245,7 +247,7 @@ class Sample extends Model
                 ->hidden(function () {
                     return Filament::getTenant() ? true : false;
                 }),
-            Tables\Columns\TextColumn::make('identifier')
+            Tables\Columns\TextColumn::make('reference')
                 ->searchable(),
             Tables\Columns\TextColumn::make('solvent.name')
                 ->numeric()
@@ -255,7 +257,7 @@ class Sample extends Model
                 ->sortable(),
             Tables\Columns\TextColumn::make('spectrum_type')
                 ->searchable(),
-            // Tables\Columns\TextColumn::make('featured_image_id')
+            // Tables\Columns\TextColumn::make('additional_infofile_id')
             //     ->searchable(),
             Tables\Columns\TextColumn::make('priority')
                 ->searchable(),

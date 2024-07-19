@@ -13,7 +13,7 @@ class TickerSeeder extends Seeder
     public function run(): void
     {
         DB::table('tickers')->insert([
-            'type' => 'App\Models\Ticker',
+            'type' => 'App\Models\Sample',
             'index' => '1000',
             'meta' => null,
         ]);

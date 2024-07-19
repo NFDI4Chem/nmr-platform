@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SolventSeeder::class);
         $this->call(SpectrumTypeSeeder::class);
         $this->call(DeviceSeeder::class);
+        $this->call(TickerSeeder::class);
 
         $admin->assignRole('super_admin');
     }

@@ -27,12 +27,12 @@ class SampleFactory extends Factory
         return [
             'device_id' => Device::factory(),
             'company_id' => Company::factory(),
-            'identifier' => $this->faker->word(),
+            'reference' => $this->faker->word(),
             'solvent_id' => Solvent::factory(),
             'molecule_id' => Molecule::factory(),
             'spectrum_type' => $this->faker->word(),
             'instructions' => $this->faker->text(),
-            'featured_image_id' => $this->faker->word(),
+            'additional_infofile_id' => $this->faker->word(),
             'priority' => $this->faker->randomElement(['high', 'medium', 'low']),
             'operator_id' => Operator::factory(),
         ];
