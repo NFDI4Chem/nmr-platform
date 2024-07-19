@@ -149,10 +149,6 @@ class Sample extends Model
                     // Forms\Components\TextInput::make('identifier')
                     //     ->maxLength(255),
 
-                    Forms\Components\select::make('priority')
-                        // ->label('Sample Priority')
-                        ->options(getPriority())
-                        ->default('LOW'),
                     Forms\Components\Select::make('spectrum_type')
                         ->relationship('spectrumTypes', 'name')
                         ->multiple()
@@ -168,6 +164,8 @@ class Sample extends Model
                 ->columns(2),
             Section::make('Structure info')
                 ->schema([
+                    Forms\Components\Select::make('molecule_id')
+                        ->relationship('molecule', 'name'),
                     Fieldset::make('Attach a mol file')
                         ->schema([
                             MediaPicker::make('featured_molfile_id')
@@ -182,7 +180,8 @@ class Sample extends Model
 
                                         return $folder->find($found_folder_id);
                                     }
-                                }),
+                                })
+                                ->buttonLabel('Choose mol file'),
                         ]),
                 ])
                 ->columns(2),
@@ -190,8 +189,7 @@ class Sample extends Model
                 ->schema([
                     Forms\Components\Select::make('solvent_id')
                         ->relationship('solvent', 'name'),
-                    Forms\Components\Select::make('molecule_id')
-                        ->relationship('molecule', 'name'),
+
                     Forms\Components\Textarea::make('instructions')
                         ->label('Special care for sample')
                         ->columnSpanFull(),
@@ -209,10 +207,16 @@ class Sample extends Model
 
                                         return $folder->find($found_folder_id);
                                     }
-                                }),
+                                })
+                                ->buttonLabel('Choose file'),
                         ]),
+                    Forms\Components\select::make('priority')
+                        // ->label('Sample Priority')
+                        ->options(getPriority())
+                        ->default('LOW'),
                     StateSelect::make('status')
                         ->label('Sample Status')
+                        ->hidden()
                         ->disabled(function (string $operation) {
                             if ($operation == 'edit') {
                                 return false;
