@@ -1,25 +1,22 @@
-# Use an official PHP runtime as a parent image
-FROM ubuntu:22.04
-
-# Set working directory
-WORKDIR /var/www
+FROM ubuntu:22.04 as base
 
 ARG NODE_VERSION=20
 ARG POSTGRES_VERSION=15
+
+WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Install system dependencies
 RUN apt-get update \
     && mkdir -p /etc/apt/keyrings \
     && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 dnsutils librsvg2-bin fswatch ffmpeg nano  \
     && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
-    && apt-get install -y php8.3-cli php8.3-dev php8.3-fpm \
+    && apt-get install -y php8.3-cli php8.3-dev \
        php8.3-pgsql php8.3-sqlite3 php8.3-gd \
        php8.3-curl \
        php8.3-imap php8.3-mysql php8.3-mbstring \
@@ -48,31 +45,56 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
+
+FROM base AS build
+
+COPY . /var/www/html
+
+RUN composer install
+RUN composer dump-autoload -o
+
+RUN npm ci
+RUN npm run build
+
+FROM php:8.3-fpm-alpine as app-fpm
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Install system dependencies
+RUN apk --update add \
+    zlib-dev \
+    libpng-dev \
+    libzip-dev \
+    git \
+    postgresql${POSTGRES_VERSION}-client \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
+    $PHPIZE_DEPS \
+  && apk --no-cache add \
+    postgresql-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install exif gd zip pcntl pdo pdo_pgsql \
+  && pecl install apcu \
+  && docker-php-ext-enable apcu
+
+# Clean up
+RUN apk del $PHPIZE_DEPS \
+  && rm -rf /var/cache/apk/*
 
 # Copy existing application directory contents
-COPY . /var/www
+COPY --from=build /var/www/html /var/www/html
 
-# # Copy existing application directory permissions
-# COPY --chown=www-data:www-data . /var/www
+# Set permissions for Laravel
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# ENV COMPOSER_ALLOW_SUPERUSER=1
+COPY ./resources/ops/production/start-container /usr/local/bin/start-container
+RUN chmod +x /usr/local/bin/start-container
 
-# COPY composer.json composer.lock ./
+COPY ./resources/ops/production/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./resources/ops/production/php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 
-# # Install Composer dependencies
-# RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# # Install npm dependencies and build assets
-# RUN npm install
-# RUN npm run build
-
-# COPY start-container /usr/local/bin/start-container
-# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-# COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
-# RUN chmod +x /usr/local/bin/start-container
-
+# Expose port 9000 and start php-fpm server
 EXPOSE 9000
-
-ENTRYPOINT ["start-container"]
+CMD ["php-fpm"]
