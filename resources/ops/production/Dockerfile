@@ -57,7 +57,7 @@ RUN composer dump-autoload -o
 RUN npm ci
 RUN npm run build
 
-FROM php:8.3-fpm as app-fpm
+FROM php:8.3-fpm-alpine as app-fpm
 
 # Set working directory
 WORKDIR /var/www/html
