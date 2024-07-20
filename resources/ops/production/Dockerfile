@@ -1,5 +1,5 @@
 # Use an official PHP runtime as a parent image
-FROM php:8.3-fpm
+FROM ubuntu:22.04
 
 # Set working directory
 WORKDIR /var/www
