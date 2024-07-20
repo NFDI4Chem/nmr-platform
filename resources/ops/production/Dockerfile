@@ -51,14 +51,6 @@ RUN apt-get update \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
-
-# Install composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 # Copy existing application directory contents
 COPY . /var/www
 
