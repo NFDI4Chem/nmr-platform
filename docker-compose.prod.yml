@@ -3,7 +3,6 @@ services:
         build:
             context: .
             dockerfile: ./resources/ops/production/Dockerfile
-            target: app-fpm
         image: nmrplatform-8.3/app
         container_name: nmrplatform_app
         extra_hosts:

@@ -12,12 +12,11 @@ ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
-    && mkdir -p /etc/apt/keyrings \
     && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 dnsutils librsvg2-bin fswatch ffmpeg nano  \
     && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
-    && apt-get install -y php8.3-cli php8.3-dev \
+    && apt-get install -y php8.3-fpm php8.3-cli php8.3-dev \
        php8.3-pgsql php8.3-sqlite3 php8.3-gd \
        php8.3-curl \
        php8.3-imap php8.3-mysql php8.3-mbstring \
@@ -46,7 +45,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
+RUN setcap "cap_net_bind_service=+ep" /usr/sbin/php-fpm8.3
+
+# Build Stage
+FROM base AS build
 
 COPY . /var/www/html
 
@@ -54,36 +56,13 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 RUN npm ci
 RUN npm run build
 
-# Final Stage: PHP-FPM with Alpine
-FROM php:8.3-fpm-alpine as app-fpm
+# Final Stage
+FROM base AS final
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
-RUN apk --update add \
-    zlib-dev \
-    libpng-dev \
-    libzip-dev \
-    git \
-    postgresql${POSTGRES_VERSION}-client \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
-    $PHPIZE_DEPS \
-  && apk --no-cache add \
-    postgresql-dev
-
-# Install PHP extensions
-RUN docker-php-ext-install exif gd zip pcntl pdo pdo_pgsql \
-  && pecl install apcu \
-  && docker-php-ext-enable apcu
-
-# Clean up
-RUN apk del $PHPIZE_DEPS \
-  && rm -rf /var/cache/apk/*
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy built application
-COPY --from=base /var/www/html /var/www/html
+COPY --from=build /var/www/html /var/www/html
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -97,4 +76,4 @@ COPY ./resources/ops/production/php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["php-fpm8.3", "--nodaemonize"]
