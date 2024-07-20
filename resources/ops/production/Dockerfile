@@ -54,24 +54,24 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Copy existing application directory contents
 COPY . /var/www
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+# # Copy existing application directory permissions
+# COPY --chown=www-data:www-data . /var/www
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# ENV COMPOSER_ALLOW_SUPERUSER=1
 
-COPY composer.json composer.lock ./
+# COPY composer.json composer.lock ./
 
-# Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# # Install Composer dependencies
+# RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install npm dependencies and build assets
-RUN npm install
-RUN npm run build
+# # Install npm dependencies and build assets
+# RUN npm install
+# RUN npm run build
 
-COPY start-container /usr/local/bin/start-container
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
-RUN chmod +x /usr/local/bin/start-container
+# COPY start-container /usr/local/bin/start-container
+# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
+# RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 9000
 
