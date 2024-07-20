@@ -1,3 +1,4 @@
+# Base Image
 FROM ubuntu:22.04 as base
 
 ARG NODE_VERSION=20
@@ -47,16 +48,13 @@ RUN apt-get update \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
-FROM base AS build
-
 COPY . /var/www/html
 
-RUN composer install
-RUN composer dump-autoload -o
-
+RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
 RUN npm ci
 RUN npm run build
 
+# Final Stage: PHP-FPM with Alpine
 FROM php:8.3-fpm-alpine as app-fpm
 
 # Set working directory
@@ -83,14 +81,14 @@ RUN docker-php-ext-install exif gd zip pcntl pdo pdo_pgsql \
 RUN apk del $PHPIZE_DEPS \
   && rm -rf /var/cache/apk/*
 
-# Copy existing application directory contents
-COPY --from=build /var/www/html /var/www/html
-
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy built application
+COPY --from=base /var/www/html /var/www/html
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Copy entrypoint and configuration files
 COPY ./resources/ops/production/start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
 
