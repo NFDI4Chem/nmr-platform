@@ -1,37 +1,22 @@
 services:
     app:
         build:
-            context: ./resource/ops/production/
+            context: ./resources/ops/production/
             dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
         image: nmrplatform-8.3/app
         container_name: nmrplatform_app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
             - '${APP_PORT:-80}:80'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
-            - '.:/var/www/html'
+            - '.:/var/www'
         networks:
             - nmrplatform
         depends_on:
             - pgsql
             - redis
             # - typesense
-    php:
-        image: php:8.3-fpm
-        container_name: nmrplatform_php
-        volumes:
-            - ./:/var/www/html
-        networks:
-            - nmrplatform
     pgsql:
         image: "informaticsmatters/rdkit-cartridge-debian:latest"
         ports:
@@ -73,6 +58,9 @@ services:
             retries: 3
             timeout: 5s
     nginx:
+        build:
+            context: ./resources/ops/nginx
+            dockerfile: Dockerfile
         image: nginx:1.17-alpine
         container_name: nmrplatform_nginx
         restart: unless-stopped
@@ -84,7 +72,7 @@ services:
         networks:
             - nmrplatform
         depends_on:
-            - php
+            - app
     # typesense:
     #     image: 'typesense/typesense:0.25.2'
     #     ports:
