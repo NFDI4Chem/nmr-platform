@@ -7,6 +7,7 @@ WORKDIR /var/www
 ARG NODE_VERSION=20
 ARG POSTGRES_VERSION=15
 
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -55,6 +56,8 @@ COPY . /var/www
 
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
