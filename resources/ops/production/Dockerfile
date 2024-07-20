@@ -7,7 +7,6 @@ WORKDIR /var/www
 ARG NODE_VERSION=20
 ARG POSTGRES_VERSION=15
 
-ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
