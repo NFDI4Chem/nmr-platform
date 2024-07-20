@@ -59,9 +59,6 @@ services:
             retries: 3
             timeout: 5s
     nginx:
-        build:
-            context: .
-            dockerfile: ./resources/ops/nginx/Dockerfile
         image: nginx:1.17-alpine
         container_name: nmrplatform_nginx
         restart: unless-stopped
