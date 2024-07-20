@@ -65,8 +65,8 @@ services:
         ports:
             - 80:80
         volumes:
-            - .:/var/www/html
-            - ./resources/ops/nginx:/etc/nginx/conf.d
+            - '.:/var/www/html'
+            - './resources/ops/nginx:/etc/nginx/conf.d'
         networks:
             - nmrplatform
         depends_on:

@@ -57,7 +57,7 @@ RUN composer dump-autoload -o
 RUN npm ci
 RUN npm run build
 
-FROM php:8.3-fpm-alpine as app-fpm
+FROM php:8.3-fpm as app-fpm
 
 # Set working directory
 WORKDIR /var/www/html
@@ -85,6 +85,8 @@ RUN apk del $PHPIZE_DEPS \
 
 # Copy existing application directory contents
 COPY --from=build /var/www/html /var/www/html
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
