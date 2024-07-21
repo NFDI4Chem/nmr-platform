@@ -3,6 +3,8 @@ services:
         build:
             context: .
             dockerfile: ./resources/ops/production/Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
         image: nmrplatform-8.3/app
         container_name: nmrplatform_app
         extra_hosts:
