@@ -7,8 +7,6 @@ services:
                 WWWGROUP: '${WWWGROUP}'
         image: nmrplatform-8.3/app
         container_name: nmrplatform_app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
         networks:
             - nmrplatform
         depends_on:
