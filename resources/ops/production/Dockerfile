@@ -79,7 +79,7 @@ COPY ./resources/ops/production/php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
-# Expose port 9000 and start php-fpm server
+# Expose port 9000
 EXPOSE 9000
 
 ENTRYPOINT ["start-container"]

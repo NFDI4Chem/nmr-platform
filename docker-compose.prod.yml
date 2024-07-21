@@ -9,8 +9,6 @@ services:
         container_name: nmrplatform_app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
         networks:
             - nmrplatform
         depends_on:
