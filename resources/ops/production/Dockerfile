@@ -76,4 +76,6 @@ COPY ./resources/ops/production/php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["php-fpm8.3", "--nodaemonize"]
+
+ENTRYPOINT ["start-container"]
+# CMD ["php-fpm8.3", "--nodaemonize"]
