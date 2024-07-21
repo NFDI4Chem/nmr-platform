@@ -5,14 +5,12 @@ FROM nginx:alpine
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy custom configuration file from the current directory
-COPY ./resources/ops/nginx/nmr-platform.conf /etc/nginx/conf.d
+COPY ./resources/ops/nginx/default.conf /etc/nginx/conf.d
 
 # Copy existing application directory contents
 COPY . /var/www/public
 
-# Change current user to nginx
-USER nginx
-
 # Expose port 80
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]

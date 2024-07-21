@@ -1,5 +1,5 @@
 # Base Image
-FROM ubuntu:22.04 as base
+FROM ubuntu:22.04 AS base
 
 ARG NODE_VERSION=20
 ARG POSTGRES_VERSION=15
