@@ -8,6 +8,7 @@ WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
+ENV SUPERVISOR_PHP_USER="sail"
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -74,8 +75,10 @@ RUN chmod +x /usr/local/bin/start-container
 COPY ./resources/ops/production/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./resources/ops/production/php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 
 ENTRYPOINT ["start-container"]
-# CMD ["php-fpm8.3", "--nodaemonize"]
