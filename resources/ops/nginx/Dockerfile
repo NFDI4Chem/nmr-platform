@@ -8,7 +8,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY ./resources/ops/nginx/default.conf /etc/nginx/conf.d
 
 # Copy existing application directory contents
-COPY . /var/www/public
+COPY . /var/www/html
 
 # Expose port 80
 EXPOSE 80
