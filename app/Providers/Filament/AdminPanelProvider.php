@@ -83,7 +83,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
-            ->viteTheme('resources/css/filament/company/theme.css')
+            ->viteTheme('resources/css/filament/group/theme.css')
             ->renderHook(
                 'panels::body.end',
                 fn (): string => view('components.tawk-chat')
