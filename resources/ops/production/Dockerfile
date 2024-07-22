@@ -26,8 +26,6 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libgd-dev
 
-RUN apt-get install -y php8.3-fpm  
-
 RUN apt-get install -y postgresql-client-$POSTGRES_VERSION
 
 # Install imagick
