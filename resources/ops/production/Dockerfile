@@ -6,7 +6,6 @@ COPY composer.lock composer.json /var/www/
 # Set working directory
 WORKDIR /var/www
 
-ARG NODE_VERSION=20
 ARG POSTGRES_VERSION=15
 
 # Install dependencies
@@ -27,6 +26,11 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libgd-dev
 
+RUN apt-get install -y php8.3-fpm  
+
+RUN apt-get install -y postgresql-client-$POSTGRES_VERSION
+
+# Install imagick
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagickwand-dev && \
     git clone https://github.com/Imagick/imagick.git --depth 1 /tmp/imagick && \
@@ -62,7 +66,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 # Copy existing application directory contents
 COPY . /var/www
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
+RUN composer install --optimize-autoloader --no-scripts --prefer-dist
 RUN npm ci
 RUN npm run build
 
