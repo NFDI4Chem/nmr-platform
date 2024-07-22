@@ -6,6 +6,9 @@ COPY composer.lock composer.json /var/www/
 # Set working directory
 WORKDIR /var/www
 
+ARG NODE_VERSION=20
+ARG POSTGRES_VERSION=15
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -21,15 +24,33 @@ RUN apt-get update && apt-get install -y \
     curl \
     libonig-dev \
     libzip-dev \
+    libicu-dev \
     libgd-dev
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libmagickwand-dev && \
+    git clone https://github.com/Imagick/imagick.git --depth 1 /tmp/imagick && \
+    cd /tmp/imagick && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    docker-php-ext-enable imagick && \
+    apt-get purge -y --auto-remove git && \
+    rm -rf /var/lib/apt/lists/* /tmp/imagick
+
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-#Mine
 
 # Install extensions
 RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-external-gd
 RUN docker-php-ext-install gd
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install intl
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -40,6 +61,10 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy existing application directory contents
 COPY . /var/www
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts --prefer-dist
+RUN npm ci
+RUN npm run build
 
 # Copy existing application directory permissions
 COPY --chown=www:www . /var/www
