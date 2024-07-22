@@ -13,6 +13,8 @@ services:
             - pgsql
             - redis
             # - typesense
+        volumes:
+            - www-data:/var/www
     pgsql:
         image: "informaticsmatters/rdkit-cartridge-debian:latest"
         ports:
@@ -65,6 +67,8 @@ services:
             - nmrplatform
         depends_on:
             - app
+        volumes:
+            - www-data:/var/www
     # typesense:
     #     image: 'typesense/typesense:0.25.2'
     #     ports:
@@ -93,6 +97,8 @@ volumes:
     nmrplatform-pgsql:
         driver: local
     nmrplatform-redis:
+        driver: local
+    www-data:
         driver: local
     # nmrplatform-typesense:
     #     driver: local
