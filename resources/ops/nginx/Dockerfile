@@ -1,3 +1,12 @@
+FROM node:20-alpine AS assets-build
+
+WORKDIR /var/www/html
+
+COPY . /var/www/html/
+
+RUN npm ci
+RUN npm run build
+
 # Use an official Nginx runtime as a parent image
 FROM nginx:alpine
 
@@ -9,6 +18,8 @@ COPY ./resources/ops/nginx/default.conf /etc/nginx/conf.d
 
 # Copy existing application directory contents
 COPY . /var/www
+
+COPY --from=assets-build /var/www/html/public /var/www
 
 # Expose port 80
 EXPOSE 80
