@@ -45,7 +45,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring zip exif pcntl
+RUN docker-php-ext-enable pdo_pgsql pgsql
 RUN docker-php-ext-configure gd --with-external-gd
 RUN docker-php-ext-install gd
 RUN docker-php-ext-configure intl
