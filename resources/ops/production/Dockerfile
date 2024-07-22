@@ -24,7 +24,8 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libzip-dev \
     libicu-dev \
-    libgd-dev
+    libgd-dev \
+    libpq-dev
 
 RUN apt-get install -y postgresql-client-$POSTGRES_VERSION
 
@@ -45,8 +46,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install extensions
-RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring zip exif pcntl
-RUN docker-php-ext-enable pdo_pgsql pgsql
+RUN docker-php-ext-configure pgsql --with-pgsql=/usr/include/postgresql/
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-external-gd
 RUN docker-php-ext-install gd
 RUN docker-php-ext-configure intl
