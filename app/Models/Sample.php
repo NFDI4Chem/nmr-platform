@@ -3,7 +3,11 @@
 namespace App\Models;
 
 use App\Filament\Traits\MutatesSampleFormData;
+use App\Forms\Components\InfoDownload as InfoDownloadField;
+use App\Forms\Components\MolDownload as MolDownloadField;
 use App\States\Sample\SampleState;
+use App\Tables\Columns\InfoDownload;
+use App\Tables\Columns\MolDownload;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -153,7 +157,23 @@ class Sample extends Model implements HasMedia
                     SpatieMediaLibraryFileUpload::make('molfile')
                         ->label('Mol file')
                         ->conversion('thumb')
-                        ->collection('molfile'),
+                        ->collection('molfile')
+                        ->hidden(function (string $operation) {
+                            if ($operation == 'edit') {
+                                return true;
+                            }
+
+                            return false;
+                        }),
+                    MolDownloadField::make('molfile')
+                        ->label('Mol file')
+                        ->hidden(function (string $operation) {
+                            if ($operation == 'edit') {
+                                return false;
+                            }
+
+                            return true;
+                        }),
                 ])
                 ->columns(2),
             Section::make('Sample info')
@@ -170,7 +190,23 @@ class Sample extends Model implements HasMedia
                     SpatieMediaLibraryFileUpload::make('additional_infofile_id')
                         ->label('Info file')
                         ->conversion('thumb')
-                        ->collection('infofile'),
+                        ->collection('infofile')
+                        ->hidden(function (string $operation) {
+                            if ($operation == 'edit') {
+                                return true;
+                            }
+
+                            return false;
+                        }),
+                    InfoDownloadField::make('infofile')
+                        ->label('Info file')
+                        ->hidden(function (string $operation) {
+                            if ($operation == 'edit') {
+                                return false;
+                            }
+
+                            return true;
+                        }),
                     StateSelect::make('status')
                         ->label('Sample Status')
                         ->hidden()
@@ -201,13 +237,19 @@ class Sample extends Model implements HasMedia
             Tables\Columns\TextColumn::make('solvent.name')
                 ->numeric()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('molecule.name')
-                ->numeric()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('spectrum_type')
-                ->searchable(),
+            // Tables\Columns\TextColumn::make('molecule.name')
+            //     ->numeric()
+            //     ->sortable(),
+            // Tables\Columns\TextColumn::make('spectrum_type')
+            //     ->searchable(),
             Tables\Columns\TextColumn::make('priority')
                 ->searchable(),
+            MolDownload::make('molfile')
+                ->label('Mol File')
+                ->alignCenter(),
+            InfoDownload::make('infofile')
+                ->label('Info File')
+                ->alignCenter(),
             // Tables\Columns\TextColumn::make('operator.name')
             //     ->numeric()
             //     ->sortable(),
