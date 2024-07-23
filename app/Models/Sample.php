@@ -6,8 +6,8 @@ use App\Filament\Traits\MutatesSampleFormData;
 use App\States\Sample\SampleState;
 use Filament\Facades\Filament;
 use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Get;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,15 +17,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Maartenpaauw\Filament\ModelStates\StateSelect;
 use Maartenpaauw\Filament\ModelStates\StateSelectColumn;
-use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
-use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
-use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\ModelStates\HasStates;
 
-class Sample extends Model
+class Sample extends Model implements HasMedia
 {
     use HasFactory;
     use HasStates;
+    use InteractsWithMedia;
     use MutatesSampleFormData;
 
     /**
@@ -68,8 +68,6 @@ class Sample extends Model
         'molecule_id' => 'integer',
         'operator_id' => 'integer',
         'status' => SampleState::class,
-        // 'additional_infofile_id' => 'array',
-        // 'molfile_id' => 'array',
     ];
 
     protected $group_folder_slug = '';
@@ -109,11 +107,6 @@ class Sample extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function featuredImage(): BelongsTo
-    {
-        return $this->belongsTo(MediaLibraryItem::class, 'additional_infofile_id');
-    }
-
     public static function getForm(): array
     {
         return [
@@ -140,17 +133,6 @@ class Sample extends Model
                 ->columns(2),
             Section::make('Configuration')
                 ->schema([
-
-                    // Forms\Components\Select::make('device_id')
-                    //     ->relationship('device', 'name')
-                    //     ->live(),
-                    // Forms\Components\Select::make('company_id')
-                    //     ->relationship('company', 'name')
-                    //     ->label('Group Name')
-                    //     ->required(),
-                    // Forms\Components\TextInput::make('reference')
-                    //     ->maxLength(255),
-
                     Forms\Components\Select::make('spectrum_type')
                         ->relationship('spectrumTypes', 'name')
                         ->multiple()
@@ -168,54 +150,27 @@ class Sample extends Model
                 ->schema([
                     Forms\Components\Select::make('molecule_id')
                         ->relationship('molecule', 'name'),
-                    Fieldset::make('Attach a mol file')
-                        ->schema([
-                            MediaPicker::make('molfile_id')
-                                ->label('')
-                                ->folder(function (MediaLibraryFolder $folder) {
-                                    if (Filament::getTenant()) {
-                                        $group_folder_slug = Filament::getTenant()->slug.'-'.Filament::getTenant()->id;
-                                        $found_folder_id = MediaLibraryFolder::where([
-                                            ['name', $group_folder_slug],
-                                            ['company_id', Filament::getTenant()->id],
-                                        ])->get()[0]->id;
-
-                                        return $folder->find($found_folder_id);
-                                    }
-                                })
-                                ->buttonLabel('Choose mol file'),
-                        ]),
+                    SpatieMediaLibraryFileUpload::make('molfile')
+                        ->label('Mol file')
+                        ->conversion('thumb')
+                        ->collection('molfile'),
                 ])
                 ->columns(2),
             Section::make('Sample info')
                 ->schema([
                     Forms\Components\Select::make('solvent_id')
                         ->relationship('solvent', 'name'),
-
-                    Forms\Components\Textarea::make('instructions')
-                        ->label('Special care for sample')
-                        ->columnSpanFull(),
-                    Fieldset::make('Attach a file for the operator')
-                        ->schema([
-                            MediaPicker::make('additional_infofile_id')
-                                ->label('')
-                                ->folder(function (MediaLibraryFolder $folder) {
-                                    if (Filament::getTenant()) {
-                                        $group_folder_slug = Filament::getTenant()->slug.'-'.Filament::getTenant()->id;
-                                        $found_folder_id = MediaLibraryFolder::where([
-                                            ['name', $group_folder_slug],
-                                            ['company_id', Filament::getTenant()->id],
-                                        ])->get()[0]->id;
-
-                                        return $folder->find($found_folder_id);
-                                    }
-                                })
-                                ->buttonLabel('Choose file'),
-                        ]),
                     Forms\Components\select::make('priority')
                         // ->label('Sample Priority')
                         ->options(getPriority())
                         ->default('LOW'),
+                    Forms\Components\Textarea::make('instructions')
+                        ->label('Special care for sample')
+                        ->columnSpanFull(),
+                    SpatieMediaLibraryFileUpload::make('additional_infofile_id')
+                        ->label('Info file')
+                        ->conversion('thumb')
+                        ->collection('infofile'),
                     StateSelect::make('status')
                         ->label('Sample Status')
                         ->hidden()
@@ -226,21 +181,15 @@ class Sample extends Model
 
                             return true;
                         }),
-
                 ])
                 ->columns(2),
 
-            // Forms\Components\Select::make('operator_id')
-            //     ->relationship('user', 'name'),
         ];
     }
 
     public static function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('device.name')
-                ->numeric()
-                ->sortable(),
             Tables\Columns\TextColumn::make('company.name')
                 ->numeric()
                 ->sortable()
@@ -257,13 +206,11 @@ class Sample extends Model
                 ->sortable(),
             Tables\Columns\TextColumn::make('spectrum_type')
                 ->searchable(),
-            // Tables\Columns\TextColumn::make('additional_infofile_id')
-            //     ->searchable(),
             Tables\Columns\TextColumn::make('priority')
                 ->searchable(),
-            Tables\Columns\TextColumn::make('operator.name')
-                ->numeric()
-                ->sortable(),
+            // Tables\Columns\TextColumn::make('operator.name')
+            //     ->numeric()
+            //     ->sortable(),
             StateSelectColumn::make('status'),
             // Tables\Columns\TextColumn::make('reject')
             //     ->badge()

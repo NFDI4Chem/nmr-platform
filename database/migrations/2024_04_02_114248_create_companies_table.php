@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->nullable();
             $table->boolean('personal_company');
+            $table->string('reference')->unique()->nullable();
             $table->timestamps();
         });
     }

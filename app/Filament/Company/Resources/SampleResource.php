@@ -24,7 +24,9 @@ class SampleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(Sample::getForm());
+            ->schema(Sample::getForm())
+            ->statePath('data')
+            ->model(Sample::class);
     }
 
     public static function table(Table $table): Table

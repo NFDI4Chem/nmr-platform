@@ -61,13 +61,14 @@ class CreateCompany extends FilamentCreateCompany
         $company = $user?->ownedCompanies()->create([
             'name' => $data['name'],
             'slug' => Str::slug($data['name']),
+            'reference' => strtoupper(str()->random(7)),
             'personal_company' => $personalCompany,
         ]);
 
         $user?->switchCompany($company);
 
         $folderNames = [
-            Str::slug($company->name.' '.$company->id, '-'),
+            $company->slug.'-'.$company->reference,
         ];
 
         foreach ($folderNames as $folderName) {
