@@ -6,5 +6,6 @@ export default {
         './app/Filament/Company/**/*.php',
         './resources/views/filament/company/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
+        './vendor/ralphjsmit/laravel-filament-media-library/resources/**/*.blade.php',
     ],
 }

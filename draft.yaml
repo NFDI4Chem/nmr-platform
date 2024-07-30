@@ -1,27 +1,34 @@
 models:
   Sample:
     device_id: id foreign nullable
-    group_id: id foreign nullable
-    identifier: string
-    tags (spatie):
+    company_id: id foreign nullable
+    reference: string nullable
     solvent_id: id foreign nullable
     molecule_id: id foreign nullable
-    spectram_type: string 
+    spectrum_type: string nullable
     instructions: text nullable
-    media: 
+    additional_infofile_id: string nullable
     priority: enum:high,medium,low
     operator_id: id foreign nullable
+    relationships:
+      belongsToMany: SpectrumType
+      belongsTo: Device,Solvent
 
   Device:
     name: string
     manufacturer: string
     model_no: string
     spectrum_types: string
+    relationships:
+      belongsToMany: SpectrumType
+      HasMany: Sample
 
-  StectrumType:
+  SpectrumType:
     neuclei: string
     dimentionality: enum:1D,2D
     name: string
+    relationships:
+      belongsToMany: Sample,Device
 
   Solvent:
     name: string
@@ -29,13 +36,7 @@ models:
     molecular_formula: string
     molecular_weight: decimal:8,2
     meta_data: jsonb
-
-  Molecule:
-
-
-  Property:
-
-  Structure:
-
+    relationships:
+      HasMany: Sample,Structure
 
   

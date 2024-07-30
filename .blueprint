@@ -1,0 +1,28 @@
+created:
+    - database/factories/SampleFactory.php
+    - database/factories/DeviceFactory.php
+    - database/factories/SpectrumTypeFactory.php
+    - database/factories/SolventFactory.php
+    - database/migrations/2024_07_09_121831_create_samples_table.php
+    - database/migrations/2024_07_09_121832_create_devices_table.php
+    - database/migrations/2024_07_09_121833_create_spectrum_types_table.php
+    - database/migrations/2024_07_09_121834_create_solvents_table.php
+    - database/migrations/2024_07_09_121835_create_sample_spectrum_type_table.php
+    - database/migrations/2024_07_09_121836_create_device_spectrum_type_table.php
+    - app/Models/Sample.php
+    - app/Models/Device.php
+    - app/Models/SpectrumType.php
+    - app/Models/Solvent.php
+models:
+    Company: { user_id: biginteger, name: string, personal_company: boolean }
+    CompanyInvitation: { company_id: biginteger, email: string, role: 'string nullable' }
+    Employeeship: { company_id: biginteger, user_id: biginteger, role: 'string nullable' }
+    LinkedSocialAccount: { provider_id: string, provider_name: string, user_id: biginteger }
+    Molecule: {  }
+    Properties: {  }
+    Structure: {  }
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: 'string nullable', remember_token: 'string:100 nullable', current_company_id: 'biginteger nullable', current_connected_account_id: 'biginteger nullable', profile_photo_path: 'string:2048 nullable', two_factor_secret: 'text nullable', two_factor_recovery_codes: 'text nullable', two_factor_confirmed_at: 'timestamp nullable' }
+    Sample: { device_id: 'id foreign nullable', company_id: 'id foreign nullable', reference: 'string nullable', solvent_id: 'id foreign nullable', molecule_id: 'id foreign nullable', spectrum_type: 'string nullable', instructions: 'text nullable', additional_infofile_id: 'string nullable', priority: 'enum:high,medium,low', operator_id: 'id foreign nullable', relationships: { belongsToMany: SpectrumType, belongsTo: 'Device,Solvent' } }
+    Device: { name: string, manufacturer: string, model_no: string, spectrum_types: string, relationships: { belongsToMany: SpectrumType, HasMany: Sample } }
+    SpectrumType: { neuclei: string, dimentionality: 'enum:1D,2D', name: string, relationships: { belongsToMany: 'Sample,Device' } }
+    Solvent: { name: string, description: 'text nullable', molecular_formula: string, molecular_weight: 'decimal:8,2', meta_data: jsonb, relationships: { HasMany: 'Sample,Structure' } }

@@ -30,10 +30,12 @@ class CreateCompany implements CreatesCompanies
 
         AddingCompany::dispatch($user);
 
-        $user->switchCompany($company = $user->ownedCompanies()->create([
+        $company = $user->ownedCompanies()->create([
             'name' => $input['name'],
             'personal_company' => false,
-        ]));
+        ]);
+
+        $user->switchCompany($company);
 
         return $company;
     }

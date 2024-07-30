@@ -6,78 +6,23 @@
                     <div>
                         <x-application-logo class="h-12 w-auto" />
                         <div class="mt-10">
-                            <div>
-                                <a href="#" class="inline-flex space-x-4">
-                                    <span
-                                        class="rounded bg-rose-50 px-2.5 py-1 text-sm font-semibold text-rose-500">What's
-                                        new</span>
-                                    <span class="inline-flex items-center space-x-1 text-sm font-medium text-rose-500">
-                                        <span>Just shipped v0.1.0</span>
-                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </span>
-                                </a>
-                            </div>
+             
                             <div class="mt-6 sm:max-w-xl">
-                                <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">A unified solution for NMR sample submission</h1>
-                                <p class="mt-6 text-xl text-gray-500">NMR platform supports a seamlessly smooth submission process for your NMR samples.</p>
+                                <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Ensuring seamless research data management (RDM) of your sample's NMR data</h1>
+                                <!-- <p class="mt-6 text-xl text-gray-500">Supports seamlessly smooth submission of your NMR samples.</p> -->
                             </div>
                             <div class="mt-4 sm:mt-0">
                                 <div class="mt-10 flex items-center gap-x-6">
-                                    <a href="/register"
-                                        class="rounded-md bg-rose-600 px-3.5 py-2.5 font-semibold text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">Try
-                                        Nmrxiv Platform Free
-                                    </a>
                                     <a href="/login"
-                                        class="rounded-md bg-white-600 px-3.5 py-2.5 font-semibold text-rose-600 shadow-sm border border-rose-100 hover:bg-rose-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">Login
+                                        class="rounded-md bg-rose-600 px-3.5 py-2.5 font-semibold text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"> Submit Samples
                                     </a>
-                                    <a target="_blank" href="https://nmrxivplatform.in/features.html"
+                                    <a href="/register"
+                                        class="rounded-md bg-white-600 px-3.5 py-2.5 font-semibold text-rose-600 shadow-sm border border-rose-100 hover:bg-rose-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">Register
+                                    </a>
+                                    <!-- <a target="_blank" href="https://nmrxivplatform.in/features.html"
                                         class="text-sm font-semibold leading-6 text-gray-900">Learn more
-                                        <span aria-hidden="true">→</span></a>
+                                        <span aria-hidden="true">→</span></a> -->
                                 </div>
-                            </div>
-                            <div class="mt-6">
-                                <div class="inline-flex items-center divide-x divide-gray-300">
-                                    <div class="flex flex-shrink-0 pr-5">
-                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
-                                            aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div class="min-w-0 flex-1 py-1 pl-5 text-sm text-gray-500 sm:py-3"><span
-                                            class="font-medium text-gray-900">Rated 5 stars</span> by over <span
-                                            class="font-medium text-rose-500">500 beta users</span></div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,8 +35,8 @@
                         </div>
                         <div
                             class="relative -mr-40 pl-6 sm:mx-auto sm:max-w-3xl sm:px-0 lg:h-full lg:max-w-none lg:pl-12">
-                            <img class="w-full rounded-md shadow-xl ring-1 ring-black ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
-                                src="https://tailwindui.com/img/component-images/task-app-rose.jpg" alt="">
+                            <img class="w-full rounded-md ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
+                                src="/img/header_img.png" alt="">
                         </div>
                     </div>
                 </div>

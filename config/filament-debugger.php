@@ -13,7 +13,7 @@ return [
         'telescope' => 'view_any_exception',
     ],
 
-    'group' => 'Debugger',
+    'group' => 'Settings',
 
     'url' => [
         'horizon' => env('HORIZON_PATH', 'horizon'),
