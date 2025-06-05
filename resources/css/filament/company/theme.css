@@ -1,0 +1,141 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/archilex/filament-filter-sets/resources/css/plugin.css';
+@import '../../../../vendor/awcodes/filament-table-repeater/resources/css/plugin.css';
+
+@config 'tailwind.config.js';
+
+/* Custom toggle button colors */
+.fi-toggle-button-state.bg-primary-600,
+.fi-toggle-button-state.hover\:bg-primary-500:hover,
+.fi-btn.fi-btn-color-primary {
+    background-color: rgb(31, 41, 55) !important; /* gray-800 */
+    border-color: rgb(31, 41, 55) !important;
+}
+
+.fi-toggle-button-state.text-primary-600,
+.fi-toggle-button-state.hover\:text-primary-500:hover {
+    color: rgb(31, 41, 55) !important; /* gray-800 */
+}
+
+.fi-toggle-button-state.border-primary-600,
+.fi-toggle-button-state.hover\:border-primary-500:hover {
+    border-color: rgb(31, 41, 55) !important; /* gray-800 */
+}
+
+.fi-btn.fi-btn-color-primary:hover {
+    background-color: rgb(55, 65, 81) !important; /* gray-700 */
+    border-color: rgb(55, 65, 81) !important;
+}
+
+/* Custom checkbox and radio styling */
+.fi-checkbox-input:checked,
+.fi-radio-input:checked {
+    background-color: rgb(31, 41, 55) !important; /* gray-800 */
+    border-color: rgb(31, 41, 55) !important;
+}
+
+.fi-checkbox-input:focus,
+.fi-radio-input:focus,
+.fi-input:focus {
+    border-color: rgb(31, 41, 55) !important;
+    box-shadow: 0 0 0 1px rgb(31, 41, 55, 0.3) !important;
+}
+
+/* Link color */
+.fi-link {
+    color: rgb(31, 41, 55) !important;
+}
+
+.fi-link:hover {
+    color: rgb(55, 65, 81) !important;
+}
+
+/* Navigation active state */
+.fi-active-tab {
+    color: rgb(31, 41, 55) !important;
+    border-color: rgb(31, 41, 55) !important;
+}
+
+/* Badge styling */
+.fi-badge.fi-badge-success {
+    background-color: rgb(31, 41, 55, 0.1) !important;
+    color: rgb(31, 41, 55) !important;
+}
+
+/* Dropdown active item */
+.fi-dropdown-list-item-active {
+    background-color: rgb(31, 41, 55, 0.1) !important;
+    color: rgb(31, 41, 55) !important;
+}
+
+/* Select element styling */
+.fi-select-item-active {
+    background-color: rgb(31, 41, 55) !important;
+}
+
+/* Pagination */
+.fi-pagination-item-active {
+    background-color: rgb(31, 41, 55) !important;
+    border-color: rgb(31, 41, 55) !important;
+}
+
+/* Toggle switch */
+.fi-toggle-input:checked + .fi-toggle-switch {
+    background-color: rgb(31, 41, 55) !important;
+}
+
+/* Table header sorting */
+.fi-ta-header-cell-sort-desc, 
+.fi-ta-header-cell-sort-asc {
+    color: rgb(31, 41, 55) !important;
+}
+
+/* Progress indicators */
+.fi-progress-complete {
+    background-color: rgb(31, 41, 55) !important;
+}
+
+/* Focus ring for all interactive elements */
+[data-focus-visible-added]:focus-visible {
+    outline-color: rgb(31, 41, 55) !important;
+}
+
+.fi-simple-main{
+    max-width: 80vw !important;
+}
+
+.fi-invoice-content .gap-6 {
+    gap: 0.5rem;
+}
+
+.fi-invoice-content .grid.gap-y-2 {
+    gap: 0;
+}
+
+.fi-invoice-content .fi-tabs {
+    border: 0px solid #fff;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.fi-invoice-content .fi-fo-tabs{
+    box-shadow: inset 0 -3em 3em rgb(255 255 255 / 100%),
+    0 0 0 2px white,
+    0.3em 0.3em 1em rgb(255 255 255 / 100%);;
+}
+
+.fi-invoice-content .fi-fo-tabs-tab {
+    padding: 0;
+    padding-top: 5px;
+}
+
+.table-repeater-column {
+    vertical-align: top !important;
+    padding: 3px;
+}
+
+.fi-input {
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
+    border-radius: 0 !important;
+}
