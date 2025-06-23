@@ -55,6 +55,7 @@ services:
         image: 'redis:alpine'
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
+        command: redis-server --requirepass ${REDIS_PASSWORD}
         volumes:
             - 'sail-redis:/data'
         networks:
@@ -63,6 +64,8 @@ services:
             test:
                 - CMD
                 - redis-cli
+                - -a
+                - ${REDIS_PASSWORD}
                 - ping
             retries: 3
             timeout: 5s
