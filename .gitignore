@@ -21,3 +21,26 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+# Deployment environment and configuration files
+/deployment/env.production
+/deployment/.env.production
+/deployment/.env.minio
+/deployment/backups/*
+/deployment/backups/*.sql
+/deployment/config/local-*
+
+# SSL certificates and keys
+/deployment/config/*.key
+/deployment/config/*.pem
+/deployment/config/*.crt
+/deployment/config/*.cert
+/deployment/config/ssl/
+
+# Logs and temporary files
+/deployment/*.log
+/deployment/logs/
+/deployment/tmp/
+
+# Keep example files in repository
+!/deployment/env.production.example
+!/deployment/env.minio.example
