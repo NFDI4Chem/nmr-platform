@@ -36,5 +36,8 @@ COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
 
+# Expose port
+EXPOSE 80 443
+
 # Default command
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"] 
