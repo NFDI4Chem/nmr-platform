@@ -21,6 +21,10 @@ RUN apk add --no-cache \
     libzip-dev \
     && rm -rf /var/cache/apk/*
 
+# Configure Git to use HTTPS instead of SSH for GitHub (this fixes the SSH error)
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git config --global url."https://".insteadOf "git://"
+
 # Install PHP extensions required by your packages
 RUN docker-php-ext-install -j$(nproc) \
     pdo_pgsql \
