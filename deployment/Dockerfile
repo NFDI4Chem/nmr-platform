@@ -1,149 +1,81 @@
-#Multi-stage build for optimized production image
+FROM dunglas/frankenphp:latest-alpine
 
-# Stage 1: Composer dependencies
-FROM dunglas/frankenphp:php8.3-alpine AS composer-builder
 ARG COMPOSER_AUTH
+# Setup working directory
+WORKDIR /var/www/html
+
+# Install system dependencies and build tools in fewer layers
+RUN apk update && \
+    apk add --no-cache \
+        zip unzip git curl \
+        libpng-dev libzip-dev icu-dev oniguruma-dev \
+        postgresql-dev zlib-dev \
+        nodejs npm \
+        autoconf gcc g++ make && \
+    rm -rf /var/cache/apk/*
+
+# Install PostgreSQL client
+RUN apk --update add postgresql17-client --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main && \
+    rm -rf /var/cache/apk/*
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd intl zip
+
+# Install APCu and Redis via PECL and clean up build dependencies in same layer
+RUN pecl install apcu redis && \
+    docker-php-ext-enable apcu redis && \
+    apk del autoconf gcc g++ make && \
+    rm -rf /tmp/pear
+
+# Configure PHP - combine echo commands
+RUN { \
+        echo 'max_execution_time = 3600'; \
+        echo 'memory_limit = 4G'; \
+        echo 'upload_max_filesize = 100M'; \
+        echo 'post_max_size = 250M'; \
+        echo 'max_input_time = 3600'; \
+    } > /usr/local/etc/php/conf.d/docker-php-custom.ini
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install system dependencies needed for composer
-RUN apk add --no-cache \
-    git \
-    zip \
-    unzip \
-    autoconf \
-    build-base \
-    linux-headers \
-    postgresql-dev \
-    imagemagick-dev \
-    icu-dev \
-    libzip-dev \
-    && rm -rf /var/cache/apk/*
+# Configure PHP from custom file
+COPY deployment/config/php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Configure Git to use HTTPS instead of SSH for GitHub (this fixes the SSH error)
-RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
-    git config --global url."https://".insteadOf "git://"
-
-# Install PHP extensions required by your packages
-RUN docker-php-ext-install -j$(nproc) \
-    pdo_pgsql \
-    pcntl \
-    intl \
-    exif \
-    zip \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-    && rm -rf /tmp/pear \
-    && apk del autoconf build-base linux-headers
-
-WORKDIR /app
-
-# Copy composer files
-COPY composer.json composer.lock ./
+# Copy package files first for better caching
+COPY composer.json composer.lock package*.json ./
 
 # Install PHP dependencies
-RUN composer install \
-    --no-dev \
-    --no-scripts \
-    --no-autoloader \
-    --optimize-autoloader \
-    --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
 
-# Stage 2: Node.js build stage (with vendor directory)
-FROM node:20-alpine AS node-builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install Node.js dependencies
+# Install Node dependencies  
 RUN npm ci
 
-# Copy frontend assets and configuration
-COPY resources/ ./resources/
-COPY public/ ./public/
-COPY vite.config.js ./
-COPY tailwind.config.js ./
-COPY postcss.config.js ./
-
-# Copy vendor directory from composer stage
-COPY --from=composer-builder /app/vendor/ ./vendor/
-
-# Build production assets
-RUN npm run build
-
-# Stage 3: Production image
-FROM dunglas/frankenphp:php8.3-alpine AS production
-
-# Install system dependencies and build tools
-RUN apk add --no-cache \
-    postgresql-dev \
-    curl \
-    zip \
-    unzip \
-    git \
-    autoconf \
-    build-base \
-    linux-headers \
-    imagemagick-dev \
-    icu-dev \
-    libzip-dev \
-    && rm -rf /var/cache/apk/*
-
-# Install PHP extensions
-RUN docker-php-ext-install -j$(nproc) \
-    pdo_pgsql \
-    pcntl \
-    opcache \
-    intl \
-    exif \
-    zip \
-    && pecl install redis imagick \
-    && docker-php-ext-enable redis imagick \
-    && rm -rf /tmp/pear \
-    && apk del autoconf build-base linux-headers
-
-# Create non-root user
-RUN addgroup -g 1000 -S www && \
-    adduser -u 1000 -S www -G www
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy application code
+# Copy project files
 COPY . .
 
-# Copy vendor directory from composer stage
-COPY --from=composer-builder /app/vendor/ ./vendor/
+# Create directories and set permissions in one layer
+RUN mkdir -p /var/www/html/config/caddy \
+             /data/caddy/data \
+             /data/caddy/config && \
+    chmod -R 775 /var/www/html/config \
+                 /var/www/html/public && \
+    chmod -R 755 /data/caddy && \
+    chown -R www-data:www-data /var/www/html/storage \
+                               /var/www/html/bootstrap/cache \
+                               /var/www/html/config \
+                               /var/www/html/public \
+                               /data/caddy
 
-# Copy built assets from node stage
-COPY --from=node-builder --chown=www:www /app/public/build /var/www/html/public/build
+# Build frontend assets
+RUN npm run build && \
+    npm cache clean --force
 
-# Copy PHP configuration
-COPY deployment/config/php.ini /usr/local/etc/php/conf.d/app.ini
-
-# Copy Caddyfile
+# Configure Caddy
 COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
 
-# Create necessary directories and set permissions
-RUN mkdir -p \
-    storage/app/public \
-    storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views \
-    storage/logs \
-    bootstrap/cache \
-    && chown -R www:www /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 storage bootstrap/cache
-
-# Switch to non-root user
-USER www
-
 # Expose port
-EXPOSE 80
+EXPOSE 80 443
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
