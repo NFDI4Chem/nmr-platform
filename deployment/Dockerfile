@@ -2,6 +2,7 @@
 
 # Stage 1: Composer dependencies
 FROM dunglas/frankenphp:php8.3-alpine AS composer-builder
+ARG COMPOSER_AUTH
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -51,3 +51,5 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         tags: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest
+        build-args: |
+          COMPOSER_AUTH={"http-basic":{"filament-filter-sets.composer.sh":{"username":"${{ secrets.FILAMENT_USERNAME }}","password":"${{ secrets.FILAMENT_LICENSE_KEY }}"}}}
