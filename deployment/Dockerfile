@@ -1,6 +1,49 @@
-# Multi-stage build for optimized production image
+ Multi-stage build for optimized production image
 
-# Stage 1: Node.js build stage for Vite assets
+# Stage 1: Composer dependencies
+FROM dunglas/frankenphp:php8.3-alpine AS composer-builder
+
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install system dependencies needed for composer
+RUN apk add --no-cache \
+    git \
+    zip \
+    unzip \
+    autoconf \
+    build-base \
+    linux-headers \
+    postgresql-dev \
+    imagemagick-dev \
+    icu-dev \
+    && rm -rf /var/cache/apk/*
+
+# Install PHP extensions required by your packages
+RUN docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    pcntl \
+    intl \
+    exif \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+    && rm -rf /tmp/pear \
+    && apk del autoconf build-base linux-headers
+
+WORKDIR /app
+
+# Copy composer files
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-autoloader \
+    --optimize-autoloader \
+    --no-interaction
+
+# Stage 2: Node.js build stage (with vendor directory)
 FROM node:20-alpine AS node-builder
 
 WORKDIR /app
@@ -18,14 +61,14 @@ COPY vite.config.js ./
 COPY tailwind.config.js ./
 COPY postcss.config.js ./
 
+# Copy vendor directory from composer stage
+COPY --from=composer-builder /app/vendor/ ./vendor/
+
 # Build production assets
 RUN npm run build
 
-# Stage 2: Base runtime image with composer
-FROM dunglas/frankenphp:php8.3-alpine AS base
-
-# Install composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Stage 3: Production image
+FROM dunglas/frankenphp:php8.3-alpine AS production
 
 # Install system dependencies and build tools
 RUN apk add --no-cache \
@@ -53,9 +96,6 @@ RUN docker-php-ext-install -j$(nproc) \
     && rm -rf /tmp/pear \
     && apk del autoconf build-base linux-headers
 
-# Stage 3: Production image
-FROM base AS production
-
 # Create non-root user
 RUN addgroup -g 1000 -S www && \
     adduser -u 1000 -S www -G www
@@ -63,22 +103,11 @@ RUN addgroup -g 1000 -S www && \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first for better layer caching
-COPY composer.json composer.lock ./
-
-# Install PHP dependencies (production only)
-RUN composer install \
-    --no-dev \
-    --no-scripts \
-    --no-autoloader \
-    --optimize-autoloader \
-    --no-interaction
-
 # Copy application code
 COPY . .
 
-# Generate optimized autoloader
-RUN composer dump-autoload --optimize --classmap-authoritative
+# Copy vendor directory from composer stage
+COPY --from=composer-builder /app/vendor/ ./vendor/
 
 # Copy built assets from node stage
 COPY --from=node-builder --chown=www:www /app/public/build /var/www/html/public/build
