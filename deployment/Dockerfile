@@ -27,10 +27,10 @@ FROM base AS production
 WORKDIR /var/www/html
 
 # Copy PHP configuration
-COPY config/php.ini /usr/local/etc/php/conf.d/app.ini
+COPY deployment/config/php.ini /usr/local/etc/php/conf.d/app.ini
 
 # Copy Caddyfile
-COPY config/Caddyfile /etc/caddy/Caddyfile
+COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
