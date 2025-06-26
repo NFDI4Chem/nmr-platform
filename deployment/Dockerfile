@@ -5,21 +5,36 @@ ARG COMPOSER_AUTH
 WORKDIR /var/www/html
 
 # Install system dependencies and build tools in fewer layers
-RUN apk update && \
-    apk add --no-cache \
-        zip unzip git curl \
-        libpng-dev libzip-dev icu-dev oniguruma-dev \
-        postgresql-dev zlib-dev \
-        nodejs npm \
-        autoconf gcc g++ make && \
-    rm -rf /var/cache/apk/*
+RUN apk add --no-cache \
+    postgresql-dev \
+    curl \
+    zip \
+    unzip \
+    git \
+    autoconf \
+    build-base \
+    linux-headers \
+    imagemagick-dev \
+    icu-dev \
+    libzip-dev \
+    && rm -rf /var/cache/apk/*
 
 # Install PostgreSQL client
 RUN apk --update add postgresql17-client --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main && \
     rm -rf /var/cache/apk/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd intl zip
+RUN docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    pcntl \
+    opcache \
+    intl \
+    exif \
+    zip \
+    && pecl install redis imagick \
+    && docker-php-ext-enable redis imagick \
+    && rm -rf /tmp/pear \
+    && apk del autoconf build-base linux-headers
 
 # Install APCu and Redis via PECL and clean up build dependencies in same layer
 RUN pecl install apcu redis && \
