@@ -1,12 +1,26 @@
 # Stage 1: Composer to install PHP dependencies
-FROM composer:2.7 AS vendor
+FROM composer:2.7 as vendor
+
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libicu-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libexif-dev \
+    libmagickwand-dev \
+    && docker-php-ext-install \
+        intl \
+        pcntl \
+        exif \
+        zip \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick
 
 WORKDIR /app
 
-# Copy only composer files initially for better layer caching
 COPY composer.json composer.lock ./
 
-# Install production dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Stage 2: Base PHP with required extensions
