@@ -21,12 +21,49 @@ COPY postcss.config.js ./
 # Build production assets
 RUN npm run build
 
-# Stage 2: Composer dependencies
-FROM composer:2.7 AS composer-builder
+# Stage 2: Base runtime image with composer
+FROM dunglas/frankenphp:php8.3-alpine AS base
 
-WORKDIR /app
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy composer files
+# Install system dependencies and build tools
+RUN apk add --no-cache \
+    postgresql-dev \
+    curl \
+    zip \
+    unzip \
+    git \
+    autoconf \
+    build-base \
+    linux-headers \
+    imagemagick-dev \
+    icu-dev \
+    && rm -rf /var/cache/apk/*
+
+# Install PHP extensions
+RUN docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    pcntl \
+    opcache \
+    intl \
+    exif \
+    && pecl install redis imagick \
+    && docker-php-ext-enable redis imagick \
+    && rm -rf /tmp/pear \
+    && apk del autoconf build-base linux-headers
+
+# Stage 3: Production image
+FROM base AS production
+
+# Create non-root user
+RUN addgroup -g 1000 -S www && \
+    adduser -u 1000 -S www -G www
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy composer files first for better layer caching
 COPY composer.json composer.lock ./
 
 # Install PHP dependencies (production only)
@@ -43,52 +80,14 @@ COPY . .
 # Generate optimized autoloader
 RUN composer dump-autoload --optimize --classmap-authoritative
 
-# Stage 3: Base runtime image
-FROM dunglas/frankenphp:php8.3-alpine AS base
-
-# Install system dependencies and build tools
-RUN apk add --no-cache \
-    postgresql-dev \
-    curl \
-    zip \
-    unzip \
-    git \
-    autoconf \
-    build-base \
-    linux-headers \
-    && rm -rf /var/cache/apk/*
-
-# Install PHP extensions
-RUN docker-php-ext-install -j$(nproc) \
-    pdo_pgsql \
-    pcntl \
-    opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && rm -rf /tmp/pear \
-    && apk del autoconf build-base linux-headers
-
-# Stage 4: Production image
-FROM base AS production
-
-# Create non-root user
-RUN addgroup -g 1000 -S www && \
-    adduser -u 1000 -S www -G www
-
-# Set working directory
-WORKDIR /var/www/html
+# Copy built assets from node stage
+COPY --from=node-builder --chown=www:www /app/public/build /var/www/html/public/build
 
 # Copy PHP configuration
 COPY deployment/config/php.ini /usr/local/etc/php/conf.d/app.ini
 
 # Copy Caddyfile
 COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
-
-# Copy application code from composer stage
-COPY --from=composer-builder --chown=www:www /app /var/www/html
-
-# Copy built assets from node stage
-COPY --from=node-builder --chown=www:www /app/public/build /var/www/html/public/build
 
 # Create necessary directories and set permissions
 RUN mkdir -p \
