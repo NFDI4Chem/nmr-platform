@@ -23,12 +23,15 @@ services:
   app:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
+    # For production, don't mount source code - use built image
     volumes:
-      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-      - ../.env.production:/var/www/html/.env
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
     env_file:
-    - ../.env.production
+    - ../.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,11 +57,13 @@ services:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
     volumes:
-      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-      - ../.env.production:/var/www/html/.env
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
     env_file:
-    - ../.env.production
+    - ../.env
     command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
     depends_on:
       postgres:
@@ -78,11 +83,13 @@ services:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
     volumes:
-      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-      - ../.env.production:/var/www/html/.env
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
     env_file:
-    - ../.env.production
+    - ../.env
     command: ["sh", "-c", "while true; do php artisan schedule:run --verbose --no-interaction && sleep 60; done"]
     depends_on:
       postgres:
@@ -156,6 +163,8 @@ volumes:
   meilisearch_data:
     driver: local
   app_storage:
+    driver: local
+  app_bootstrap_cache:
     driver: local
 
 networks:
