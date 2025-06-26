@@ -1,0 +1,14 @@
+vendor/
+node_modules/
+.git/
+.env
+.env.*
+!.env.example
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+bootstrap/cache/
+*.log
+.DS_Store
+Thumbs.db
