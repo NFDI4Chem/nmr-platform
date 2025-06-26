@@ -25,8 +25,8 @@ services:
     restart: unless-stopped
     # For production, don't mount source code - use built image
     volumes:
+      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-      - app_bootstrap_cache:/var/www/html/bootstrap/cache
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
@@ -57,8 +57,8 @@ services:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
     volumes:
+      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-      - app_bootstrap_cache:/var/www/html/bootstrap/cache
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
@@ -83,8 +83,8 @@ services:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
     volumes:
+      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-      - app_bootstrap_cache:/var/www/html/bootstrap/cache
     environment:
       - APP_ENV=production
       - APP_DEBUG=false

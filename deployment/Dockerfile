@@ -1,31 +1,8 @@
-# Stage 1: Composer to install PHP dependencies
-FROM composer:2.7 as vendor
-
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libicu-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libwebp-dev \
-    libexif-dev \
-    libmagickwand-dev \
-    && docker-php-ext-install \
-        intl \
-        pcntl \
-        exif \
-        zip \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick
-
-WORKDIR /app
-
-COPY composer.json composer.lock ./
-
-RUN composer install --no-dev --optimize-autoloader
-
-# Stage 2: Base PHP with required extensions
+# Multi-stage build for optimized production image
+FROM composer:2.7 AS composer
 FROM dunglas/frankenphp:php8.3-alpine AS base
 
+# Install system dependencies and build tools in a single layer
 RUN apk add --no-cache \
     postgresql-dev \
     curl \
@@ -36,36 +13,28 @@ RUN apk add --no-cache \
     linux-headers \
     && rm -rf /var/cache/apk/*
 
+# Install PHP extensions
 RUN docker-php-ext-install -j$(nproc) pdo_pgsql \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && rm -rf /tmp/pear \
     && apk del autoconf build-base linux-headers
 
-# Stage 3: Final production image
+# Production stage
 FROM base AS production
 
+# Set working directory
 WORKDIR /var/www/html
 
-# Copy PHP config
-COPY deployment/config/php.ini /usr/local/etc/php/conf.d/app.ini
+# Copy PHP configuration
+COPY config/php.ini /usr/local/etc/php/conf.d/app.ini
 
-# Copy Caddyfile (FrankenPHP)
-COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
+# Copy Caddyfile
+COPY config/Caddyfile /etc/caddy/Caddyfile
 
-# Copy full Laravel application
-COPY . .
-
-# Copy vendor folder from composer build
-COPY --from=vendor /app/vendor ./vendor
-
-# Set proper permissions (optional but good)
-RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
-
-# Healthcheck
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
 
-EXPOSE 80 443
-
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+# Default command
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"] 
