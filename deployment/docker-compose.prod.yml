@@ -25,11 +25,8 @@ services:
     restart: unless-stopped
     # For production, don't mount source code - use built image
     volumes:
-      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-    environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
     env_file:
     - ../.env
     depends_on:
@@ -57,11 +54,8 @@ services:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
     volumes:
-      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-    environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
     env_file:
     - ../.env
     command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
@@ -83,11 +77,8 @@ services:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
     volumes:
-      - ../:/var/www/html:cached
       - app_storage:/var/www/html/storage
-    environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
     env_file:
     - ../.env
     command: ["sh", "-c", "while true; do php artisan schedule:run --verbose --no-interaction && sleep 60; done"]
