@@ -1,4 +1,4 @@
- Multi-stage build for optimized production image
+#Multi-stage build for optimized production image
 
 # Stage 1: Composer dependencies
 FROM dunglas/frankenphp:php8.3-alpine AS composer-builder
