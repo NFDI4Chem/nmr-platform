@@ -6,11 +6,12 @@ COMPOSE_FILE="/mnt/data/nmr-platform/deployment/docker-compose.prod.yml"
 APP_IMAGE="nfdi4chem/nmr-platform:latest"
 WORKER_IMAGE="nfdi4chem/nmr-platform:latest"
 PROJECT_ROOT=$(dirname "$(dirname "$(realpath "$0")")")
-ENV_FILE="$SCRIPT_DIR/.env"
+ENV_FILE="$PROJECT_ROOT/.env"
 NEW_CONTAINER_ID=""
 BACKUP_DIR="./backups"
 BUILD=false
 DEPLOY=false
+BACKUP=false
 
 # === Load environment ===
 
@@ -27,6 +28,20 @@ set -x
 
 # === Functions ===
 
+# Utility functions
+log() {
+    echo "ℹ️  $1"
+}
+
+error() {
+    echo "❌ Error: $1" >&2
+    exit 1
+}
+
+success() {
+    echo "✅ $1"
+}
+
 # Check requirements
 check_requirements() {
     log "Checking requirements..."
@@ -40,15 +55,10 @@ check_requirements() {
     success "Requirements check passed"
 }
 
-check_health() {
-    HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' "$NEW_CONTAINER_ID")
-    [[ "$HEALTH" == *"healthy"* ]]
-}
-
 wait_for_health() {
     echo "⏳ Waiting for new container to pass health check (up to 10 retries)..."
     for i in {1..10}; do
-        if check_health; then
+        if check_container_health; then
             echo "✅ Container is healthy."
             return 0
         else
@@ -57,6 +67,14 @@ wait_for_health() {
         fi
     done
     return 1
+}
+
+check_container_health() {
+    if [[ -z "$NEW_CONTAINER_ID" ]]; then
+        return 1
+    fi
+    HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' "$NEW_CONTAINER_ID" 2>/dev/null || echo '"unhealthy"')
+    [[ "$HEALTH" == *"healthy"* ]]
 }
 
 remove_old_containers() {
@@ -97,14 +115,14 @@ cleanup() {
 }
 
 # Check if app is responding
-check_health(){
+check_app_health(){
     echo "🏥 Checking application health..."
-    if docker-compose -p "$COMPOSE_PROJECT_NAME" -f docker-compose.prod.yml exec -T app curl -f http://localhost/health > /dev/null 2>&1; then
+    if docker compose -p "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE" exec -T app curl -f http://localhost/health > /dev/null 2>&1; then
         echo "✅ Application is healthy!"
     else
         echo "❌ Application health check failed"
         echo "📋 Showing app logs:"
-        docker-compose -f docker-compose.prod.yml logs app --tail=50
+        docker compose -f "$COMPOSE_FILE" logs app --tail=50
         exit 1
     fi
 }
