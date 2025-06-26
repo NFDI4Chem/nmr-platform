@@ -56,7 +56,6 @@ RUN apk add --no-cache \
     autoconf \
     build-base \
     linux-headers \
-    supervisor \
     && rm -rf /var/cache/apk/*
 
 # Install PHP extensions
@@ -84,9 +83,6 @@ COPY deployment/config/php.ini /usr/local/etc/php/conf.d/app.ini
 
 # Copy Caddyfile
 COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
-
-# Copy supervisor configuration
-COPY deployment/config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy application code from composer stage
 COPY --from=composer-builder --chown=www:www /app /var/www/html
