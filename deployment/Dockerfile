@@ -17,6 +17,7 @@ RUN apk add --no-cache \
     postgresql-dev \
     imagemagick-dev \
     icu-dev \
+    libzip-dev \
     && rm -rf /var/cache/apk/*
 
 # Install PHP extensions required by your packages
@@ -25,6 +26,7 @@ RUN docker-php-ext-install -j$(nproc) \
     pcntl \
     intl \
     exif \
+    zip \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
     && rm -rf /tmp/pear \
@@ -82,6 +84,7 @@ RUN apk add --no-cache \
     linux-headers \
     imagemagick-dev \
     icu-dev \
+    libzip-dev \
     && rm -rf /var/cache/apk/*
 
 # Install PHP extensions
@@ -91,6 +94,7 @@ RUN docker-php-ext-install -j$(nproc) \
     opcache \
     intl \
     exif \
+    zip \
     && pecl install redis imagick \
     && docker-php-ext-enable redis imagick \
     && rm -rf /tmp/pear \
