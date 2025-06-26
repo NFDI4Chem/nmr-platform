@@ -106,10 +106,6 @@ RUN mkdir -p \
     && chmod -R 755 /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
-# Copy entrypoint script
-COPY deployment/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 # Switch to non-root user
 USER www
 
@@ -119,9 +115,6 @@ EXPOSE 80
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
-
-# Set entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Default command
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
