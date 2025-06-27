@@ -104,8 +104,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
-# Set shell to bash now that it's installed
-SHELL ["/bin/bash", "-c"]
+# Note: Bash installed for this stage only
 
 # =============================================================================
 # Install Supercronic for scheduled tasks
@@ -149,13 +148,13 @@ COPY --link --chown=${WWWUSER}:${WWWUSER} composer.json composer.lock ./
 RUN COMPOSER_AUTH="$COMPOSER_AUTH" composer install \
     --no-dev \
     --no-interaction \
-    --no-autoloader \
     --no-ansi \
     --no-scripts \
     --ignore-platform-req=ext-imagick \
     --ignore-platform-req=ext-intl \
     --ignore-platform-req=ext-pcntl \
     --ignore-platform-req=ext-exif \
+    --optimize-autoloader \
     --audit
 
 # Copy application source code
@@ -213,18 +212,9 @@ COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini /lib/php.ini
 
 # =============================================================================
-# Final Composer optimization
+# Clear Composer cache to reduce image size
 # =============================================================================
-RUN composer install \
-    --classmap-authoritative \
-    --no-interaction \
-    --no-ansi \
-    --no-dev \
-    --ignore-platform-req=ext-imagick \
-    --ignore-platform-req=ext-intl \
-    --ignore-platform-req=ext-pcntl \
-    --ignore-platform-req=ext-exif \
-    && composer clear-cache
+RUN composer clear-cache
 
 # Set executable permissions
 RUN chmod +x /usr/local/bin/start-container /usr/local/bin/healthcheck
