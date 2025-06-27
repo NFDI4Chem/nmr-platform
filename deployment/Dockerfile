@@ -51,8 +51,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 WORKDIR ${ROOT}
 
-# Use bash with strict error handling
-SHELL ["/bin/bash", "-eou", "pipefail", "-c"]
+# Use bash with strict error handling (only for build stage)
+SHELL ["/bin/sh", "-eux", "-c"]
 
 # =============================================================================
 # System setup and timezone configuration
@@ -181,6 +181,9 @@ RUN npm run build
 # Final production stage
 # =============================================================================
 FROM final
+
+# Reset shell to default for final stage
+SHELL ["/bin/sh", "-c"]
 
 WORKDIR ${ROOT}
 
