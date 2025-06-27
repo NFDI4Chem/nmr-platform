@@ -1,0 +1,50 @@
+{
+	# Global options
+	auto_https off
+	admin off
+	persist_config off
+}
+
+# Laravel application server
+:80 {
+	# Document root
+	root * /var/www/html/public
+
+	# Enable PHP processing with FrankenPHP
+	php_server
+
+	# Handle Laravel's pretty URLs
+	try_files {path} {path}/ /index.php?{query}
+
+	# Security headers
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		X-XSS-Protection "1; mode=block"
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	# Health check endpoint
+	handle /health {
+		respond "OK" 200 {
+			header Content-Type "text/plain"
+		}
+	}
+
+	# Static file handling
+	handle_path /storage/* {
+		root * /var/www/html/storage/app/public
+		file_server
+	}
+
+	# Logging
+	log {
+		output stdout
+		format console
+		level INFO
+	}
+
+	# Enable compression
+	encode gzip
+} 

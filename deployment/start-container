@@ -90,5 +90,5 @@ echo "Starting FrankenPHP server..."
 
 # Start FrankenPHP with Laravel
 exec frankenphp run \
-    --config /etc/caddy/Caddyfile \
+    --config /var/www/html/deployment/Caddyfile \
     --adapter caddyfile 
