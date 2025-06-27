@@ -52,19 +52,9 @@ jobs:
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable=true
 
-    # Create auth.json from secrets
-    - name: Create Composer authentication file
-      run: |
-        if [ -n "${{ secrets.COMPOSER_AUTH_JSON }}" ]; then
-          echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
-          if ! jq empty auth.json 2>/dev/null; then
-            echo "Error: Invalid JSON in COMPOSER_AUTH_JSON secret"
-            rm -f auth.json
-            exit 1
-          fi
-        else
-          echo "Warning: COMPOSER_AUTH_JSON secret not set"
-        fi
+    # Add HTTP basic auth credentials
+    - name: Add HTTP basic auth credentials
+      run: echo '${{ secrets.COMPOSER_AUTH_JSON }}' > $GITHUB_WORKSPACE/auth.json
 
     # Build and push the app Docker image
     - name: Build and push App Docker image
@@ -76,11 +66,11 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         secrets: |
-          composer_auth=${{ hashFiles('auth.json') != '' && './auth.json' || '/dev/null' }}
+          composer_auth=$GITHUB_WORKSPACE/auth.json
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
     # Clean up auth.json (security best practice)
     - name: Clean up auth.json
       if: always()
-      run: rm -f auth.json
+      run: rm -f $GITHUB_WORKSPACE/auth.json
