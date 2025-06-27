@@ -1,106 +1,142 @@
-FROM dunglas/frankenphp:latest-alpine
+ARG PHP_VERSION=8.3
+ARG FRANKENPHP_VERSION=latest
+ARG NODE_VERSION=18
 
-ARG COMPOSER_AUTH
-# Setup working directory
-WORKDIR /var/www/html
+###########################################
+# Composer dependencies stage
+###########################################
+FROM composer:2 AS composer-deps
 
-# Install system dependencies and build tools in fewer layers
-RUN apk add --no-cache \
-    postgresql-dev \
-    curl \
-    zip \
-    unzip \
-    git \
-    autoconf \
-    build-base \
-    linux-headers \
-    imagemagick-dev \
-    icu-dev \
-    libzip-dev \
-    nodejs \
-    npm \
-    && rm -rf /var/cache/apk/*
+WORKDIR /app
 
-# Install PostgreSQL client
-RUN apk --update add postgresql17-client --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main && \
-    rm -rf /var/cache/apk/*
+COPY composer.json composer.lock ./
 
-# Install PHP extensions
-RUN docker-php-ext-install -j$(nproc) \
-    pdo_pgsql \
-    pcntl \
-    opcache \
-    intl \
-    exif \
-    zip \   
-    && pecl install redis imagick \     
-    && docker-php-ext-enable redis imagick \
-    && rm -rf /tmp/pear \
-    && apk del autoconf build-base linux-headers
+# Install dependencies without dev packages and optimize for production
+RUN --mount=type=secret,id=composer_auth,target=/tmp/auth.json \
+    COMPOSER_AUTH="$(cat /tmp/auth.json 2>/dev/null || echo '{}')" \
+    composer install \
+    --no-dev \
+    --no-interaction \
+    --no-autoloader \
+    --no-scripts \
+    --no-plugins \
+    --ignore-platform-req=ext-imagick \
+    --ignore-platform-req=ext-intl \
+    --ignore-platform-req=ext-pcntl \
+    --ignore-platform-req=ext-exif \
+    --prefer-dist
 
-# Configure PHP - combine echo commands
-RUN { \
-        echo 'max_execution_time = 3600'; \
-        echo 'memory_limit = 4G'; \
-        echo 'upload_max_filesize = 100M'; \
-        echo 'post_max_size = 250M'; \
-        echo 'max_input_time = 3600'; \
-    } > /usr/local/etc/php/conf.d/docker-php-custom.ini
-
-# Install composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Configure PHP from custom file
-COPY deployment/config/php.ini /usr/local/etc/php/conf.d/custom.ini
-
-# Copy package files first for better caching
-COPY composer.json composer.lock package*.json ./
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
-
-# Install Node dependencies  
-RUN npm ci
-
-# Copy project files
 COPY . .
 
-# Create directories and set permissions in one layer
-RUN mkdir -p /var/www/html/config/caddy \
-             /var/www/html/storage \
-             /var/www/html/bootstrap/cache \
-             /var/log/supervisor \
-             /run/supervisor \
-             /data/caddy/data \
-             /data/caddy/config && \
-    chmod -R 775 /var/www/html/config \
-                 /var/www/html/public \
-                 /var/www/html/storage \
-                 /var/www/html/bootstrap/cache && \
-    chmod -R 755 /data/caddy && \
-    chown -R www-data:www-data /var/www/html/storage \
-                               /var/www/html/bootstrap/cache \
-                               /var/www/html/config \
-                               /var/www/html/public \
-                               /data/caddy
+RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
 
-# Build frontend assets
-RUN npm run build && \
-    npm cache clean --force
+###########################################
+# Frontend build stage
+###########################################
+FROM node:${NODE_VERSION}-alpine AS frontend-build
 
-# Configure Caddy
-COPY deployment/config/Caddyfile /etc/caddy/Caddyfile
+WORKDIR /app
 
-# Expose port
-EXPOSE 80 443
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm ci --no-audit --no-fund
+
+# Copy source files and build
+COPY --from=composer-deps /app/vendor ./vendor
+COPY . .
+RUN npm run build && rm -rf node_modules
+
+###########################################
+# Production runtime stage
+###########################################
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION} AS production
+
+# Security labels
+LABEL org.opencontainers.image.title="Laravel Orion POS"
+LABEL org.opencontainers.image.description="Production Laravel application with FrankenPHP"
+LABEL org.opencontainers.image.vendor="Orion POS"
+LABEL org.opencontainers.image.licenses="MIT"
+
+# Build arguments
+ARG WWWUSER=1000
+ARG WWWGROUP=1000
+ARG TZ=UTC
+
+# Environment variables for production
+ENV DEBIAN_FRONTEND=noninteractive \
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_NO_INTERACTION=1 \
+    OCTANE_SERVER=frankenphp \
+    USER=octane \
+    ROOT=/var/www/html \
+    TZ=${TZ}
+
+WORKDIR ${ROOT}
+
+# Install system dependencies and PHP extensions in a single layer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    supervisor \
+    unzip \
+    && install-php-extensions \
+    bcmath \
+    exif \
+    gd \
+    intl \
+    opcache \
+    pcntl \
+    pdo_pgsql \
+    pgsql \
+    redis \
+    sockets \
+    zip \
+    && ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Create application user and set permissions
+RUN groupadd --force -g ${WWWGROUP} ${USER} \
+    && useradd -ms /bin/bash --no-log-init --no-user-group -g ${WWWGROUP} -u ${WWWUSER} ${USER} \
+    && mkdir -p \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/testing \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && chown -R ${USER}:${USER} ${ROOT} \
+    && chmod -R 755 ${ROOT}
+
+# Copy PHP configuration
+COPY --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf.d/99-laravel.ini
+
+# Copy supervisor configuration
+COPY --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.conf /etc/supervisor/
+COPY --chown=${WWWUSER}:${WWWUSER} deployment/octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
+
+# Copy application files
+COPY --chown=${WWWUSER}:${WWWUSER} --from=composer-deps /app/vendor ./vendor
+COPY --chown=${WWWUSER}:${WWWUSER} --from=frontend-build /app/public ./public
+COPY --chown=${WWWUSER}:${WWWUSER} . .
+
+# Copy runtime scripts
+COPY --chown=${WWWUSER}:${WWWUSER} --chmod=755 deployment/start-container /usr/local/bin/start-container
+COPY --chown=${WWWUSER}:${WWWUSER} --chmod=755 deployment/healthcheck /usr/local/bin/healthcheck
+
+# Set proper permissions for storage and cache
+RUN chown -R ${USER}:${USER} storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Switch to non-root user
+USER ${USER}
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost/health || exit 1
+HEALTHCHECK --start-period=30s --interval=30s --timeout=10s --retries=3 \
+    CMD healthcheck || exit 1
 
-COPY deployment/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# Expose ports
+EXPOSE 8000 443 443/udp 2019
 
-# Start FrankenPHP and supervisord
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+# Start the application
+ENTRYPOINT ["start-container"]

@@ -30,16 +30,32 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    # Login to Docker
+    # Set up Docker Buildx for multi-platform builds
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Login to Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ env.DOCKER_HUB_USERNAME  }}
         password: ${{ env.DOCKER_HUB_PASSWORD  }}
 
-    # Set up Docker Buildx for multi-platform builds
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    # Extract metadata for better tagging
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable=true
+
+    # Create auth.json from secrets (secure approach)
+    - name: Create auth.json from secrets
+      run: |
+        echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
 
     # Build and push the app Docker image
     - name: Build and push App Docker image
@@ -48,8 +64,14 @@ jobs:
         context: .
         file: ./deployment/Dockerfile
         push: true
-        # cache-from: type=gha
-        # cache-to: type=gha,mode=max
-        tags: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest
-        build-args: |
-          COMPOSER_AUTH={"http-basic":{"filament-filter-sets.composer.sh":{"username":"${{ secrets.FILAMENT_USERNAME }}","password":"${{ secrets.FILAMENT_LICENSE_KEY }}"},"satis.ralphjsmit.com":{"username":"${{ secrets.RALPHJSMIT_USERNAME }}","password":"${{ secrets.RALPHJSMIT_KEY}}"}}}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        secrets: |
+          composer_auth=./auth.json
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    # Clean up auth.json (security best practice)
+    - name: Clean up auth.json
+      if: always()
+      run: rm -f auth.json
