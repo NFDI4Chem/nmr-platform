@@ -67,12 +67,16 @@ COPY . .
 
 # Create directories and set permissions in one layer
 RUN mkdir -p /var/www/html/config/caddy \
+             /var/www/html/storage \
+             /var/www/html/bootstrap/cache \
              /var/log/supervisor \
              /run/supervisor \
              /data/caddy/data \
              /data/caddy/config && \
     chmod -R 775 /var/www/html/config \
-                 /var/www/html/public && \
+                 /var/www/html/public \
+                 /var/www/html/storage \
+                 /var/www/html/bootstrap/cache && \
     chmod -R 755 /data/caddy && \
     chown -R www-data:www-data /var/www/html/storage \
                                /var/www/html/bootstrap/cache \
