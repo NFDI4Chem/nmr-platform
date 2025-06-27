@@ -201,7 +201,7 @@ RUN mkdir -p \
 # Copy configuration files and scripts
 # =============================================================================
 COPY --link --chown=${WWWUSER}:${WWWUSER} supervisord.conf /etc/supervisor/
-COPY --link --chown=${WWWUSER}:${WWWUSER} octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
+COPY --link --chown=${WWWUSER}:${WWWUSER} ./octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
 COPY --link --chown=${WWWUSER}:${WWWUSER} supervisord.*.conf /etc/supervisor/conf.d/
 COPY --link --chown=${WWWUSER}:${WWWUSER} start-container /usr/local/bin/start-container
 COPY --link --chown=${WWWUSER}:${WWWUSER} healthcheck /usr/local/bin/healthcheck
