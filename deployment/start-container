@@ -1,94 +1,54 @@
-#!/bin/bash
-
-# Start container script for Laravel application with FrankenPHP
-# This script initializes the application and starts the web server
-
+#!/usr/bin/env sh
 set -e
 
-# Configuration
-APP_ROOT="/var/www/html"
-USER="octane"
+container_mode=${CONTAINER_MODE:-"http"}
+octane_server=${OCTANE_SERVER}
+running_migrations_and_seeders=${RUNNING_MIGRATIONS_AND_SEEDERS:-"false"}
+artisan_cache=${ARTISAN_CACHE:-"true"}
 
-echo "Starting NMR Platform container..."
+echo "Container mode: $container_mode"
 
-# Function to wait for database
-wait_for_database() {
-    echo "Waiting for database connection..."
-    
-    max_attempts=30
-    attempt=1
-    
-    while [ $attempt -le $max_attempts ]; do
-        if php artisan db:show > /dev/null 2>&1; then
-            echo "Database connection established"
-            return 0
-        fi
-        
-        echo "Database not ready (attempt $attempt/$max_attempts), waiting..."
-        sleep 2
-        attempt=$((attempt + 1))
-    done
-    
-    echo "Failed to connect to database after $max_attempts attempts"
-    return 1
-}
+initialStuff() {
 
-# Function to run Laravel initialization
-initialize_laravel() {
-    echo "Initializing Laravel application..."
-    
-    # Generate application key if not exists
-    if [ -z "$APP_KEY" ]; then
-        echo "Generating application key..."
-        php artisan key:generate --force
+    if [ "${artisan_cache}" = "true" ]; then
+      php artisan storage:link; \
+      php artisan optimize:clear; \
+      php artisan event:cache; \
+      php artisan config:cache; \
+      php artisan route:cache;
     fi
-    
-    # Run database migrations
-    echo "Running database migrations..."
-    php artisan migrate --force
-    
-    # Clear and cache configuration
-    echo "Optimizing application..."
-    php artisan config:cache
-    php artisan route:cache
-    php artisan view:cache
-    
-    # Create storage symlink if it doesn't exist
-    if [ ! -L "$APP_ROOT/public/storage" ]; then
-        echo "Creating storage symlink..."
-        php artisan storage:link
-    fi
-    
-    # Set proper permissions
-    echo "Setting file permissions..."
-    chmod -R 775 storage bootstrap/cache
-}
 
-# Function to start supervisor (if needed)
-start_supervisor() {
-    if [ -f "/etc/supervisor/supervisord.conf" ]; then
-        echo "Starting supervisor..."
-        supervisord -c /etc/supervisor/supervisord.conf &
+    if [ "${running_migrations_and_seeders}" = "true" ]; then
+        echo "Running migrations and seeding database ..."
+        php artisan migrate --isolated --seed --force;
     fi
 }
 
-# Main initialization
-cd "$APP_ROOT"
-
-# Wait for database to be ready
-if ! wait_for_database; then
-    echo "Warning: Database not available, skipping migrations"
+if [ "$1" != "" ]; then
+    exec "$@"
+elif [ "${container_mode}" = "http" ]; then
+    echo "Octane Server: $octane_server"
+    initialStuff
+    if [ "${octane_server}"  = "frankenphp" ]; then
+        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.frankenphp.conf
+    elif [ "${octane_server}"  = "swoole" ]; then
+        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.swoole.conf
+    elif [ "${octane_server}"  = "roadrunner" ]; then
+        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.roadrunner.conf
+    else
+        echo "Invalid Octane server supplied."
+        exit 1
+    fi
+elif [ "${container_mode}" = "horizon" ]; then
+    initialStuff
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.horizon.conf
+elif [ "${container_mode}" = "scheduler" ]; then
+    initialStuff
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.scheduler.conf
+elif [ "${container_mode}" = "worker" ]; then
+    initialStuff
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.worker.conf
+else
+    echo "Container mode mismatched."
+    exit 1
 fi
-
-# Initialize Laravel application
-initialize_laravel
-
-# Start supervisor for background jobs (if configured)
-start_supervisor
-
-echo "Starting FrankenPHP server..."
-
-# Start FrankenPHP with Laravel
-exec frankenphp run \
-    --config /var/www/html/deployment/Caddyfile \
-    --adapter caddyfile 

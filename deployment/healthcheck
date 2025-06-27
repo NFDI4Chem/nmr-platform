@@ -1,62 +1,18 @@
-#!/bin/bash
-
-# Health check script for Laravel application running with FrankenPHP
-# This script checks if the application is responding to HTTP requests
+#!/usr/bin/env sh
 
 set -e
 
-# Configuration
-HEALTH_URL="http://localhost:80/health"
-TIMEOUT=10
-MAX_RETRIES=3
+container_mode=${CONTAINER_MODE:-"http"}
 
-# Function to check if the application is healthy
-check_health() {
-    local retry_count=0
-    
-    while [ $retry_count -lt $MAX_RETRIES ]; do
-        # Try to curl the health endpoint
-        if curl -f -s --max-time $TIMEOUT "$HEALTH_URL" > /dev/null 2>&1; then
-            echo "Health check passed"
-            return 0
-        fi
-        
-        retry_count=$((retry_count + 1))
-        if [ $retry_count -lt $MAX_RETRIES ]; then
-            echo "Health check attempt $retry_count failed, retrying..."
-            sleep 2
-        fi
-    done
-    
-    echo "Health check failed after $MAX_RETRIES attempts"
-    return 1
-}
-
-# Fallback: Check if FrankenPHP process is running
-check_process() {
-    if pgrep -f "frankenphp" > /dev/null; then
-        echo "FrankenPHP process is running"
-        return 0
-    else
-        echo "FrankenPHP process not found"
-        return 1
-    fi
-}
-
-# Main health check
-echo "Starting health check..."
-
-# First try the HTTP endpoint
-if check_health; then
-    exit 0
+if [ "${container_mode}" = "http" ]; then
+    php artisan octane:status
+elif [ "${container_mode}" = "horizon" ]; then
+    php artisan horizon:status
+elif [ "${container_mode}" = "scheduler" ]; then
+    supervisorctl status scheduler:scheduler_00
+elif [ "${container_mode}" = "worker" ]; then
+    supervisorctl status worker:worker_00
+else
+    echo "Container mode mismatched."
+    exit 1
 fi
-
-# Fallback to process check
-echo "HTTP health check failed, checking process..."
-if check_process; then
-    echo "Process check passed as fallback"
-    exit 0
-fi
-
-echo "All health checks failed"
-exit 1 
