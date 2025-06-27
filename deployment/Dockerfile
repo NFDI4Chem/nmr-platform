@@ -200,15 +200,15 @@ RUN mkdir -p \
 # =============================================================================
 # Copy configuration files and scripts
 # =============================================================================
-COPY --link --chown=${WWWUSER}:${WWWUSER} supervisord.conf /etc/supervisor/
-COPY --link --chown=${WWWUSER}:${WWWUSER} ./octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
-COPY --link --chown=${WWWUSER}:${WWWUSER} supervisord.*.conf /etc/supervisor/conf.d/
-COPY --link --chown=${WWWUSER}:${WWWUSER} start-container /usr/local/bin/start-container
-COPY --link --chown=${WWWUSER}:${WWWUSER} healthcheck /usr/local/bin/healthcheck
-COPY --link --chown=${WWWUSER}:${WWWUSER} php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.conf /etc/supervisor/
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.*.conf /etc/supervisor/conf.d/
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/start-container /usr/local/bin/start-container
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/healthcheck /usr/local/bin/healthcheck
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini
 
 # FrankenPHP embedded PHP configuration
-COPY --link --chown=${WWWUSER}:${WWWUSER} php.ini /lib/php.ini
+COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini /lib/php.ini
 
 # =============================================================================
 # Final Composer optimization
@@ -228,7 +228,7 @@ RUN composer install \
 RUN chmod +x /usr/local/bin/start-container /usr/local/bin/healthcheck
 
 # Add utility functions to bash profile
-RUN cat utilities.sh >> ~/.bashrc
+RUN cat deployment/utilities.sh >> ~/.bashrc
 
 # =============================================================================
 # Expose ports and configure startup
