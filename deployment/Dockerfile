@@ -17,6 +17,8 @@ RUN apk add --no-cache \
     imagemagick-dev \
     icu-dev \
     libzip-dev \
+    nodejs \
+    npm \
     && rm -rf /var/cache/apk/*
 
 # Install PostgreSQL client
@@ -30,17 +32,11 @@ RUN docker-php-ext-install -j$(nproc) \
     opcache \
     intl \
     exif \
-    zip \
-    && pecl install redis imagick \
+    zip \   
+    && pecl install redis imagick \     
     && docker-php-ext-enable redis imagick \
     && rm -rf /tmp/pear \
     && apk del autoconf build-base linux-headers
-
-# Install APCu and Redis via PECL and clean up build dependencies in same layer
-RUN pecl install apcu redis && \
-    docker-php-ext-enable apcu redis && \
-    apk del autoconf gcc g++ make && \
-    rm -rf /tmp/pear
 
 # Configure PHP - combine echo commands
 RUN { \
