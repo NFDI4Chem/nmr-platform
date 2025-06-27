@@ -98,5 +98,9 @@ EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
 
-# Default command
+COPY deployment/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Start FrankenPHP and supervisord
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
