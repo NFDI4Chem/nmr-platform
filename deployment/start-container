@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# Start container script for Laravel application with FrankenPHP
+# This script initializes the application and starts the web server
+
+set -e
+
+# Configuration
+APP_ROOT="/var/www/html"
+USER="octane"
+
+echo "Starting NMR Platform container..."
+
+# Function to wait for database
+wait_for_database() {
+    echo "Waiting for database connection..."
+    
+    max_attempts=30
+    attempt=1
+    
+    while [ $attempt -le $max_attempts ]; do
+        if php artisan db:show > /dev/null 2>&1; then
+            echo "Database connection established"
+            return 0
+        fi
+        
+        echo "Database not ready (attempt $attempt/$max_attempts), waiting..."
+        sleep 2
+        attempt=$((attempt + 1))
+    done
+    
+    echo "Failed to connect to database after $max_attempts attempts"
+    return 1
+}
+
+# Function to run Laravel initialization
+initialize_laravel() {
+    echo "Initializing Laravel application..."
+    
+    # Generate application key if not exists
+    if [ -z "$APP_KEY" ]; then
+        echo "Generating application key..."
+        php artisan key:generate --force
+    fi
+    
+    # Run database migrations
+    echo "Running database migrations..."
+    php artisan migrate --force
+    
+    # Clear and cache configuration
+    echo "Optimizing application..."
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    
+    # Create storage symlink if it doesn't exist
+    if [ ! -L "$APP_ROOT/public/storage" ]; then
+        echo "Creating storage symlink..."
+        php artisan storage:link
+    fi
+    
+    # Set proper permissions
+    echo "Setting file permissions..."
+    chmod -R 775 storage bootstrap/cache
+}
+
+# Function to start supervisor (if needed)
+start_supervisor() {
+    if [ -f "/etc/supervisor/supervisord.conf" ]; then
+        echo "Starting supervisor..."
+        supervisord -c /etc/supervisor/supervisord.conf &
+    fi
+}
+
+# Main initialization
+cd "$APP_ROOT"
+
+# Wait for database to be ready
+if ! wait_for_database; then
+    echo "Warning: Database not available, skipping migrations"
+fi
+
+# Initialize Laravel application
+initialize_laravel
+
+# Start supervisor for background jobs (if configured)
+start_supervisor
+
+echo "Starting FrankenPHP server..."
+
+# Start FrankenPHP with Laravel
+exec frankenphp run \
+    --config /etc/caddy/Caddyfile \
+    --adapter caddyfile 
