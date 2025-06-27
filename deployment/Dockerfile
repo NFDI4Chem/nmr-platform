@@ -13,7 +13,19 @@ COPY composer.json composer.lock ./
 
 # Install dependencies without dev packages and optimize for production
 RUN --mount=type=secret,id=composer_auth,target=/tmp/auth.json \
-    COMPOSER_AUTH="$(cat /tmp/auth.json 2>/dev/null || echo '{}')" \
+    echo "=== Composer Authentication Debug ===" && \
+    if [ -f /tmp/auth.json ]; then \
+        echo "✅ auth.json file exists" && \
+        echo "📝 auth.json structure:" && \
+        cat /tmp/auth.json | jq 'keys' 2>/dev/null || echo "❌ Invalid JSON in auth.json" && \
+        echo "🔐 Setting COMPOSER_AUTH..." && \
+        export COMPOSER_AUTH="$(cat /tmp/auth.json)" && \
+        echo "✅ COMPOSER_AUTH set (length: $(echo "$COMPOSER_AUTH" | wc -c) chars)"; \
+    else \
+        echo "❌ /tmp/auth.json not found, using empty auth" && \
+        export COMPOSER_AUTH='{}'; \
+    fi && \
+    echo "=== Running Composer Install ===" && \
     composer install \
     --no-dev \
     --no-interaction \
@@ -24,7 +36,8 @@ RUN --mount=type=secret,id=composer_auth,target=/tmp/auth.json \
     --ignore-platform-req=ext-intl \
     --ignore-platform-req=ext-pcntl \
     --ignore-platform-req=ext-exif \
-    --prefer-dist
+    --prefer-dist \
+    --verbose
 
 COPY . .
 

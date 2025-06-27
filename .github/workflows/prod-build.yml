@@ -52,38 +52,10 @@ jobs:
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable=true
 
-    # Debug: Check if COMPOSER_AUTH_JSON secret exists and is valid
-    - name: Debug Composer Auth Secret
+    # Create auth.json from secrets (secure approach)
+    - name: Create auth.json from secrets
       run: |
-        echo "Checking COMPOSER_AUTH_JSON secret..."
-        if [ -z "${{ secrets.COMPOSER_AUTH_JSON }}" ]; then
-          echo "❌ COMPOSER_AUTH_JSON secret is empty or not set!"
-          echo "Creating empty auth.json as fallback"
-          echo '{}' > auth.json
-        else
-          echo "✅ COMPOSER_AUTH_JSON secret exists"
-          echo "Secret length: $(echo '${{ secrets.COMPOSER_AUTH_JSON }}' | wc -c) characters"
-          # Validate JSON without exposing content
-          if echo '${{ secrets.COMPOSER_AUTH_JSON }}' | jq empty 2>/dev/null; then
-            echo "✅ Secret contains valid JSON"
-            echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
-          else
-            echo "❌ Secret contains invalid JSON!"
-            echo "First 50 characters (safe): $(echo '${{ secrets.COMPOSER_AUTH_JSON }}' | head -c 50)..."
-            echo "Creating empty auth.json as fallback"
-            echo '{}' > auth.json
-          fi
-        fi
-        
-    # Verify auth.json was created correctly
-    - name: Verify auth.json
-      run: |
-        echo "auth.json contents (structure only):"
-        if [ -f auth.json ]; then
-          jq 'keys' auth.json 2>/dev/null || echo "❌ auth.json contains invalid JSON"
-        else
-          echo "❌ auth.json file not found!"
-        fi
+        echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
 
     # Build and push the app Docker image
     - name: Build and push App Docker image
