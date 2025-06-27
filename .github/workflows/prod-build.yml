@@ -54,7 +54,7 @@ jobs:
 
     # Add HTTP basic auth credentials
     - name: Add HTTP basic auth credentials
-      run: echo '${{ secrets.COMPOSER_AUTH_JSON }}' > $GITHUB_WORKSPACE/auth.json
+      run: echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
 
     # Build and push the app Docker image
     - name: Build and push App Docker image
@@ -66,11 +66,11 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         secrets: |
-          composer_auth=$GITHUB_WORKSPACE/auth.json
+          composer_auth=./auth.json
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
     # Clean up auth.json (security best practice)
     - name: Clean up auth.json
       if: always()
-      run: rm -f $GITHUB_WORKSPACE/auth.json
+      run: rm -f auth.json
