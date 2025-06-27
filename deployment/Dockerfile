@@ -66,6 +66,7 @@ RUN apt-get update \
     && apt-get upgrade -yqq \
     && apt-get install -yqq --no-install-recommends --show-progress \
         apt-utils \
+        bash \
         curl \
         wget \
         vim \
@@ -102,6 +103,9 @@ RUN apt-get update \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
+
+# Set shell to bash now that it's installed
+SHELL ["/bin/bash", "-c"]
 
 # =============================================================================
 # Install Supercronic for scheduled tasks
