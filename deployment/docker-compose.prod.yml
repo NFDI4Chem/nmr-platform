@@ -26,7 +26,6 @@ services:
     # For production, don't mount source code - use built image
     volumes:
       - app_storage:/var/www/html/storage
-      - app_bootstrap_cache:/var/www/html/bootstrap/cache
       - ../.env:/var/www/html/.env
     env_file:
     - ../.env
@@ -56,7 +55,6 @@ services:
     restart: unless-stopped
     volumes:
       - app_storage:/var/www/html/storage
-      - app_bootstrap_cache:/var/www/html/bootstrap/cache
       - ../.env:/var/www/html/.env
     env_file:
     - ../.env
@@ -80,7 +78,6 @@ services:
     restart: unless-stopped
     volumes:
       - app_storage:/var/www/html/storage
-      - app_bootstrap_cache:/var/www/html/bootstrap/cache
       - ../.env:/var/www/html/.env
     env_file:
     - ../.env
