@@ -11,6 +11,9 @@ WORKDIR /app
 
 COPY composer.json composer.lock ./
 
+# Accept COMPOSER_AUTH as build argument
+ARG COMPOSER_AUTH
+
 # Install dependencies without dev packages and optimize for production
 RUN composer install \
     --no-dev \

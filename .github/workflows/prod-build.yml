@@ -53,10 +53,6 @@ jobs:
           type=raw,value=latest,enable=true
 
     # Add HTTP basic auth credentials
-    - name: set composer auth for private repos
-      run: |
-        echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
-
     # Build and push the app Docker image
     - name: Build and push App Docker image
       uses: docker/build-push-action@v6
@@ -66,8 +62,8 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        secrets: |
-          composer_auth=./auth.json
+        build-args: |
+          COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH_JSON }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
