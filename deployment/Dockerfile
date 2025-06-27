@@ -11,29 +11,12 @@ WORKDIR /app
 
 COPY composer.json composer.lock ./
 
-# Accept COMPOSER_AUTH as build argument
 ARG COMPOSER_AUTH
 
+ENV COMPOSER_AUTH=$COMPOSER_AUTH
+
 # Install dependencies without dev packages and optimize for production
-RUN --mount=type=secret,id=COMPOSER_AUTH,dst=/app/auth.json \
-    echo "=== Debug auth.json ===" && \
-    echo "File exists: $(test -f /app/auth.json && echo 'YES' || echo 'NO')" && \
-    echo "File size: $(wc -c < /app/auth.json 2>/dev/null || echo '0') bytes" && \
-    echo "First 100 chars:" && \
-    head -c 100 /app/auth.json 2>/dev/null || echo "Could not read file" && \
-    echo "" && \
-    echo "Last 50 chars:" && \
-    tail -c 50 /app/auth.json 2>/dev/null || echo "Could not read file" && \
-    echo "" && \
-    echo "JSON validation:" && \
-    if jq empty /app/auth.json 2>/dev/null; then \
-        echo "✓ Valid JSON"; \
-    else \
-        echo "✗ Invalid JSON - Error:"; \
-        jq empty /app/auth.json 2>&1 || true; \
-    fi && \
-    echo "=== End Debug ===" && \
-    composer install \
+RUN -COMPOSER_AUTH="$COMPOSER_AUTH" composer install \
     --no-dev \
     --no-interaction \
     --no-autoloader \
