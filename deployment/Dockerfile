@@ -1,29 +1,42 @@
+# =============================================================================
+# Laravel NMR Platform - Production Dockerfile
+# =============================================================================
+# Multi-stage build for Laravel application with FrankenPHP
+# Includes Composer authentication for private repositories
+# =============================================================================
+
+# Build arguments
 ARG PHP_VERSION=8.3
-
 ARG FRANKENPHP_VERSION=latest
-
 ARG COMPOSER_VERSION=latest
-
 ARG NODE_VERSION="18"
 
+# =============================================================================
+# Composer stage - Copy Composer binary
+# =============================================================================
 FROM composer:${COMPOSER_VERSION} AS vendor
 
+# =============================================================================
+# Main application stage
+# =============================================================================
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION} AS final
 
-LABEL maintainer="SMortexa <seyed.me720@gmail.com>"
-LABEL org.opencontainers.image.title="Laravel Octane Dockerfile"
-LABEL org.opencontainers.image.description="Production-ready Dockerfile for Laravel Octane"
-LABEL org.opencontainers.image.source=https://github.com/exaco/laravel-octane-dockerfile
-LABEL org.opencontainers.image.licenses=MIT
+# Metadata
+LABEL maintainer="NFDI4Chem Team"
+LABEL org.opencontainers.image.title="NMR Platform"
+LABEL org.opencontainers.image.description="Production Laravel NMR research platform with FrankenPHP"
+LABEL org.opencontainers.image.source="https://github.com/NFDI4Chem/nmr-platform"
+LABEL org.opencontainers.image.licenses="MIT"
 
+# Build arguments
 ARG WWWUSER=1000
 ARG WWWGROUP=1000
 ARG TZ=UTC
 ARG APP_DIR=/var/www/html
 ARG COMPOSER_AUTH
 
+# Environment variables
 ENV COMPOSER_AUTH=$COMPOSER_AUTH
-
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm-color \
     WITH_HORIZON=false \
@@ -38,64 +51,79 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 WORKDIR ${ROOT}
 
+# Use bash with strict error handling
 SHELL ["/bin/bash", "-eou", "pipefail", "-c"]
 
+# =============================================================================
+# System setup and timezone configuration
+# =============================================================================
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
 
-RUN apt-get update; \
-    apt-get upgrade -yqq; \
-    apt-get install -yqq --no-install-recommends --show-progress \
-    apt-utils \
-    curl \
-    wget \
-    vim \
-    git \
-    ncdu \
-    procps \
-    ca-certificates \
-    supervisor \
-    libsodium-dev \
-    # Install PHP extensions (included with dunglas/frankenphp)
+# =============================================================================
+# Install system dependencies and PHP extensions
+# =============================================================================
+RUN apt-get update \
+    && apt-get upgrade -yqq \
+    && apt-get install -yqq --no-install-recommends --show-progress \
+        apt-utils \
+        curl \
+        wget \
+        vim \
+        git \
+        ncdu \
+        procps \
+        ca-certificates \
+        supervisor \
+        libsodium-dev \
+    # Install PHP extensions
     && install-php-extensions \
-    bz2 \
-    pcntl \
-    mbstring \
-    bcmath \
-    sockets \
-    pgsql \
-    pdo_pgsql \
-    opcache \
-    exif \
-    pdo_mysql \
-    zip \
-    intl \
-    gd \
-    redis \
-    rdkafka \
-    memcached \
-    igbinary \
-    ldap \
+        bz2 \
+        pcntl \
+        mbstring \
+        bcmath \
+        sockets \
+        pgsql \
+        pdo_pgsql \
+        opcache \
+        exif \
+        pdo_mysql \
+        zip \
+        intl \
+        gd \
+        redis \
+        rdkafka \
+        memcached \
+        igbinary \
+        ldap \
+        imagick \
+    # Cleanup
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
+# =============================================================================
+# Install Supercronic for scheduled tasks
+# =============================================================================
 RUN arch="$(uname -m)" \
     && case "$arch" in \
-    armhf) _cronic_fname='supercronic-linux-arm' ;; \
-    aarch64) _cronic_fname='supercronic-linux-arm64' ;; \
-    x86_64) _cronic_fname='supercronic-linux-amd64' ;; \
-    x86) _cronic_fname='supercronic-linux-386' ;; \
-    *) echo >&2 "error: unsupported architecture: $arch"; exit 1 ;; \
+        armhf) _cronic_fname='supercronic-linux-arm' ;; \
+        aarch64) _cronic_fname='supercronic-linux-arm64' ;; \
+        x86_64) _cronic_fname='supercronic-linux-amd64' ;; \
+        x86) _cronic_fname='supercronic-linux-386' ;; \
+        *) echo >&2 "error: unsupported architecture: $arch"; exit 1 ;; \
     esac \
     && wget -q "https://github.com/aptible/supercronic/releases/download/v0.2.29/${_cronic_fname}" \
-    -O /usr/bin/supercronic \
+        -O /usr/bin/supercronic \
     && chmod +x /usr/bin/supercronic \
     && mkdir -p /etc/supercronic \
     && echo "*/1 * * * * php ${ROOT}/artisan schedule:run --no-interaction" > /etc/supercronic/laravel
 
+# =============================================================================
+# User and permission setup
+# =============================================================================
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
     && useradd -ms /bin/bash --no-log-init --no-user-group -g ${WWWGROUP} -u ${WWWUSER} ${USER}
@@ -103,12 +131,15 @@ RUN userdel --remove --force www-data \
 RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
 
+# Configure PHP
 RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
+# Switch to non-root user
 USER ${USER}
 
-# uncomment when built manually otherwise provided via composer auth
-# COPY --link --chown=${WWWUSER}:${WWWUSER} auth.json ./
+# =============================================================================
+# Install Composer dependencies
+# =============================================================================
 COPY --link --chown=${WWWUSER}:${WWWUSER} --from=vendor /usr/bin/composer /usr/bin/composer
 COPY --link --chown=${WWWUSER}:${WWWUSER} composer.json composer.lock ./
 
@@ -118,42 +149,54 @@ RUN COMPOSER_AUTH="$COMPOSER_AUTH" composer install \
     --no-autoloader \
     --no-ansi \
     --no-scripts \
+    --ignore-platform-req=ext-imagick \
+    --ignore-platform-req=ext-intl \
+    --ignore-platform-req=ext-pcntl \
+    --ignore-platform-req=ext-exif \
     --audit
 
+# Copy application source code
 COPY --link --chown=${WWWUSER}:${WWWUSER} . .
 
-###########################################
-# Build frontend assets with NPM
-###########################################
-
+# =============================================================================
+# Frontend build stage
+# =============================================================================
 FROM node:${NODE_VERSION} AS build
 
 ENV ROOT=/var/www/html
-
 WORKDIR ${ROOT}
 
+# Install Node.js dependencies
 COPY --link package.json package-lock.json ./
-
 RUN npm ci
 
+# Copy vendor dependencies and source
 COPY --link --from=final ${ROOT}/vendor vendor
 COPY --link . .
 
+# Build frontend assets
 RUN npm run build
 
-###########################################
-
+# =============================================================================
+# Final production stage
+# =============================================================================
 FROM final
 
 WORKDIR ${ROOT}
 
+# Copy built frontend assets
 COPY --link --chown=${WWWUSER}:${WWWUSER} --from=build ${ROOT}/public public
 
+# Create required directories and set permissions
 RUN mkdir -p \
-    storage/framework/{sessions,views,cache,testing} \
-    storage/logs \
-    bootstrap/cache && chmod -R a+rw storage
+        storage/framework/{sessions,views,cache,testing} \
+        storage/logs \
+        bootstrap/cache \
+    && chmod -R a+rw storage
 
+# =============================================================================
+# Copy configuration files and scripts
+# =============================================================================
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.conf /etc/supervisor/
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.*.conf /etc/supervisor/conf.d/
@@ -164,22 +207,32 @@ COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf
 # FrankenPHP embedded PHP configuration
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini /lib/php.ini
 
+# =============================================================================
+# Final Composer optimization
+# =============================================================================
 RUN composer install \
     --classmap-authoritative \
     --no-interaction \
     --no-ansi \
     --no-dev \
+    --ignore-platform-req=ext-imagick \
+    --ignore-platform-req=ext-intl \
+    --ignore-platform-req=ext-pcntl \
+    --ignore-platform-req=ext-exif \
     && composer clear-cache
 
+# Set executable permissions
 RUN chmod +x /usr/local/bin/start-container /usr/local/bin/healthcheck
 
+# Add utility functions to bash profile
 RUN cat deployment/utilities.sh >> ~/.bashrc
 
-EXPOSE 8000
-EXPOSE 443
-EXPOSE 443/udp
-EXPOSE 2019
+# =============================================================================
+# Expose ports and configure startup
+# =============================================================================
+EXPOSE 8000 443 443/udp 2019
 
 ENTRYPOINT ["start-container"]
 
-HEALTHCHECK --start-period=5s --interval=2s --timeout=5s --retries=8 CMD healthcheck || exit 1
+HEALTHCHECK --start-period=5s --interval=2s --timeout=5s --retries=8 \
+    CMD healthcheck || exit 1
