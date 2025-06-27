@@ -27,6 +27,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_bootstrap_cache:/var/www/html/bootstrap/cache
+      - ../.env:/var/www/html/.env
     env_file:
     - ../.env
     depends_on:
@@ -56,6 +57,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_bootstrap_cache:/var/www/html/bootstrap/cache
+      - ../.env:/var/www/html/.env
     env_file:
     - ../.env
     command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
@@ -79,6 +81,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_bootstrap_cache:/var/www/html/bootstrap/cache
+      - ../.env:/var/www/html/.env
     env_file:
     - ../.env
     command: ["sh", "-c", "while true; do php artisan schedule:run --verbose --no-interaction && sleep 60; done"]

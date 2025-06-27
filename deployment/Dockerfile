@@ -67,6 +67,8 @@ COPY . .
 
 # Create directories and set permissions in one layer
 RUN mkdir -p /var/www/html/config/caddy \
+             /var/log/supervisor \
+             /run/supervisor \
              /data/caddy/data \
              /data/caddy/config && \
     chmod -R 775 /var/www/html/config \
