@@ -22,8 +22,7 @@ RUN composer install \
     --ignore-platform-req=ext-intl \
     --ignore-platform-req=ext-pcntl \
     --ignore-platform-req=ext-exif \
-    --prefer-dist && \
-    rm -f ./auth.json
+    --prefer-dist
 
 COPY . .
 
