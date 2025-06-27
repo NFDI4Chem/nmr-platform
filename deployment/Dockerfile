@@ -15,15 +15,7 @@ COPY composer.json composer.lock ./
 ARG COMPOSER_AUTH
 
 # Install dependencies without dev packages and optimize for production
-RUN echo "COMPOSER_AUTH length: $(echo "$COMPOSER_AUTH" | wc -c)" && \
-    echo "First 50 chars: $(echo "$COMPOSER_AUTH" | head -c 50)..." && \
-    echo "Last 50 chars: ...$(echo "$COMPOSER_AUTH" | tail -c 50)" && \
-    if echo "$COMPOSER_AUTH" | jq empty 2>/dev/null; then \
-        echo "COMPOSER_AUTH is valid JSON"; \
-    else \
-        echo "COMPOSER_AUTH is invalid JSON"; \
-        echo "$COMPOSER_AUTH" | jq . 2>&1 || true; \
-    fi && \
+RUN --mount=type=secret,id=composer_auth,dst=${WORKDIR}/auth.json \
     composer install \
     --no-dev \
     --no-interaction \
