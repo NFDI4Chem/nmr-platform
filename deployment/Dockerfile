@@ -15,7 +15,7 @@ COPY composer.json composer.lock ./
 ARG COMPOSER_AUTH
 
 # Install dependencies without dev packages and optimize for production
-RUN --mount=type=secret,id=composer_auth,dst=/app/auth.json \
+RUN --mount=type=secret,id=COMPOSER_AUTH,dst=/app/auth.json \
     composer install \
     --no-dev \
     --no-interaction \

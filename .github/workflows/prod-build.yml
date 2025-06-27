@@ -52,7 +52,10 @@ jobs:
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable=true
 
-    # Add HTTP basic auth credentials
+    # Create auth.json for Docker secret
+    - name: Create auth.json
+      run: echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
+
     # Build and push the app Docker image
     - name: Build and push App Docker image
       uses: docker/build-push-action@v6
@@ -63,7 +66,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         secrets: |
-          composer_auth=${{ secrets.COMPOSER_AUTH_JSON }}
+          COMPOSER_AUTH=./auth.json
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
