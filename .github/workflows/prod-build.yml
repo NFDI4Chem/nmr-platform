@@ -52,13 +52,19 @@ jobs:
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable=true
 
-    - name: set composer auth for private repos
-      env:
-        COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH_JSON }}
+    # Create auth.json from secrets
+    - name: Create Composer authentication file
       run: |
-        echo $COMPOSER_AUTH | base64 -d  > auth.json
-        mkdir -p ~/.config/composer
-        echo $COMPOSER_AUTH | base64 -d  > ~/.config/composer/auth.json
+        if [ -n "${{ secrets.COMPOSER_AUTH_JSON }}" ]; then
+          echo '${{ secrets.COMPOSER_AUTH_JSON }}' > auth.json
+          if ! jq empty auth.json 2>/dev/null; then
+            echo "Error: Invalid JSON in COMPOSER_AUTH_JSON secret"
+            rm -f auth.json
+            exit 1
+          fi
+        else
+          echo "Warning: COMPOSER_AUTH_JSON secret not set"
+        fi
 
     # Build and push the app Docker image
     - name: Build and push App Docker image
@@ -69,5 +75,12 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        secrets: |
+          composer_auth=${{ hashFiles('auth.json') != '' && './auth.json' || '/dev/null' }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    # Clean up auth.json (security best practice)
+    - name: Clean up auth.json
+      if: always()
+      run: rm -f auth.json
