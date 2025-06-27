@@ -12,13 +12,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Install dependencies without dev packages and optimize for production
-RUN --mount=type=secret,id=composer_auth,target=/tmp/auth.json \
-    if [ -f /tmp/auth.json ]; then \
-        export COMPOSER_AUTH="$(cat /tmp/auth.json)"; \
-    else \
-        export COMPOSER_AUTH='{}'; \
-    fi && \
-    composer install \
+RUN composer install \
     --no-dev \
     --no-interaction \
     --no-autoloader \
