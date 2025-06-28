@@ -10,9 +10,10 @@ services:
     - --entrypoints.websecure.address=:443
     - --providers.docker=true
     - --providers.docker.exposedbydefault=false
+    - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
     - --certificatesresolvers.letsencrypt.acme.email=admin@nmrxiv.org
     - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
-    - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+    - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
     networks:
     - app_network
     ports:
@@ -21,7 +22,7 @@ services:
     restart: unless-stopped
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-    - traefik_acme:/acme.json
+    - ./acme.json:/acme.json
   # Laravel Application with FrankenPHP
   app:
     image: nfdi4chem/nmr-platform:latest
@@ -32,7 +33,7 @@ services:
       - ../:/var/www/html:cached
       - ../.env:/var/www/html/.env
     env_file:
-    - ../.env
+      - ../.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -171,8 +172,7 @@ volumes:
     driver: local
   app_bootstrap_cache:
     driver: local
-  traefik_acme:
-    driver: local
+
 
 networks:
   app_network:

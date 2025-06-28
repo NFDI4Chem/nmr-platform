@@ -68,6 +68,19 @@ check_requirements() {
     command -v docker >/dev/null 2>&1 || error "Docker is not installed"
     command -v docker-compose >/dev/null 2>&1 || error "Docker Compose is not installed"
     
+    # Create acme.json file with correct permissions for Traefik
+    local acme_file="$SCRIPT_DIR/acme.json"
+    if [[ ! -f "$acme_file" ]]; then
+        log "Creating acme.json file for Traefik SSL certificates..."
+        touch "$acme_file"
+        chmod 600 "$acme_file"
+        echo "Created $acme_file with permissions 600"
+    else
+        # Ensure correct permissions
+        chmod 600 "$acme_file"
+        echo "Set correct permissions (600) for $acme_file"
+    fi
+    
     success "Requirements check passed"
 }
 
