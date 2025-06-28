@@ -84,6 +84,8 @@ services:
     pgsql:
         image: postgres:16-alpine
         restart: unless-stopped
+        env_file:
+            - .env.production
         environment:
             POSTGRES_DB: ${DB_DATABASE}
             POSTGRES_USER: ${DB_USERNAME}
@@ -104,6 +106,8 @@ services:
     redis:
         image: redis:7-alpine
         restart: unless-stopped
+        env_file:
+            - .env.production
         command: redis-server --requirepass ${REDIS_PASSWORD}
         volumes:
             - redis_data:/data
@@ -119,6 +123,8 @@ services:
     meilisearch:
         image: getmeili/meilisearch:v1.6
         restart: unless-stopped
+        env_file:
+            - .env.production
         environment:
             MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
             MEILI_NO_ANALYTICS: true
