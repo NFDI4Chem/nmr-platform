@@ -211,9 +211,6 @@ COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf
 # FrankenPHP embedded PHP configuration
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini /lib/php.ini
 
-# Add utility functions to bash profile
-RUN cat deployment/utilities.sh >> ~/.bashrc
-
 # =============================================================================
 # Expose ports and configure startup
 # =============================================================================
