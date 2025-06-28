@@ -35,7 +35,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}
-        tags: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest
+        tags: latest
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
