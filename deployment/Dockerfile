@@ -211,11 +211,6 @@ COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf
 # FrankenPHP embedded PHP configuration
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini /lib/php.ini
 
-# =============================================================================
-# Clear Composer cache to reduce image size
-# =============================================================================
-RUN composer clear-cache
-
 # Set executable permissions
 RUN chmod +x /usr/local/bin/start-container /usr/local/bin/healthcheck
 
