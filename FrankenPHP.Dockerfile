@@ -10,7 +10,6 @@ FROM composer:${COMPOSER_VERSION} AS vendor
 
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION} AS final
 
-LABEL maintainer="SMortexa <seyed.me720@gmail.com>"
 LABEL org.opencontainers.image.title="Laravel Octane Dockerfile"
 LABEL org.opencontainers.image.description="Production-ready Dockerfile for Laravel Octane"
 LABEL org.opencontainers.image.source=https://github.com/exaco/laravel-octane-dockerfile
@@ -43,44 +42,60 @@ SHELL ["/bin/bash", "-eou", "pipefail", "-c"]
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
 
-RUN apt-get update; \
-    apt-get upgrade -yqq; \
+RUN apt-get update && \
+    apt-get upgrade -yqq && \
     apt-get install -yqq --no-install-recommends --show-progress \
-    apt-utils \
-    curl \
-    wget \
-    vim \
-    git \
-    ncdu \
-    procps \
-    ca-certificates \
-    supervisor \
-    libsodium-dev \
-    # Install PHP extensions (included with dunglas/frankenphp)
-    && install-php-extensions \
-    bz2 \
-    pcntl \
-    mbstring \
-    bcmath \
-    sockets \
-    pgsql \
-    pdo_pgsql \
-    opcache \
-    exif \
-    pdo_mysql \
-    zip \
-    intl \
-    gd \
-    redis \
-    rdkafka \
-    memcached \
-    igbinary \
-    ldap \
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm /var/log/lastlog /var/log/faillog
+        apt-utils \
+        curl \
+        wget \
+        vim \
+        git \
+        ncdu \
+        procps \
+        ca-certificates \
+        supervisor \
+        libsodium-dev \
+        # Add Imagick build dependencies
+        libmagickwand-dev \
+        build-essential \
+        php${PHP_VERSION}-dev \
+    && \
+    install-php-extensions \
+        bz2 \
+        pcntl \
+        mbstring \
+        bcmath \
+        sockets \
+        pgsql \
+        pdo_pgsql \
+        opcache \
+        exif \
+        pdo_mysql \
+        zip \
+        intl \
+        gd \
+        redis \
+        rdkafka \
+        memcached \
+        igbinary \
+        ldap \
+    && \
+    # Build Imagick from source (required for PHP 8.3)
+    git clone https://github.com/Imagick/imagick.git --depth 1 /tmp/imagick && \
+    cd /tmp/imagick && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    docker-php-ext-enable imagick && \
+    cd / && \
+    rm -rf /tmp/imagick && \
+    # Cleanup
+    apt-get -y autoremove && \
+    apt-get clean && \
+    docker-php-source delete && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm /var/log/lastlog /var/log/faillog
 
 RUN arch="$(uname -m)" \
     && case "$arch" in \
