@@ -2,11 +2,12 @@
 
 set -e
 
-COMPOSE_FILE="/mnt/data/nmr-platform/deployment/docker-compose.prod.yml"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+COMPOSE_FILE="$SCRIPT_DIR/docker-compose.prod.yml"
+ENV_FILE="$PROJECT_ROOT/.env"
 APP_IMAGE="nfdi4chem/nmr-platform:latest"
 WORKER_IMAGE="nfdi4chem/nmr-platform:latest"
-PROJECT_ROOT=$(dirname "$(dirname "$(realpath "$0")")")
-ENV_FILE="$PROJECT_ROOT/.env"
 NEW_CONTAINER_ID=""
 BACKUP_DIR="./backups"
 BUILD=false
@@ -15,9 +16,24 @@ BACKUP=false
 
 # === Load environment ===
 
-cd "$PROJECT_ROOT"
+echo "Script directory: $SCRIPT_DIR"
 echo "Project root: $PROJECT_ROOT"
+echo "Compose file: $COMPOSE_FILE"
+echo "Environment file: $ENV_FILE"
 
+cd "$PROJECT_ROOT"
+echo "Changed to directory: $(pwd)"
+
+# Check if .env file exists and is readable
+if [[ ! -f ".env" ]]; then
+    error ".env file not found in $PROJECT_ROOT"
+fi
+
+if [[ ! -r ".env" ]]; then
+    error ".env file is not readable in $PROJECT_ROOT"
+fi
+
+echo "Loading environment from: $(pwd)/.env"
 set -a
 source .env
 set +a
@@ -134,7 +150,7 @@ deploy_service() {
     check_requirements
 
     if [ "$(docker pull "$image" | grep -c "Status: Image is up to date")" -eq 0 ]; then
-        echo "📦 New ${service^^} image available."
+        echo "📦 New $(echo "$service" | tr '[:lower:]' '[:upper:]') image available."
 
         backup_database
         
@@ -165,7 +181,7 @@ backup_database() {
     mkdir -p "$BACKUP_DIR"
     local backup_file="$BACKUP_DIR/db_backup_$(date +%Y%m%d_%H%M%S).sql"
     
-    if docker compose -p "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE"  exec -T pgsql \
+    if docker compose -p "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE"  exec -T postgres \
         pg_dump -h localhost -U "${DB_USERNAME}" "${DB_DATABASE}" > "$backup_file" 2>/dev/null; then
         echo "Database backup created: $backup_file"
     else

@@ -4,11 +4,15 @@ services:
     container_name: traefik
     image: traefik:v3.0
     command:
+    - --api.dashboard=true
+    - --api.insecure=false
     - --entrypoints.web.address=:80
     - --entrypoints.websecure.address=:443
     - --providers.docker=true
     - --providers.docker.exposedbydefault=false
-    - --providers.file.filename=/etc/traefik/dynamic.yml
+    - --certificatesresolvers.letsencrypt.acme.email=admin@nmrxiv.org
+    - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+    - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
     networks:
     - app_network
     ports:
@@ -17,8 +21,7 @@ services:
     restart: unless-stopped
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-    - /etc/ssl/platform.fsu.nmrxiv.org/:/certs:ro
-    - /etc/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+    - traefik_acme:/acme.json
   # Laravel Application with FrankenPHP
   app:
     image: nfdi4chem/nmr-platform:latest
@@ -45,10 +48,18 @@ services:
       start_period: 60s
     labels:
     - traefik.enable=true
-    - traefik.http.routers.laravel.rule=Host(`platform.fsu.nmrxiv.org`)
-    - traefik.http.routers.laravel.entrypoints=websecure
-    - traefik.http.routers.laravel.tls=true
-    - traefik.http.services.laravel.loadbalancer.server.port=80
+    # HTTP to HTTPS redirect
+    - traefik.http.routers.app-http.rule=Host(`platform.fsu.nmrxiv.org`)
+    - traefik.http.routers.app-http.entrypoints=web
+    - traefik.http.routers.app-http.middlewares=https-redirect
+    - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+    - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    # HTTPS router
+    - traefik.http.routers.app-https.rule=Host(`platform.fsu.nmrxiv.org`)
+    - traefik.http.routers.app-https.entrypoints=websecure
+    - traefik.http.routers.app-https.tls=true
+    - traefik.http.routers.app-https.tls.certresolver=letsencrypt
+    - traefik.http.services.app.loadbalancer.server.port=8000
 
   # Queue Worker
   queue:
@@ -159,6 +170,8 @@ volumes:
   app_storage:
     driver: local
   app_bootstrap_cache:
+    driver: local
+  traefik_acme:
     driver: local
 
 networks:
