@@ -31,10 +31,9 @@ services:
         restart: unless-stopped
         environment:
             - RUN_MIGRATIONS=true
-        env_file:
-            - .env.production
         volumes:
             - app_storage:/app/storage
+            - ./.env:/app/.env:ro
         depends_on:
             pgsql:
                 condition: service_healthy
@@ -68,10 +67,9 @@ services:
         environment:
             - RUN_MIGRATIONS=false
             - RUN_WORKER=true
-        env_file:
-            - .env.production
         volumes:
             - app_storage:/app/storage
+            - ./.env:/app/.env:ro
         depends_on:
             pgsql:
                 condition: service_healthy
@@ -84,8 +82,6 @@ services:
     pgsql:
         image: postgres:16-alpine
         restart: unless-stopped
-        env_file:
-            - .env.production
         environment:
             POSTGRES_DB: ${DB_DATABASE}
             POSTGRES_USER: ${DB_USERNAME}
@@ -106,8 +102,6 @@ services:
     redis:
         image: redis:7-alpine
         restart: unless-stopped
-        env_file:
-            - .env.production
         command: redis-server --requirepass ${REDIS_PASSWORD}
         volumes:
             - redis_data:/data
@@ -123,8 +117,6 @@ services:
     meilisearch:
         image: getmeili/meilisearch:v1.6
         restart: unless-stopped
-        env_file:
-            - .env.production
         environment:
             MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
             MEILI_NO_ANALYTICS: true
