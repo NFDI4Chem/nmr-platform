@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+    # Traefik Load Balancer
+    traefik:
+        image: traefik:v3.0
+        container_name: traefik
+        restart: unless-stopped
+        command:
+            - --api.dashboard=true
+            - --api.insecure=false
+            - --entrypoints.web.address=:80
+            - --entrypoints.websecure.address=:443
+            - --providers.docker=true
+            - --providers.docker.exposedbydefault=false
+            - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+            - --certificatesresolvers.letsencrypt.acme.email=admin@nmrxiv.org
+            - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - ./deployment/acme.json:/acme.json
+        networks:
+            - app_network
+
+    # Laravel Application
+    app:
+        image: nfdi4chem/nmr-platform:latest
+        restart: unless-stopped
+        environment:
+            - RUN_MIGRATIONS=true
+        env_file:
+            - .env.production
+        volumes:
+            - app_storage:/app/storage
+        depends_on:
+            pgsql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        networks:
+            - app_network
+        labels:
+            - traefik.enable=true
+            # Local development route (HTTP only)
+            - traefik.http.routers.app-local.rule=Host(`localhost`)
+            - traefik.http.routers.app-local.entrypoints=web
+            - traefik.http.routers.app-local.service=app
+            # Production HTTP to HTTPS redirect
+            - traefik.http.routers.app-http.rule=Host(`platform.fsu.nmrxiv.org`)
+            - traefik.http.routers.app-http.entrypoints=web
+            - traefik.http.routers.app-http.middlewares=https-redirect
+            - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+            - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+            # Production HTTPS router
+            - traefik.http.routers.app-https.rule=Host(`platform.fsu.nmrxiv.org`)
+            - traefik.http.routers.app-https.entrypoints=websecure
+            - traefik.http.routers.app-https.tls=true
+            - traefik.http.routers.app-https.tls.certresolver=letsencrypt
+            - traefik.http.services.app.loadbalancer.server.port=8000
+
+    # Laravel Worker (Horizon + Scheduler)
+    worker:
+        image: nfdi4chem/nmr-platform:latest
+        restart: unless-stopped
+        environment:
+            - RUN_MIGRATIONS=false
+            - RUN_WORKER=true
+        env_file:
+            - .env.production
+        volumes:
+            - app_storage:/app/storage
+        depends_on:
+            pgsql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        networks:
+            - app_network
+
+    # PostgreSQL Database
+    pgsql:
+        image: postgres:16-alpine
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            PGDATA: /var/lib/postgresql/data/pgdata
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - app_network
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+
+    # Redis Cache
+    redis:
+        image: redis:7-alpine
+        restart: unless-stopped
+        command: redis-server --requirepass ${REDIS_PASSWORD}
+        volumes:
+            - redis_data:/data
+        networks:
+            - app_network
+        healthcheck:
+            test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+            interval: 10s
+            timeout: 3s
+            retries: 5
+
+    # Meilisearch
+    meilisearch:
+        image: getmeili/meilisearch:v1.6
+        restart: unless-stopped
+        environment:
+            MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+            MEILI_NO_ANALYTICS: true
+            MEILI_ENV: production
+        volumes:
+            - meilisearch_data:/meili_data
+        networks:
+            - app_network
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+
+volumes:
+    postgres_data:
+        driver: local
+    redis_data:
+        driver: local
+    meilisearch_data:
+        driver: local
+    app_storage:
+        driver: local
+
+networks:
+    app_network:
+        driver: bridge
