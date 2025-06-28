@@ -51,6 +51,8 @@ jobs:
         echo "Checking COMPOSER_AUTH secret..."
         if [ -n "$COMPOSER_AUTH" ]; then
           echo "COMPOSER_AUTH is set (length: ${#COMPOSER_AUTH})"
+          echo "Validating JSON format..."
+          echo "$COMPOSER_AUTH" | jq . > /dev/null && echo "COMPOSER_AUTH is valid JSON" || echo "COMPOSER_AUTH is invalid JSON"
         else
           echo "COMPOSER_AUTH is empty or not set"
         fi
@@ -61,8 +63,10 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: ./deployment/Dockerfile
+        file: ./Dockerfile
         push: true
+        platforms: linux/amd64
+        outputs: type=registry
         build-args: |
           WWWUSER=1000
           WWWGROUP=1000
@@ -74,6 +78,8 @@ jobs:
           NODE_VERSION=18
           COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH }}
         tags: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         
     # Debug: Test the built image
     - name: Test built image
