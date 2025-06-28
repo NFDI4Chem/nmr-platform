@@ -27,10 +27,9 @@ services:
   app:
     image: nfdi4chem/nmr-platform:latest
     restart: unless-stopped
-    # For production, don't mount source code - use built image
+    # For production, use built image - only mount storage and env
     volumes:
       - app_storage:/var/www/html/storage
-      - ../:/var/www/html:cached
       - ../.env:/var/www/html/.env
     env_file:
       - ../.env

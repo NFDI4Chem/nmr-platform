@@ -41,6 +41,22 @@ jobs:
         username: ${{ env.DOCKER_HUB_USERNAME  }}
         password: ${{ env.DOCKER_HUB_PASSWORD  }}
 
+    # Debug: Check if deployment files exist
+    - name: Check deployment files
+      run: |
+        echo "Checking deployment files..."
+        ls -la deployment/
+        echo "Checking start-container script..."
+        ls -la deployment/start-container
+        echo "Checking COMPOSER_AUTH secret..."
+        if [ -n "$COMPOSER_AUTH" ]; then
+          echo "COMPOSER_AUTH is set (length: ${#COMPOSER_AUTH})"
+        else
+          echo "COMPOSER_AUTH is empty or not set"
+        fi
+      env:
+        COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+
     - name: Build and push App Docker image
       uses: docker/build-push-action@v5
       with:
@@ -48,6 +64,21 @@ jobs:
         file: ./deployment/Dockerfile
         push: true
         build-args: |
-          RELEASE_VERSION=latest
+          WWWUSER=1000
+          WWWGROUP=1000
+          TZ=UTC
+          APP_DIR=/var/www/html
+          PHP_VERSION=8.3
+          FRANKENPHP_VERSION=latest
+          COMPOSER_VERSION=latest
+          NODE_VERSION=18
           COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH }}
         tags: ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest
+        
+    # Debug: Test the built image
+    - name: Test built image
+      run: |
+        echo "Testing if start-container exists in built image..."
+        docker run --rm ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest ls -la /usr/local/bin/start-container || echo "start-container not found!"
+        echo "Testing if vendor/autoload.php exists..."
+        docker run --rm ${{ env.REPOSITORY_NAMESPACE }}/${{ env.REPOSITORY_NAME }}:latest ls -la /var/www/html/vendor/autoload.php || echo "vendor/autoload.php not found!"
