@@ -204,15 +204,12 @@ RUN mkdir -p \
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.conf /etc/supervisor/
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/octane/FrankenPHP/supervisord.frankenphp.conf /etc/supervisor/conf.d/
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/supervisord.*.conf /etc/supervisor/conf.d/
-COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/start-container /usr/local/bin/start-container
-COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/healthcheck /usr/local/bin/healthcheck
+COPY --link --chown=${WWWUSER}:${WWWUSER} --chmod=755 deployment/start-container /usr/local/bin/start-container
+COPY --link --chown=${WWWUSER}:${WWWUSER} --chmod=755 deployment/healthcheck /usr/local/bin/healthcheck
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini
 
 # FrankenPHP embedded PHP configuration
 COPY --link --chown=${WWWUSER}:${WWWUSER} deployment/php.ini /lib/php.ini
-
-# Set executable permissions
-RUN chmod +x /usr/local/bin/start-container /usr/local/bin/healthcheck
 
 # Add utility functions to bash profile
 RUN cat deployment/utilities.sh >> ~/.bashrc
