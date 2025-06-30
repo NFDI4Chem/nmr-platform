@@ -76,6 +76,10 @@ check_minio_running() {
 
 # Deploy MinIO if not running
 deploy_minio_if_needed() {
+    if [[ ! -f "$MINIO_COMPOSE_FILE" ]]; then
+        error "MinIO docker-compose file not found at $MINIO_COMPOSE_FILE. Please ensure it exists before deployment."
+    fi
+
     if check_minio_running; then
         return 0
     fi
@@ -93,6 +97,8 @@ deploy_minio_if_needed() {
             sleep 10
         fi
     done
+
+    error "MinIO did not become healthy after deployment. Please ensure Minio is deployed successfully before proceeding with the application deployment."
 }
 
 wait_for_health() {
