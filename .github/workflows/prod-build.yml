@@ -30,6 +30,13 @@ jobs:
         username: ${{ env.DOCKER_HUB_USERNAME }}
         password: ${{ env.DOCKER_HUB_PASSWORD }}
 
+    - name: Create composer auth file for Docker secrets
+      env:
+        COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+      run: |
+        echo "$COMPOSER_AUTH" > auth.json
+        echo "✅ Composer auth file created for Docker secrets"
+
     - name: Extract metadata
       id: meta
       uses: docker/metadata-action@v5
@@ -44,11 +51,8 @@ jobs:
         file: ./deployment/Dockerfile
         push: true
         platforms: linux/amd64,linux/arm64
-        build-args: |
-          COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH }}
-          WWWUSER=1000
-          WWWGROUP=1000
-          TZ=UTC
+        secrets: |
+          id=composer_auth,src=auth.json
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
