@@ -14,14 +14,15 @@ services:
             - --providers.docker=true
             - --providers.docker.exposedbydefault=false
             - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-            - --certificatesresolvers.letsencrypt.acme.email=admin@nmrxiv.org
+            - --certificatesresolvers.letsencrypt.acme.email=info.nmrxiv@uni-jena.de
             - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
         ports:
             - "80:80"
             - "443:443"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - ./deployment/acme.json:/acme.json
+            - /etc/ssl/platform.fsu.nmrxiv.org/:/certs:ro
+            - /etc/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
         networks:
             - app_network
 
@@ -43,16 +44,6 @@ services:
             - app_network
         labels:
             - traefik.enable=true
-            # Local development route (HTTP only)
-            - traefik.http.routers.app-local.rule=Host(`localhost`)
-            - traefik.http.routers.app-local.entrypoints=web
-            - traefik.http.routers.app-local.service=app
-            # Production HTTP to HTTPS redirect
-            - traefik.http.routers.app-http.rule=Host(`platform.fsu.nmrxiv.org`)
-            - traefik.http.routers.app-http.entrypoints=web
-            - traefik.http.routers.app-http.middlewares=https-redirect
-            - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-            - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
             # Production HTTPS router
             - traefik.http.routers.app-https.rule=Host(`platform.fsu.nmrxiv.org`)
             - traefik.http.routers.app-https.entrypoints=websecure
