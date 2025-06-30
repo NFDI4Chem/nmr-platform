@@ -247,8 +247,6 @@ done
 
 
 # === Deployment Flow ===
-deploy_minio_if_needed
-
 if [ "$DEPLOY" = true ]; then
     echo "Starting zero-downtime deployment..."
     
@@ -260,7 +258,9 @@ elif [ "$BUILD" = true ]; then
         docker compose -f "$APP_COMPOSE_FILE" down --remove-orphans; 
     fi
 
-    echo "Building containers..."
+    deploy_minio_if_needed
+
+    echo "Building app containers..."
     docker compose -f "$APP_COMPOSE_FILE" build --no-cache
     docker compose -f "$APP_COMPOSE_FILE" up -d
 

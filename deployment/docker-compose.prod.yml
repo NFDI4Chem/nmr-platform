@@ -44,7 +44,7 @@ services:
             - traefik.http.routers.laravel.rule=Host(`platform.fsu.nmrxiv.org`)
             - traefik.http.routers.laravel.entrypoints=websecure
             - traefik.http.routers.laravel.tls=true
-            - traefik.http.services.laravel.loadbalancer.server.port=80
+            - traefik.http.services.laravel.loadbalancer.server.port=8000
 
     # Laravel Worker (Horizon + Scheduler)
     worker:
@@ -61,6 +61,11 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
+        healthcheck:
+        test: ["CMD", "pgrep", "-f", "queue:work"]
+        interval: 10s
+        timeout: 3s
+        retries: 3
         networks:
             - app_network
 
