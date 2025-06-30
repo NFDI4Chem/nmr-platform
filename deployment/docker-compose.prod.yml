@@ -7,15 +7,11 @@ services:
         container_name: traefik
         restart: unless-stopped
         command:
-            - --api.dashboard=true
-            - --api.insecure=false
-            - --entrypoints.web.address=:80
-            - --entrypoints.websecure.address=:443
-            - --providers.docker=true
-            - --providers.docker.exposedbydefault=false
-            - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-            - --certificatesresolvers.letsencrypt.acme.email=info.nmrxiv@uni-jena.de
-            - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+        - --entrypoints.web.address=:80
+        - --entrypoints.websecure.address=:443
+        - --providers.docker=true
+        - --providers.docker.exposedbydefault=false
+        - --providers.file.filename=/etc/traefik/dynamic.yml
         ports:
             - "80:80"
             - "443:443"
