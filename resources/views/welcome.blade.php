@@ -66,7 +66,7 @@
                 <div class="py-24 sm:py-32 lg:pb-40">
                     <div class="mx-auto max-w-7xl px-6 lg:px-8">
                         <div class="mx-auto max-w-2xl text-center">
-                            <h1 class="text-5xl font-semibold text-balance text-gray-900 sm:text-5xl">Manage, Share and Integrate Your NMR Research Data</h1>
+                            <h1 class="text-5xl font-semibold text-balance text-gray-900 sm:text-5xl">Manage, Share and Integrate Your NMR Research Data test</h1>
                             <p class="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">A comprehensive platform for NMR data management from sample submission to automated data processing & advanced visualization capabilities.</p>
                             <div class="mt-10 flex items-center justify-center gap-x-6">
                                 <a href="/register" class="rounded-md bg-blue-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">Get started</a>
