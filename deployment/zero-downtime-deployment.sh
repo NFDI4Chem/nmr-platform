@@ -244,7 +244,7 @@ build_services() {
 deploy_services() {
     echo "Starting zero-downtime deployment..."
     deploy_service app "$APP_IMAGE" true
-    # deploy_service worker "$WORKER_IMAGE" true
+    deploy_service worker "$WORKER_IMAGE" true
 }
 
 # Create database backup
