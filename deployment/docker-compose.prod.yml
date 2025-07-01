@@ -62,10 +62,10 @@ services:
             redis:
                 condition: service_healthy
         healthcheck:
-        test: ["CMD", "pgrep", "-f", "queue:work"]
-        interval: 10s
-        timeout: 3s
-        retries: 3
+            test: ["CMD", "pgrep", "-f", "queue:work"]
+            interval: 10s
+            timeout: 3s
+            retries: 3
         networks:
             - app_network
 
