@@ -30,7 +30,7 @@ services:
             - RUN_MIGRATIONS=true
         volumes:
             - app_storage:/app/storage
-            - ./.env:/app/.env:ro
+            - ./../.env:/app/.env:ro
         depends_on:
             pgsql:
                 condition: service_healthy
@@ -55,7 +55,7 @@ services:
             - RUN_WORKER=true
         volumes:
             - app_storage:/app/storage
-            - ./.env:/app/.env:ro
+            - ./../.env:/app/.env:ro
         depends_on:
             pgsql:
                 condition: service_healthy

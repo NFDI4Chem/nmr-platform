@@ -64,6 +64,8 @@ check_minio_running() {
     # Check if MinIO container is running and healthy
     local minio_container
     minio_container=$(docker ps -a --filter "name=${MINIO_SERVICE_NAME}" --format "{{.ID}}")
+    echo "Minio container ID:"
+    echo $minio_container
     if [[ -n "$minio_container" ]]; then
         # Check health endpoint
         if curl -sf "$MINIO_HEALTH_URL" >/dev/null; then
