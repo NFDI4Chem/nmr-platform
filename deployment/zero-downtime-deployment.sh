@@ -63,9 +63,8 @@ check_requirements() {
 check_minio_running() {
     # Check if MinIO container is running and healthy
     local minio_container
-    minio_container=$(docker ps -a --format "{{.ID}}\t{{.Names}}" | grep "${MINIO_SERVICE_NAME}" | awk '{print $1}')
-    echo "Minio container ID:"
-    echo $minio_container
+    minio_container=$(docker ps -a --format "{{.ID}}\t{{.Names}}" | grep "$MINIO_SERVICE_NAME" | awk '{print $1}')
+
     if [[ -n "$minio_container" ]]; then
         # Check health endpoint
         if curl -sf "$MINIO_HEALTH_URL" >/dev/null; then
@@ -205,6 +204,44 @@ deploy_service() {
         echo "✅ No update for $service Skipping deployment."
     fi
 }
+restart_services() {
+    if docker compose -f "$APP_COMPOSE_FILE" ps -q | grep -q .; then 
+        docker compose -f "$APP_COMPOSE_FILE" down --remove-orphans
+    fi
+    deploy_minio_if_needed
+
+    echo "Building app containers..."
+    docker compose -f "$APP_COMPOSE_FILE" build --no-cache
+    docker compose -f "$APP_COMPOSE_FILE" up -d
+
+    echo "Waiting for database to be ready..."
+    sleep 10
+
+    run_migration_and_clear_cache
+}
+
+build_services() {
+    deploy_minio_if_needed
+
+    echo "Building app containers..."
+    docker compose -f "$APP_COMPOSE_FILE" build --no-cache
+    docker compose -f "$APP_COMPOSE_FILE" up -d
+
+    echo "Waiting for database to be ready..."
+    sleep 10
+
+    run_migration_and_clear_cache
+
+    cleanup 
+    echo "🎉 Build completed successfully!"
+    echo "Application is available at: https://platform.fsu.nmrxiv.org/"
+}
+
+deploy_services() {
+    echo "Starting zero-downtime deployment..."
+    deploy_service app "$APP_IMAGE" true
+    # deploy_service worker "$WORKER_IMAGE" true
+}
 
 # Create database backup
 backup_database() {
@@ -243,40 +280,28 @@ while [[ $# -gt 0 ]]; do
         --build) BUILD=true; shift ;;
         --deploy) DEPLOY=true; shift ;;
         --backup) BACKUP=true; shift ;;
+        --restart) RESTART=true; shift;;
         *) echo "Unknown option: $1"; exit 1 ;;
     esac
 done
 
 
 # === Deployment Flow ===
-if [ "$DEPLOY" = true ]; then
-    echo "Starting zero-downtime deployment..."
-    
-    deploy_service app "$APP_IMAGE" true
-    # deploy_service worker "$WORKER_IMAGE" true
-    
-elif [ "$BUILD" = true ]; then
-    if docker compose -f "$APP_COMPOSE_FILE" ps -q | grep -q .; then 
-        docker compose -f "$APP_COMPOSE_FILE" down --remove-orphans; 
-    fi
-
-    deploy_minio_if_needed
-
-    echo "Building app containers..."
-    docker compose -f "$APP_COMPOSE_FILE" build --no-cache
-    docker compose -f "$APP_COMPOSE_FILE" up -d
-
-    echo "Waiting for database to be ready..."
-    sleep 10
-
-    run_migration_and_clear_cache
-    
-    cleanup 
-    echo "🎉 Build completed successfully!"
-    echo "Application is available at: https://platform.fsu.nmrxiv.org/"
-
-elif [ "$BACKUP" = true ]; then
-    backup_database
-else 
-    echo "Skipping build and deploy step — please pass at least one argument (--build (if you want to build everything for the first time) or --deploy(for zero downtime deployment))..."
-fi
+# === Deployment Flow ===
+case true in
+    $DEPLOY)
+        deploy_services
+        ;;
+    $BUILD)
+        build_services
+        ;;
+    $BACKUP)
+        backup_database
+        ;;
+    $RESTART)
+        restart_services
+        ;;
+    *)
+        echo "Skipping build and deploy step — please pass at least one argument (--build (if you want to build everything for the first time) or --deploy(for zero downtime deployment))..."
+        ;;
+esac
