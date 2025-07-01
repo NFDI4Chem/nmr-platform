@@ -218,6 +218,10 @@ restart_services() {
     sleep 10
 
     run_migration_and_clear_cache
+
+    cleanup
+    echo "Services restarted successfully!"
+    echo "Application is available at: https://platform.fsu.nmrxiv.org/"
 }
 
 build_services() {
