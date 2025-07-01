@@ -63,7 +63,7 @@ check_requirements() {
 check_minio_running() {
     # Check if MinIO container is running and healthy
     local minio_container
-    minio_container=$(docker ps -a --filter "name=${MINIO_SERVICE_NAME}" --format "{{.ID}}")
+    minio_container=$(docker ps -a --format "{{.ID}}\t{{.Names}}" | grep "${MINIO_SERVICE_NAME}" | awk '{print $1}')
     echo "Minio container ID:"
     echo $minio_container
     if [[ -n "$minio_container" ]]; then
