@@ -34,7 +34,7 @@ jobs:
       env:
         COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
       run: |
-        echo $COMPOSER_AUTH | base64 -d > auth.json
+        echo "$COMPOSER_AUTH" > auth.json
         echo "✅ Composer auth file created for Docker secrets"
 
     - name: Extract metadata
