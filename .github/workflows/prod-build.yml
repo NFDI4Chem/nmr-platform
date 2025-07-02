@@ -2,7 +2,7 @@ name: Build NMR-Platform Docker Image
 
 on:
   push:
-    branches: [zero-downtime-deployment]
+    branches: [main]
 
 env:
   REPOSITORY_NAME: nmr-platform
