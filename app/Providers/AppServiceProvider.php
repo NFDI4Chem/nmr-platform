@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\App;
 use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,8 +48,8 @@ class AppServiceProvider extends ServiceProvider
                 ]));
         });
 
-        if (config('app.env') === 'production' || config('app.env') === 'development') {
-            URL::forceScheme('https');
+        if (App::environment('production') || App::environment('development')) {
+            \URL::forceScheme('https');
         }
 
     }
