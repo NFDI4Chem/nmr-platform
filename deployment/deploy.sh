@@ -2,6 +2,8 @@
 
 set -e
 
+# Print timestamp at the start of the script
+echo "🚀 Script started at: $(date '+%Y-%m-%d %H:%M:%S')"
 
 APP_IMAGE="nfdi4chem/nmr-platform:latest"
 WORKER_IMAGE="nfdi4chem/nmr-platform:latest"
@@ -27,8 +29,6 @@ source .env
 set +a
 
 export COMPOSE_PROJECT_NAME=production
-
-set -x
 
 # === Functions ===
 
