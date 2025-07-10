@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Production
+      url: https://platform.fsu.nmrxiv.org
     
     steps:
     - name: Checkout code
@@ -57,6 +58,9 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    - name: Remove composer auth file
+      run: rm -f auth.json
 
     - name: Test built image
       run: |
