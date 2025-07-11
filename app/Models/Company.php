@@ -8,7 +8,6 @@ use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -49,7 +48,7 @@ class Company extends FilamentCompaniesCompany implements HasAvatar, HasMedia
 
         // Group Leader (Principal Investigator)
         'leader_name',
-        'email', 
+        'email',
         'phone',
         'office_address',
         'website',
@@ -62,12 +61,12 @@ class Company extends FilamentCompaniesCompany implements HasAvatar, HasMedia
         // Administrative
         'funding_sources',
         'preferred_language',
-        
+
         // ELN Information
         'uses_eln',
         'eln_system',
         'eln_other',
-        
+
         'reference',
     ];
 
@@ -140,7 +139,7 @@ class Company extends FilamentCompaniesCompany implements HasAvatar, HasMedia
                 ->label('Does your team use an Electronic Lab Notebook (ELN)?')
                 ->options([
                     true => 'Yes',
-                    false => 'No'
+                    false => 'No',
                 ])
                 ->inline()
                 ->boolean()
@@ -158,7 +157,7 @@ class Company extends FilamentCompaniesCompany implements HasAvatar, HasMedia
                     'labarchives' => 'LabArchives',
                     'labguru' => 'LabGuru',
                     'sciformation' => 'SciFormation',
-                    'other' => 'Other'
+                    'other' => 'Other',
                 ])
                 ->prefixIcon('heroicon-o-wrench-screwdriver')
                 ->visible(fn (Forms\Get $get) => $get('uses_eln') === true)
@@ -264,7 +263,7 @@ class Company extends FilamentCompaniesCompany implements HasAvatar, HasMedia
                             'english' => 'English',
                             'german' => 'German',
                             'english_german' => 'English and German',
-                            'other' => 'Other'
+                            'other' => 'Other',
                         ])
                         ->default('english')
                         ->prefixIcon('heroicon-o-language')

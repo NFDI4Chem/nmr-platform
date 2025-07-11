@@ -26,7 +26,7 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             // Only report to FilamentExceptions if we're not in debug mode
-            if ($this->shouldReport($e) && !config('app.debug')) {
+            if ($this->shouldReport($e) && ! config('app.debug')) {
                 FilamentExceptions::report($e);
             }
         });

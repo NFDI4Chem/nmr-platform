@@ -32,7 +32,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
 use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
@@ -67,7 +66,6 @@ class FilamentCompaniesServiceProvider extends PanelProvider
                         ->userViewsEnabled(false)
                         ->resourceEnabled(false)
                         ->tenant(Company::class),
-                    SpotlightPlugin::make(),
                     FilamentMediaLibrary::make()
                         ->pageTitle('File Browser')
                         ->navigationLabel('File Browser')

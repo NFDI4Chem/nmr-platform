@@ -3,11 +3,12 @@
 namespace App\Providers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\App;
 use BezhanSalleh\PanelSwitch\PanelSwitch;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,14 +42,15 @@ class AppServiceProvider extends ServiceProvider
                     'admin' => 'Control Panel',
                     'groups' => 'Group Dashboard',
                 ])
-                ->visible(fn (): bool => auth()->user()?->hasAnyRole([
+                ->visible(fn (): bool => Auth::check() && Auth::user()->hasAnyRole([
                     'super_admin',
                     'application_support',
                     'application_dev',
                 ]));
         });
 
-        if (App::environment('production') || App::environment('development')) {
+        // Only force HTTPS in production if APP_URL uses HTTPS
+        if (App::environment('production') && str_starts_with(config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
 

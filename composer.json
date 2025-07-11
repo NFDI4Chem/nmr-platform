@@ -23,7 +23,7 @@
         "laravel/socialite": "^5.20",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.0",
-        "pxlrbt/filament-spotlight": "*",
+
         "ralphjsmit/laravel-filament-media-library": "^3.9",
         "spatie/laravel-cookie-consent": "^3.3",
         "stechstudio/filament-impersonate": "^3.16",
@@ -35,7 +35,7 @@
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.22",
-        "laravel/sail": "^1.42",
+        "laravel/sail": "^1.43",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^11.5.3"

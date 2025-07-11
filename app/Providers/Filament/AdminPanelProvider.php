@@ -9,7 +9,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -22,7 +21,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
 
@@ -60,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
                     ->conversionThumb(enabled: true, width: 600, height: 600)
                     ->mediaPickerModalWidth('7xl')
                     ->acceptPdf(),
-                SpotlightPlugin::make(),
+
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -70,7 +68,7 @@ class AdminPanelProvider extends PanelProvider
                 MenuItem::make()
                     ->label('Group')
                     ->icon('heroicon-o-building-office')
-                    ->url(static fn () =>  route('filament.groups.pages.dashboard', ['tenant' => Auth::user()->personalCompany()])),
+                    ->url(static fn () => route('filament.groups.pages.dashboard', ['tenant' => Auth::user()->personalCompany()])),
             ])
             ->middleware([
                 EncryptCookies::class,

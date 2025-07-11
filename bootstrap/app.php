@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->reportable(function (Throwable $e) {
             // Only report to FilamentExceptions if we're not in debug mode
-            if (!config('app.debug')) {
+            if (! config('app.debug')) {
                 FilamentExceptions::report($e);
             }
         });

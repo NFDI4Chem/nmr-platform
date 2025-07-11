@@ -4,7 +4,6 @@ namespace App\Filament\Company\Pages;
 
 use App\Models\Company;
 use Exception;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Support\Enums\MaxWidth;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryFolder;
-use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
 use Wallo\FilamentCompanies\Events\AddingCompany;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Company\CreateCompany as FilamentCreateCompany;
@@ -73,11 +71,11 @@ class CreateCompany extends FilamentCreateCompany
                 'description' => $data['description'] ?? null,
                 'reference' => str()->random(7),
                 'personal_company' => $personalCompany,
-                
+
                 // Faculty & Institute
                 'faculty' => $data['faculty'] ?? null,
                 'institute' => $data['institute'] ?? null,
-                
+
                 // Group Leader
                 'leader_name' => $data['leader_name'] ?? null,
                 'email' => $data['email'] ?? null,
@@ -85,13 +83,13 @@ class CreateCompany extends FilamentCreateCompany
                 'office_address' => $data['office_address'] ?? null,
                 'website' => $data['website'] ?? null,
                 'orcid' => $data['orcid'] ?? null,
-                
+
                 // Research Focus
                 'research_keywords' => $data['research_keywords'] ?? null,
                 'research_description' => $data['research_description'] ?? null,
                 'funding_sources' => $data['funding_sources'] ?? null,
                 'preferred_language' => $data['preferred_language'] ?? 'english',
-                
+
                 // ELN Information
                 'uses_eln' => $data['uses_eln'] ?? false,
                 'eln_system' => $data['eln_system'] ?? null,

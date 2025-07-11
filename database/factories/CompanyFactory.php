@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Company;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -24,14 +23,14 @@ class CompanyFactory extends Factory
         $groupName = fake()->randomElement([
             'Computational Chemistry Research Group',
             'Analytical Chemistry Laboratory',
-            'Organic Synthesis Research Group', 
+            'Organic Synthesis Research Group',
             'Materials Science Laboratory',
             'Biochemistry Research Group',
             'Physical Chemistry Laboratory',
             'Environmental Chemistry Group',
             'Pharmaceutical Research Laboratory',
             'Nanotechnology Research Group',
-            'Catalysis Research Laboratory'
+            'Catalysis Research Laboratory',
         ]);
 
         $faculties = [
@@ -39,14 +38,14 @@ class CompanyFactory extends Factory
             'Faculty of Natural Sciences',
             'Faculty of Science and Technology',
             'Faculty of Chemistry',
-            'Faculty of Chemical Engineering'
+            'Faculty of Chemical Engineering',
         ];
         $institutes = [
             'Institute for Inorganic and Analytical Chemistry',
             'Institute of Organic Chemistry',
             'Institute of Physical Chemistry',
             'Institute of Materials Science',
-            'Institute of Chemical Biology'
+            'Institute of Chemical Biology',
         ];
 
         $elnSystems = ['chemotion', 'elabftw', 'rspace', 'benchling', 'labarchives', 'labguru'];
@@ -65,10 +64,10 @@ class CompanyFactory extends Factory
             'institute' => fake()->randomElement($institutes),
 
             // Group Leader
-            'leader_name' => 'Prof. Dr. ' . fake()->name(),
+            'leader_name' => 'Prof. Dr. '.fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->phoneNumber(),
-            'office_address' => fake()->streetAddress() . ', Room ' . fake()->numberBetween(100, 400) . ', ' . fake()->postcode() . ' ' . fake()->city() . ', Germany',
+            'office_address' => fake()->streetAddress().', Room '.fake()->numberBetween(100, 400).', '.fake()->postcode().' '.fake()->city().', Germany',
             'website' => fake()->url(),
             'orcid' => fake()->regexify('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}'),
 
@@ -78,14 +77,14 @@ class CompanyFactory extends Factory
                 'Computational Chemistry, Molecular Modeling, Quantum Chemistry, Machine Learning',
                 'Analytical Chemistry, Mass Spectrometry, NMR Spectroscopy, Chromatography',
                 'Materials Science, Nanotechnology, Surface Chemistry, Electrochemistry',
-                'Biochemistry, Enzymology, Protein Chemistry, Chemical Biology'
+                'Biochemistry, Enzymology, Protein Chemistry, Chemical Biology',
             ]),
             'research_description' => fake()->paragraph(4),
             'funding_sources' => fake()->randomElement([
                 'Deutsche Forschungsgemeinschaft (DFG), European Union (Horizon 2020)',
                 'National Science Foundation (NSF), National Institutes of Health (NIH)',
                 'Volkswagen Foundation, Alexander von Humboldt Foundation',
-                'BMBF, Max Planck Society, Helmholtz Association'
+                'BMBF, Max Planck Society, Helmholtz Association',
             ]),
             'preferred_language' => fake()->randomElement(['english', 'german', 'english_german']),
 

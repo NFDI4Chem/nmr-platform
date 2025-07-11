@@ -43,3 +43,5 @@ yarn-error.log
 # Keep example files in repository
 !/deployment/env.production.example
 !/deployment/env.minio.example
+
+storage/logs/*

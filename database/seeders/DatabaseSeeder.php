@@ -35,6 +35,5 @@ class DatabaseSeeder extends Seeder
 
         $admin->assignRole('super_admin');
 
-        
     }
 }
