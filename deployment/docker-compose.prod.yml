@@ -26,8 +26,6 @@ services:
     app:
         image: nfdi4chem/nmr-platform:latest
         restart: unless-stopped
-        environment:
-            - RUN_MIGRATIONS=true
         volumes:
             - app_storage:/app/storage
             - ./../.env:/app/.env:ro
