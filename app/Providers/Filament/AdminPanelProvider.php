@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use RalphJSmit\Filament\MediaLibrary\FilamentMediaLibrary;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
+use MarcoGermani87\FilamentCookieConsent\FilamentCookieConsent;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -46,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 DebuggerPlugin::make(),
                 FilamentExceptionsPlugin::make(),
+                FilamentCookieConsent::make(),
                 AdvancedTablesPlugin::make()
                     ->userViewsEnabled(false)
                     ->resourceEnabled(false),

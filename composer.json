@@ -23,7 +23,7 @@
         "laravel/socialite": "^5.20",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.0",
-
+        "marcogermani87/filament-cookie-consent": "^1.1",
         "ralphjsmit/laravel-filament-media-library": "^3.9",
         "spatie/laravel-cookie-consent": "^3.3",
         "stechstudio/filament-impersonate": "^3.16",

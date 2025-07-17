@@ -38,6 +38,7 @@ use RalphJSmit\Filament\MediaLibrary\Media\Models\MediaLibraryItem;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Auth\Register;
 use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
+use MarcoGermani87\FilamentCookieConsent\FilamentCookieConsent;
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {
@@ -62,6 +63,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
                         ->companies(invitations: true)
                         ->notifications()
                         ->modals(),
+                    FilamentCookieConsent::make(),
                     AdvancedTablesPlugin::make()
                         ->userViewsEnabled(false)
                         ->resourceEnabled(false)
