@@ -35,5 +35,8 @@ class DatabaseSeeder extends Seeder
 
         $admin->assignRole('super_admin');
 
+        $this->call(SolventSeeder::class);
+        $this->call(ImpuritySeeder::class);
+
     }
 }

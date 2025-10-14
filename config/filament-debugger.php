@@ -12,7 +12,7 @@ return [
         'pulse' => 'view_any_exception',
     ],
 
-    'group' => 'Debugger',
+    'group' => 'Debuggers',
 
     'url' => [
         'horizon' => env('HORIZON_PATH', 'horizon'),
