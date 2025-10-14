@@ -27,7 +27,7 @@ services:
             - meilisearch
             - mailpit
     pgsql:
-        image: 'postgres:17'
+        image: "informaticsmatters/rdkit-cartridge-debian:latest"
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
