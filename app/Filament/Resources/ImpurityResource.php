@@ -11,12 +11,14 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ImpurityResource extends Resource
 {
     protected static ?string $model = Impurity::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-beaker';
+    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
 
     protected static ?string $navigationLabel = 'Impurities';
 
@@ -57,7 +59,7 @@ class ImpurityResource extends Resource
                                 '13C' => 'Carbon (¹³C)',
                             ])
                             ->default('1H')
-                            ->prefixIcon('heroicon-o-atom')
+                            ->prefixIcon('heroicon-o-cube')
                             ->helperText('Type of nucleus observed'),
 
                         Forms\Components\TextInput::make('solvent')
@@ -78,12 +80,75 @@ class ImpurityResource extends Resource
                 Forms\Components\Section::make('NMR Data')
                     ->description('NMR spectroscopic data and ranges')
                     ->schema([
-                        Forms\Components\KeyValue::make('ranges')
+                        Forms\Components\Repeater::make('ranges')
                             ->label('NMR Ranges')
-                            ->keyLabel('Property')
-                            ->valueLabel('Value')
+                            ->schema([
+                                Forms\Components\Grid::make(3)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('from')
+                                            ->label('From (ppm)')
+                                            ->numeric()
+                                            ->step(0.001)
+                                            ->required(),
+                                        
+                                        Forms\Components\TextInput::make('to')
+                                            ->label('To (ppm)')
+                                            ->numeric()
+                                            ->step(0.001)
+                                            ->required(),
+                                        
+                                        Forms\Components\TextInput::make('integration')
+                                            ->label('Integration')
+                                            ->numeric()
+                                            ->step(1),
+                                    ]),
+                                
+                                Forms\Components\Repeater::make('signals')
+                                    ->label('Signals')
+                                    ->schema([
+                                        Forms\Components\Grid::make(3)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('delta')
+                                                    ->label('δ (ppm)')
+                                                    ->numeric()
+                                                    ->step(0.01)
+                                                    ->required(),
+                                                
+                                                Forms\Components\TextInput::make('multiplicity')
+                                                    ->label('Multiplicity')
+                                                    ->placeholder('e.g., s, d, t, q, m')
+                                                    ->maxLength(10),
+                                                
+                                                Forms\Components\TextInput::make('assignment')
+                                                    ->label('Assignment')
+                                                    ->placeholder('e.g., CH₃, OH')
+                                                    ->maxLength(50),
+                                            ]),
+                                        
+                                        Forms\Components\TagsInput::make('js')
+                                            ->label('J coupling (Hz)')
+                                            ->placeholder('Enter J values')
+                                            ->helperText('Coupling constants in Hz'),
+                                    ])
+                                    ->collapsible()
+                                    ->collapsed()
+                                    ->itemLabel(fn (array $state): ?string => 
+                                        isset($state['delta']) 
+                                            ? "δ {$state['delta']} ppm" 
+                                            : 'Signal'
+                                    )
+                                    ->defaultItems(0),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->itemLabel(fn (array $state): ?string => 
+                                isset($state['from'], $state['to']) 
+                                    ? "Range: {$state['from']} - {$state['to']} ppm" 
+                                    : 'NMR Range'
+                            )
                             ->addActionLabel('Add Range')
-                            ->helperText('NMR spectroscopic ranges and signals')
+                            ->reorderable()
+                            ->defaultItems(0)
                             ->columnSpanFull(),
                     ])
                     ->columns(1)
@@ -193,6 +258,123 @@ class ImpurityResource extends Resource
                     ->trueLabel('Active only')
                     ->falseLabel('Inactive only')
                     ->default(true),
+
+                Tables\Filters\Filter::make('structure')
+                    ->form([
+                        Forms\Components\Select::make('type')
+                            ->label('Search Type')
+                            ->options([
+                                'substructure' => 'Substructure Search',
+                                'exact' => 'Exact Match',
+                                'similarity' => 'Similarity Search',
+                            ])
+                            ->required()
+                            ->default('substructure')
+                            ->helperText('Choose the type of structure search to perform'),
+
+                        Forms\Components\TextInput::make('smiles')
+                            ->label('SMILES Query')
+                            ->required()
+                            ->placeholder('e.g., CC(=O)O')
+                            ->helperText('Enter the SMILES notation to search for'),
+
+                        Forms\Components\TextInput::make('threshold')
+                            ->label('Similarity Threshold')
+                            ->numeric()
+                            ->default(0.7)
+                            ->minValue(0)
+                            ->maxValue(1)
+                            ->step(0.1)
+                            ->visible(fn (callable $get) => $get('type') === 'similarity')
+                            ->helperText('Minimum similarity score (0-1)'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (empty($data['type']) || empty($data['smiles'])) {
+                            return $query;
+                        }
+
+                        try {
+                            $searchType = $data['type'];
+                            $smiles = $data['smiles'];
+                            
+                            switch ($searchType) {
+                                case 'substructure':
+                                    // Substructure search: find molecules containing the query structure
+                                    $sql = 'SELECT id, 
+                                        tanimoto_sml(morganbv_fp(mol_from_smiles(?::cstring)), 
+                                                     morganbv_fp(mol_from_smiles(smiles::cstring))) AS similarity
+                                    FROM impurities 
+                                    WHERE smiles IS NOT NULL 
+                                    AND mol_from_smiles(smiles::cstring) @> mol_from_smiles(?::cstring)
+                                    ORDER BY similarity DESC';
+                                    
+                                    $hits = DB::select($sql, [$smiles, $smiles]);
+                                    break;
+
+                                case 'exact':
+                                    // Exact match search
+                                    $sql = 'SELECT id 
+                                    FROM impurities 
+                                    WHERE smiles IS NOT NULL 
+                                    AND mol_from_smiles(smiles::cstring) @= mol_from_smiles(?::cstring)';
+                                    
+                                    $hits = DB::select($sql, [$smiles]);
+                                    break;
+
+                                case 'similarity':
+                                    // Similarity search using Morgan fingerprints
+                                    $threshold = $data['threshold'] ?? 0.7;
+                                    $sql = 'SELECT id,
+                                        tanimoto_sml(morganbv_fp(mol_from_smiles(?::cstring)), 
+                                                     morganbv_fp(mol_from_smiles(smiles::cstring))) AS similarity
+                                    FROM impurities 
+                                    WHERE smiles IS NOT NULL 
+                                    AND morganbv_fp(mol_from_smiles(smiles::cstring)) % morganbv_fp(mol_from_smiles(?::cstring))
+                                    AND tanimoto_sml(morganbv_fp(mol_from_smiles(?::cstring)), 
+                                                     morganbv_fp(mol_from_smiles(smiles::cstring))) >= ?
+                                    ORDER BY similarity DESC';
+                                    
+                                    $hits = DB::select($sql, [$smiles, $smiles, $smiles, $threshold]);
+                                    break;
+
+                                default:
+                                    return $query;
+                            }
+
+                            $ids_array = collect($hits)->pluck('id')->toArray();
+
+                            if (!empty($ids_array)) {
+                                return $query->whereIn('id', $ids_array)
+                                    ->orderByRaw('ARRAY_POSITION(ARRAY[' . implode(',', $ids_array) . ']::bigint[], id)');
+                            } else {
+                                // No matches found, return empty result
+                                return $query->whereRaw('1 = 0');
+                            }
+                        } catch (\Exception $e) {
+                            // Log error and return query unchanged
+                            Log::error('Structure search error: ' . $e->getMessage());
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Structure Search Error')
+                                ->body('Invalid SMILES notation or database error. Please check your input.')
+                                ->danger()
+                                ->send();
+                            
+                            return $query;
+                        }
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!empty($data['type']) && !empty($data['smiles'])) {
+                            $typeLabel = match($data['type']) {
+                                'substructure' => 'Substructure',
+                                'exact' => 'Exact Match',
+                                'similarity' => 'Similarity',
+                                default => 'Structure'
+                            };
+                            return $typeLabel . ': ' . $data['smiles'];
+                        }
+                        return null;
+                    }),
             ])
             ->groups([
                 Tables\Grouping\Group::make('nucleus')
