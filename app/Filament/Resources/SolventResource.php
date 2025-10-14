@@ -108,7 +108,8 @@ class SolventResource extends Resource
                     ->weight('medium')
                     ->copyable()
                     ->copyMessage('Solvent name copied!')
-                    ->icon('heroicon-o-beaker'),
+                    ->icon('heroicon-o-beaker')
+                    ->description(fn ($record) => $record->description),
 
                 Tables\Columns\TextColumn::make('molecular_formula')
                     ->label('Formula')
@@ -125,19 +126,6 @@ class SolventResource extends Resource
                     ->sortable()
                     ->alignEnd()
                     ->placeholder('—'),
-
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Description')
-                    ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
-                        $state = $column->getState();
-                        if (strlen($state) <= 50) {
-                            return null;
-                        }
-
-                        return $state;
-                    })
-                    ->placeholder('No description'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
@@ -206,26 +194,10 @@ class SolventResource extends Resource
                     ->collapsible(),
             ])
             ->defaultGroup('active')
-            ->filters([
-                Tables\Filters\Filter::make('has_molecular_weight')
-                    ->label('Has Molecular Weight')
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('molecular_weight')),
-
-                Tables\Filters\Filter::make('has_formula')
-                    ->label('Has Formula')
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('molecular_formula')),
-
-                Tables\Filters\Filter::make('active_only')
-                    ->label('Active Only')
-                    ->query(fn (Builder $query): Builder => $query->where('active', true)),
-
-                Tables\Filters\Filter::make('inactive_only')
-                    ->label('Inactive Only')
-                    ->query(fn (Builder $query): Builder => $query->where('active', false)),
-            ])
             ->actions([
                 Tables\Actions\Action::make('toggle_active')
-                    ->label(fn ($record) => $record->active ? 'Disable' : 'Enable')
+                    ->label('')
+                    ->tooltip(fn ($record) => $record->active ? 'Disable' : 'Enable')
                     ->icon(fn ($record) => $record->active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                     ->color(fn ($record) => $record->active ? 'danger' : 'success')
                     ->requiresConfirmation()
@@ -248,9 +220,12 @@ class SolventResource extends Resource
                     }),
 
                 Tables\Actions\ViewAction::make()
+                    ->label('')
                     ->modalHeading('Solvent Details'),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label(''),
                 Tables\Actions\DeleteAction::make()
+                    ->label('')
                     ->requiresConfirmation()
                     ->modalDescription('Are you sure you want to delete this solvent? This action cannot be undone.'),
             ])
