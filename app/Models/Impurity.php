@@ -35,4 +35,3 @@ class Impurity extends Model
         'active' => 'boolean',
     ];
 }
-

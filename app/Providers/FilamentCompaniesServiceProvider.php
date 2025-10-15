@@ -79,10 +79,17 @@ class FilamentCompaniesServiceProvider extends PanelProvider
                 'primary' => Color::Gray,
             ])
             ->discoverResources(in: app_path('Filament/Company/Resources'), for: 'App\\Filament\\Company\\Resources')
-            ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\\Filament\\Company\\Pages')
             ->discoverClusters(in: app_path('Filament/Company/Clusters'), for: 'App\\Filament\\Company\\Clusters')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Company\Pages\Dashboard::class,
+            ])
+            ->widgets([
+                \Filament\Widgets\AccountWidget::class,
+                \Filament\Widgets\FilamentInfoWidget::class,
+                \App\Filament\Company\Widgets\GroupSamplesStatsWidget::class,
+                \App\Filament\Company\Widgets\GroupSamplesByPriorityChart::class,
+                \App\Filament\Company\Widgets\GroupRecentSamplesWidget::class,
+                \App\Filament\Company\Widgets\GroupSamplesByStatusChart::class,
             ])
             ->userMenuItems([
                 'api-tokens' => MenuItem::make()
@@ -94,7 +101,6 @@ class FilamentCompaniesServiceProvider extends PanelProvider
                     ->url(static fn () => '/logout'),
             ])
             ->authGuard('web')
-            ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\\Filament\\Company\\Widgets')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

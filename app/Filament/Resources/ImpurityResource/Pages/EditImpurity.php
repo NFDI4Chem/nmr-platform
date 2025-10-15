@@ -17,4 +17,3 @@ class EditImpurity extends EditRecord
         ];
     }
 }
-

@@ -37,6 +37,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(SolventSeeder::class);
         $this->call(ImpuritySeeder::class);
-
+        $this->call(SpectrumTypeSeeder::class);
+        $this->call(DeviceSeeder::class);
+        $this->call(CompanyAndSampleSeeder::class);
     }
 }

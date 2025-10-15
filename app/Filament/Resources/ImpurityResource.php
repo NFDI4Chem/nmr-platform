@@ -90,19 +90,19 @@ class ImpurityResource extends Resource
                                             ->numeric()
                                             ->step(0.001)
                                             ->required(),
-                                        
+
                                         Forms\Components\TextInput::make('to')
                                             ->label('To (ppm)')
                                             ->numeric()
                                             ->step(0.001)
                                             ->required(),
-                                        
+
                                         Forms\Components\TextInput::make('integration')
                                             ->label('Integration')
                                             ->numeric()
                                             ->step(1),
                                     ]),
-                                
+
                                 Forms\Components\Repeater::make('signals')
                                     ->label('Signals')
                                     ->schema([
@@ -113,18 +113,18 @@ class ImpurityResource extends Resource
                                                     ->numeric()
                                                     ->step(0.01)
                                                     ->required(),
-                                                
+
                                                 Forms\Components\TextInput::make('multiplicity')
                                                     ->label('Multiplicity')
                                                     ->placeholder('e.g., s, d, t, q, m')
                                                     ->maxLength(10),
-                                                
+
                                                 Forms\Components\TextInput::make('assignment')
                                                     ->label('Assignment')
                                                     ->placeholder('e.g., CH₃, OH')
                                                     ->maxLength(50),
                                             ]),
-                                        
+
                                         Forms\Components\TagsInput::make('js')
                                             ->label('J coupling (Hz)')
                                             ->placeholder('Enter J values')
@@ -132,18 +132,16 @@ class ImpurityResource extends Resource
                                     ])
                                     ->collapsible()
                                     ->collapsed()
-                                    ->itemLabel(fn (array $state): ?string => 
-                                        isset($state['delta']) 
-                                            ? "δ {$state['delta']} ppm" 
+                                    ->itemLabel(fn (array $state): ?string => isset($state['delta'])
+                                            ? "δ {$state['delta']} ppm"
                                             : 'Signal'
                                     )
                                     ->defaultItems(0),
                             ])
                             ->collapsible()
                             ->collapsed()
-                            ->itemLabel(fn (array $state): ?string => 
-                                isset($state['from'], $state['to']) 
-                                    ? "Range: {$state['from']} - {$state['to']} ppm" 
+                            ->itemLabel(fn (array $state): ?string => isset($state['from'], $state['to'])
+                                    ? "Range: {$state['from']} - {$state['to']} ppm"
                                     : 'NMR Range'
                             )
                             ->addActionLabel('Add Range')
@@ -166,6 +164,7 @@ class ImpurityResource extends Resource
                         if (empty($record->smiles)) {
                             return null;
                         }
+
                         return env('CM_PUBLIC_API', 'https://api.cheminf.studio/latest/')
                             .'depict/2D?smiles='.urlencode($record->smiles)
                             .'&height=300&width=300&CIP=true&toolkit=cdk';
@@ -181,7 +180,7 @@ class ImpurityResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight('medium')
-                    ->description(fn ($record) => $record->smiles ? 'SMILES: ' . $record->smiles : null)
+                    ->description(fn ($record) => $record->smiles ? 'SMILES: '.$record->smiles : null)
                     ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : $state)
                     ->limit(50)
                     ->tooltip(fn ($record) => is_array($record->names) ? implode(', ', $record->names) : $record->names)
@@ -296,7 +295,7 @@ class ImpurityResource extends Resource
                         try {
                             $searchType = $data['type'];
                             $smiles = $data['smiles'];
-                            
+
                             switch ($searchType) {
                                 case 'substructure':
                                     // Substructure search: find molecules containing the query structure
@@ -307,7 +306,7 @@ class ImpurityResource extends Resource
                                     WHERE smiles IS NOT NULL 
                                     AND mol_from_smiles(smiles::cstring) @> mol_from_smiles(?::cstring)
                                     ORDER BY similarity DESC';
-                                    
+
                                     $hits = DB::select($sql, [$smiles, $smiles]);
                                     break;
 
@@ -317,7 +316,7 @@ class ImpurityResource extends Resource
                                     FROM impurities 
                                     WHERE smiles IS NOT NULL 
                                     AND mol_from_smiles(smiles::cstring) @= mol_from_smiles(?::cstring)';
-                                    
+
                                     $hits = DB::select($sql, [$smiles]);
                                     break;
 
@@ -333,7 +332,7 @@ class ImpurityResource extends Resource
                                     AND tanimoto_sml(morganbv_fp(mol_from_smiles(?::cstring)), 
                                                      morganbv_fp(mol_from_smiles(smiles::cstring))) >= ?
                                     ORDER BY similarity DESC';
-                                    
+
                                     $hits = DB::select($sql, [$smiles, $smiles, $smiles, $threshold]);
                                     break;
 
@@ -343,36 +342,38 @@ class ImpurityResource extends Resource
 
                             $ids_array = collect($hits)->pluck('id')->toArray();
 
-                            if (!empty($ids_array)) {
+                            if (! empty($ids_array)) {
                                 return $query->whereIn('id', $ids_array)
-                                    ->orderByRaw('ARRAY_POSITION(ARRAY[' . implode(',', $ids_array) . ']::bigint[], id)');
+                                    ->orderByRaw('ARRAY_POSITION(ARRAY['.implode(',', $ids_array).']::bigint[], id)');
                             } else {
                                 // No matches found, return empty result
                                 return $query->whereRaw('1 = 0');
                             }
                         } catch (\Exception $e) {
                             // Log error and return query unchanged
-                            Log::error('Structure search error: ' . $e->getMessage());
-                            
+                            Log::error('Structure search error: '.$e->getMessage());
+
                             \Filament\Notifications\Notification::make()
                                 ->title('Structure Search Error')
                                 ->body('Invalid SMILES notation or database error. Please check your input.')
                                 ->danger()
                                 ->send();
-                            
+
                             return $query;
                         }
                     })
                     ->indicateUsing(function (array $data): ?string {
-                        if (!empty($data['type']) && !empty($data['smiles'])) {
-                            $typeLabel = match($data['type']) {
+                        if (! empty($data['type']) && ! empty($data['smiles'])) {
+                            $typeLabel = match ($data['type']) {
                                 'substructure' => 'Substructure',
                                 'exact' => 'Exact Match',
                                 'similarity' => 'Similarity',
                                 default => 'Structure'
                             };
-                            return $typeLabel . ': ' . $data['smiles'];
+
+                            return $typeLabel.': '.$data['smiles'];
                         }
+
                         return null;
                     }),
             ])
@@ -516,7 +517,7 @@ class ImpurityResource extends Resource
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         $names = is_array($record->names) ? implode(', ', $record->names) : $record->names;
-        
+
         return [
             'Names' => $names,
             'Nucleus' => $record->nucleus,
@@ -524,4 +525,3 @@ class ImpurityResource extends Resource
         ];
     }
 }
-

@@ -26,13 +26,13 @@ class ListImpurities extends ListRecords
             'all' => Tab::make('All')
                 ->icon('heroicon-o-clipboard-document-list')
                 ->badge(Impurity::count()),
-            
+
             '1H' => Tab::make('Proton (¹H)')
                 ->icon('heroicon-o-beaker')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('nucleus', '1H'))
                 ->badge(Impurity::where('nucleus', '1H')->count())
                 ->badgeColor('success'),
-            
+
             '13C' => Tab::make('Carbon (¹³C)')
                 ->icon('heroicon-o-beaker')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('nucleus', '13C'))
@@ -41,4 +41,3 @@ class ListImpurities extends ListRecords
         ];
     }
 }
-

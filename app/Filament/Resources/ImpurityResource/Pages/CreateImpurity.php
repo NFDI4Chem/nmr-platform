@@ -9,4 +9,3 @@ class CreateImpurity extends CreateRecord
 {
     protected static string $resource = ImpurityResource::class;
 }
-

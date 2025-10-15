@@ -21,12 +21,14 @@ Route::get('/', function () {
 Route::get('/privacy-policy', function () {
     $content = file_get_contents(resource_path('markdown/policy.md'));
     $policy = Str::markdown($content);
+
     return view('policy', compact('policy'));
 })->name('privacy-policy');
 
 Route::get('/terms-of-use', function () {
     $content = file_get_contents(resource_path('markdown/terms.md'));
-    $terms = Str::markdown($content); 
+    $terms = Str::markdown($content);
+
     return view('terms', compact('terms'));
 })->name('terms-of-use');
 

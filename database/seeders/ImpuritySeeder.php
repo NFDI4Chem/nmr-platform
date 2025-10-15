@@ -20,7 +20,7 @@ class ImpuritySeeder extends Seeder
         $protonImpuritiesPath = database_path('seeders/impurities/ProtonImpurities.json');
         if (File::exists($protonImpuritiesPath)) {
             $protonImpurities = json_decode(File::get($protonImpuritiesPath), true);
-            
+
             if ($protonImpurities && is_array($protonImpurities)) {
                 foreach ($protonImpurities as $impurity) {
                     Impurity::create([
@@ -32,7 +32,7 @@ class ImpuritySeeder extends Seeder
                         'active' => true,
                     ]);
                 }
-                $this->command->info('Loaded ' . count($protonImpurities) . ' proton (1H) impurities.');
+                $this->command->info('Loaded '.count($protonImpurities).' proton (1H) impurities.');
             }
         } else {
             $this->command->warn('ProtonImpurities.json file not found.');
@@ -42,7 +42,7 @@ class ImpuritySeeder extends Seeder
         $carbonImpuritiesPath = database_path('seeders/impurities/CarbonImpurities.json');
         if (File::exists($carbonImpuritiesPath)) {
             $carbonImpurities = json_decode(File::get($carbonImpuritiesPath), true);
-            
+
             if ($carbonImpurities && is_array($carbonImpurities)) {
                 foreach ($carbonImpurities as $impurity) {
                     Impurity::create([
@@ -54,7 +54,7 @@ class ImpuritySeeder extends Seeder
                         'active' => true,
                     ]);
                 }
-                $this->command->info('Loaded ' . count($carbonImpurities) . ' carbon (13C) impurities.');
+                $this->command->info('Loaded '.count($carbonImpurities).' carbon (13C) impurities.');
             }
         } else {
             $this->command->warn('CarbonImpurities.json file not found.');
@@ -64,4 +64,3 @@ class ImpuritySeeder extends Seeder
         $this->command->info("Total impurities seeded: {$totalCount}");
     }
 }
-

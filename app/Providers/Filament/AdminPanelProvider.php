@@ -60,15 +60,28 @@ class AdminPanelProvider extends PanelProvider
                     ->acceptPdf(),
 
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+                \App\Filament\Widgets\StatsOverviewWidget::class,
+                \App\Filament\Widgets\DevicesOverviewWidget::class,
+                \App\Filament\Widgets\SamplesByStatusChart::class,
+                \App\Filament\Widgets\SamplesTrendChart::class,
+                \App\Filament\Widgets\RecentSamplesWidget::class,
             ])
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Group')
                     ->icon('heroicon-o-building-office')
-                    ->url(static fn () => route('filament.groups.pages.dashboard', ['tenant' => Auth::user()->personalCompany()])),
+                    ->url(static function () {
+                        $user = Auth::user();
+                        $company = $user?->allCompanies()?->first();
+                        if ($company) {
+                            return route('filament.groups.pages.dashboard', ['tenant' => $company]);
+                        }
+
+                        return '#';
+                    })
+                    ->visible(static fn () => Auth::user()?->allCompanies()?->count() > 0),
             ])
             ->middleware([
                 EncryptCookies::class,
