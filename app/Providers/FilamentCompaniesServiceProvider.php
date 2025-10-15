@@ -86,6 +86,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
             ->widgets([
                 \Filament\Widgets\AccountWidget::class,
                 \Filament\Widgets\FilamentInfoWidget::class,
+                \App\Filament\Company\Widgets\QuickLinksWidget::class,
                 \App\Filament\Company\Widgets\GroupSamplesStatsWidget::class,
                 \App\Filament\Company\Widgets\GroupSamplesByPriorityChart::class,
                 \App\Filament\Company\Widgets\GroupRecentSamplesWidget::class,

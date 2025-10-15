@@ -124,12 +124,15 @@ class Sample extends Model implements HasMedia
                 ->columns(2),
             Section::make('Configuration')
                 ->schema([
-                    Forms\Components\Select::make('spectrum_type')
+                    Forms\Components\CheckboxList::make('spectrum_type')
                         ->relationship('spectrumTypes', 'name')
-                        ->multiple()
+                        ->label('Spectrum Types')
                         ->options(function (Get $get) {
                             return SpectrumType::all()->pluck('name', 'id');
-                        }),
+                        })
+                        ->columns(3)
+                        ->gridDirection('row')
+                        ->columnSpanFull(),
                     Forms\Components\TextInput::make('other_nuclei')
                         ->label('Other Nuclei (please specify)')
                         ->maxLength(255),
@@ -149,20 +152,25 @@ class Sample extends Model implements HasMedia
                 ->columns(2),
             Section::make('Sample info')
                 ->schema([
-                    Forms\Components\Select::make('solvent_id')
-                        ->relationship('solvent', 'name', fn ($query) => $query->where('active', true))
+                    Forms\Components\Radio::make('solvent_id')
                         ->label('Solvent')
                         ->required()
-                        ->searchable()
-                        ->preload(),
-                    Forms\Components\Select::make('priority')
+                        ->options(function () {
+                            return Solvent::where('active', true)->pluck('name', 'id');
+                        })
+                        ->columns(3)
+                        ->columnSpanFull(),
+                    Forms\Components\Radio::make('priority')
+                        ->label('Priority')
                         ->options([
                             'LOW' => 'Low',
                             'MEDIUM' => 'Medium',
                             'HIGH' => 'High',
                             'URGENT' => 'Urgent',
                         ])
-                        ->default('LOW'),
+                        ->default('LOW')
+                        ->inline()
+                        ->columnSpanFull(),
                     Forms\Components\Textarea::make('instructions')
                         ->label('Special care for sample')
                         ->columnSpanFull(),

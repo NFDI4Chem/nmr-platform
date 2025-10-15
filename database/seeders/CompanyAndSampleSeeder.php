@@ -27,23 +27,23 @@ class CompanyAndSampleSeeder extends Seeder
             return;
         }
 
-        $this->command->info('Creating personal company for super_admin...');
+        $this->command->info('Creating personal group for super_admin...');
 
-        // First, create a personal company for the super_admin if they don't have one
-        $personalCompany = $superAdmin->ownedCompanies()->where('personal_company', true)->first();
+        // First, create a personal group for the super_admin if they don't have one
+        $personalGroup = $superAdmin->ownedCompanies()->where('personal_company', true)->first();
 
-        if (! $personalCompany) {
-            $personalCompany = Company::create([
+        if (! $personalGroup) {
+            $personalGroup = Company::create([
                 'user_id' => $superAdmin->id,
-                'name' => $superAdmin->name."'s Company",
-                'slug' => Str::slug($superAdmin->name.'-company'),
-                'search_slug' => Str::slug($superAdmin->name.'-company'),
+                'name' => "Demo Group",
+                'slug' => Str::slug("Demo Group"),
+                'search_slug' => Str::slug("Demo Group"),
                 'personal_company' => true,
                 'reference' => strtoupper(Str::random(3)).rand(1000, 9999),
             ]);
-            $this->command->info("Created personal company: {$personalCompany->name}");
-        } else {
-            $this->command->info("Personal company already exists: {$personalCompany->name}");
+            $this->command->info("Created personal group: {$personalGroup->name}");
+            } else {
+            $this->command->info("Personal group already exists: {$personalGroup->name}");
         }
 
         $this->command->info('Creating research groups for super_admin...');
@@ -123,7 +123,7 @@ class CompanyAndSampleSeeder extends Seeder
             $company->users()->attach($superAdmin, ['role' => 'admin']);
 
             $createdCompanies[] = $company;
-            $this->command->info("Created company: {$company->name}");
+            $this->command->info("Created group: {$company->name}");
         }
 
         // Get necessary data for samples
@@ -270,8 +270,8 @@ class CompanyAndSampleSeeder extends Seeder
         }
 
         $this->command->info('');
-        $this->command->alert('Company and Sample Seeding Complete!');
-        $this->command->line('Created 1 personal company');
+        $this->command->alert('Group and Sample Seeding Complete!');
+        $this->command->line('Created 1 personal group');
         $this->command->line('Created '.count($createdCompanies).' research group companies');
         $this->command->line("Created {$sampleCount} samples across all research groups");
         $this->command->line("Super admin ({$superAdmin->email}) is owner and member of all companies");

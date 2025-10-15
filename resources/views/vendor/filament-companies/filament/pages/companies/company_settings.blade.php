@@ -2,7 +2,7 @@
     <div>
         @livewire(\Wallo\FilamentCompanies\Http\Livewire\UpdateCompanyNameForm::class, compact('company'))
 
-        @livewire(\App\Filament\Company\Pages\UpdateCompanyDetailsForm::class, compact('company'))
+        @livewire(\App\Livewire\Company\UpdateCompanyDetailsForm::class, compact('company'))
 
         @livewire(\Wallo\FilamentCompanies\Http\Livewire\CompanyEmployeeManager::class, compact('company'))
       
