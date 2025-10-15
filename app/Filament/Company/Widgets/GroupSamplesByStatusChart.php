@@ -14,14 +14,14 @@ class GroupSamplesByStatusChart extends ChartWidget
     protected static ?int $sort = 5;
 
     protected static ?string $maxHeight = '300px';
-    
-    protected int | string | array $columnSpan = 1;
+
+    protected int|string|array $columnSpan = 1;
 
     protected function getData(): array
     {
         $tenant = Filament::getTenant();
-        
-        if (!$tenant) {
+
+        if (! $tenant) {
             return [
                 'datasets' => [],
                 'labels' => [],
@@ -77,7 +77,7 @@ class GroupSamplesByStatusChart extends ChartWidget
     {
         return 'doughnut';
     }
-    
+
     protected function getOptions(): array
     {
         return [
@@ -90,4 +90,3 @@ class GroupSamplesByStatusChart extends ChartWidget
         ];
     }
 }
-

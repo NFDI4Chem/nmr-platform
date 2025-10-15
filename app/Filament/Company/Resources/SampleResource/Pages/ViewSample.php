@@ -17,4 +17,3 @@ class ViewSample extends ViewRecord
         ];
     }
 }
-

@@ -14,14 +14,14 @@ class GroupSamplesByPriorityChart extends ChartWidget
     protected static ?int $sort = 4;
 
     protected static ?string $maxHeight = '300px';
-    
-    protected int | string | array $columnSpan = 1;
+
+    protected int|string|array $columnSpan = 1;
 
     protected function getData(): array
     {
         $tenant = Filament::getTenant();
-        
-        if (!$tenant) {
+
+        if (! $tenant) {
             return [
                 'datasets' => [],
                 'labels' => [],
@@ -73,8 +73,8 @@ class GroupSamplesByPriorityChart extends ChartWidget
                 [
                     'label' => 'Samples',
                     'data' => $orderedData,
-                    'backgroundColor' => array_map(fn($label) => $colors[$label], $orderedLabels),
-                    'borderColor' => array_map(fn($label) => $borderColors[$label], $orderedLabels),
+                    'backgroundColor' => array_map(fn ($label) => $colors[$label], $orderedLabels),
+                    'borderColor' => array_map(fn ($label) => $borderColors[$label], $orderedLabels),
                     'borderWidth' => 2,
                 ],
             ],
@@ -86,7 +86,7 @@ class GroupSamplesByPriorityChart extends ChartWidget
     {
         return 'bar';
     }
-    
+
     protected function getOptions(): array
     {
         return [
@@ -106,4 +106,3 @@ class GroupSamplesByPriorityChart extends ChartWidget
         ];
     }
 }
-

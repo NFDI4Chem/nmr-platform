@@ -23,4 +23,3 @@ class EditSample extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 }
-

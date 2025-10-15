@@ -18,9 +18,9 @@ class CreateSample extends CreateRecord
             $data['company_id'] = $tenant->getKey();
         }
         $data['user_id'] = auth()->id();
-        
+
         // Set default status if not set
-        if (!isset($data['status']) || empty($data['status'])) {
+        if (! isset($data['status']) || empty($data['status'])) {
             $data['status'] = 'submitted';
         }
 
@@ -32,4 +32,3 @@ class CreateSample extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 }
-

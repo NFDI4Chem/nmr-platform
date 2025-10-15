@@ -12,13 +12,13 @@ class GroupRecentSamplesWidget extends BaseWidget
 {
     protected static ?int $sort = 3;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
         $tenant = Filament::getTenant();
-        
-        if (!$tenant) {
+
+        if (! $tenant) {
             return $table
                 ->query(Sample::query()->whereRaw('1 = 0'))
                 ->columns([]);
@@ -40,21 +40,21 @@ class GroupRecentSamplesWidget extends BaseWidget
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
-                
+
                 Tables\Columns\TextColumn::make('device.name')
                     ->label('Device')
                     ->sortable()
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('molecule.name')
                     ->label('Molecule')
                     ->sortable()
                     ->limit(30),
-                
+
                 Tables\Columns\TextColumn::make('solvent.name')
                     ->label('Solvent')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('priority')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -63,7 +63,7 @@ class GroupRecentSamplesWidget extends BaseWidget
                         'HIGH' => 'warning',
                         default => 'gray',
                     }),
-                
+
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -74,7 +74,7 @@ class GroupRecentSamplesWidget extends BaseWidget
                         'Draft' => 'gray',
                         default => 'gray',
                     }),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
@@ -83,10 +83,9 @@ class GroupRecentSamplesWidget extends BaseWidget
             ])
             ->defaultSort('created_at', 'desc');
     }
-    
+
     protected function getTableHeading(): string
     {
         return 'Recent Samples';
     }
 }
-

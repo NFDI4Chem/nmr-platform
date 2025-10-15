@@ -10,4 +10,3 @@ class Dashboard extends BaseDashboard
 
     protected static ?string $title = 'Group Dashboard';
 }
-

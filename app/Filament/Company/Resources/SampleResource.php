@@ -25,6 +25,7 @@ class SampleResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $tenant = Filament::getTenant();
+
         return parent::getEloquentQuery()
             ->where('company_id', $tenant?->getKey())
             ->with(['device', 'solvent', 'molecule', 'operator', 'spectrumTypes']);
@@ -61,6 +62,7 @@ class SampleResource extends Resource
                         if (strlen($state) <= 30) {
                             return null;
                         }
+
                         return $state;
                     }),
 
@@ -196,10 +198,10 @@ class SampleResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         $tenant = Filament::getTenant();
-        if (!$tenant) {
+        if (! $tenant) {
             return null;
         }
+
         return static::getModel()::where('company_id', $tenant->getKey())->count();
     }
 }
-
