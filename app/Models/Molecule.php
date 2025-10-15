@@ -96,4 +96,12 @@ class Molecule extends Model implements Auditable
     {
         return $this->belongsToMany(Molecule::class, 'molecule_related', 'molecule_id', 'related_id');
     }
+
+    /**
+     * Get the samples associated with this molecule.
+     */
+    public function samples(): HasMany
+    {
+        return $this->hasMany(Sample::class);
+    }
 }

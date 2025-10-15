@@ -1,34 +1,22 @@
 <?php
 
-namespace App\Filament\Company\Pages;
+namespace App\Livewire\Company;
 
 use App\Models\Company;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Pages\Page;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use Livewire\Component;
 use Wallo\FilamentCompanies\Events\CompanyUpdated;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
-class UpdateCompanyDetailsForm extends Page implements HasForms
+class UpdateCompanyDetailsForm extends Component implements HasForms
 {
     use InteractsWithForms;
-
-    protected static bool $shouldRegisterNavigation = false;
-
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-
-    public function getTitle(): string|Htmlable
-    {
-        return '';
-    }
-
-    protected static string $view = 'filament.company.pages.update-company-details-form';
 
     public ?array $data = [];
 
@@ -64,7 +52,7 @@ class UpdateCompanyDetailsForm extends Page implements HasForms
             ->model(FilamentCompanies::companyModel());
     }
 
-    public function updateCompanyProfile(): Company
+    public function updateCompanyProfile(): void
     {
         $user = Auth::user();
         $data = $this->data;
@@ -112,8 +100,6 @@ class UpdateCompanyDetailsForm extends Page implements HasForms
         }
 
         $this->getUpdatedNotification()->send();
-
-        return $this->company;
     }
 
     protected function getUpdatedNotification(): Notification
@@ -122,4 +108,10 @@ class UpdateCompanyDetailsForm extends Page implements HasForms
             ->success()
             ->title(__('Company profile updated'));
     }
+
+    public function render()
+    {
+        return view('livewire.company.update-company-details-form');
+    }
 }
+

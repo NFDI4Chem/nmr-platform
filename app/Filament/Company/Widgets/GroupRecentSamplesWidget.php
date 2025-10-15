@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Widgets;
 
+use App\Filament\Company\Resources\SampleResource;
 use App\Models\Sample;
 use Filament\Facades\Filament;
 use Filament\Tables;
@@ -81,7 +82,9 @@ class GroupRecentSamplesWidget extends BaseWidget
                     ->sortable()
                     ->since(),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->recordUrl(fn (Sample $record): string => SampleResource::getUrl('view', ['record' => $record]))
+            ->striped();
     }
 
     protected function getTableHeading(): string

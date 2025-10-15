@@ -45,12 +45,26 @@ class SampleResource extends Resource
                     ->label('Sample ID')
                     ->searchable()
                     ->sortable()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->description(fn (Sample $record): string => $record->created_at->diffForHumans())
+                    ->tooltip(fn (Sample $record): string => $record->created_at->format('M d, Y H:i')),
 
-                Tables\Columns\TextColumn::make('device.name')
-                    ->label('Device')
-                    ->sortable()
-                    ->searchable(),
+                Tables\Columns\ImageColumn::make('molecule.structure')
+                    ->label('Structure')
+                    ->state(function (Sample $record) {
+                        if (!$record->molecule || empty($record->molecule->canonical_smiles)) {
+                            return null;
+                        }
+
+                        return env('CM_PUBLIC_API', 'https://api.cheminf.studio/latest/')
+                            .'depict/2D?smiles='.urlencode($record->molecule->canonical_smiles)
+                            .'&height=120&width=120&CIP=true&toolkit=cdk';
+                    })
+                    ->width(80)
+                    ->height(80)
+                    ->square()
+                    ->defaultImageUrl(url('/images/placeholder.png'))
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('molecule.name')
                     ->label('Molecule')
@@ -66,15 +80,29 @@ class SampleResource extends Resource
                         return $state;
                     }),
 
-                Tables\Columns\TextColumn::make('solvent.name')
-                    ->label('Solvent')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('spectrumTypes.name')
-                    ->label('Spectrum Types')
-                    ->badge()
-                    ->separator(',')
-                    ->limit(2),
+                Tables\Columns\TextColumn::make('analysis_details')
+                    ->label('Analysis Details')
+                    ->html()
+                    ->searchable(['device.name', 'solvent.name'])
+                    ->state(function (Sample $record): string {
+                        $parts = [];
+                        
+                        if ($record->device) {
+                            $parts[] = '<div class="flex items-center gap-1"><span class="font-semibold text-gray-900 dark:text-gray-100">' . e($record->device->name) . '</span></div>';
+                        }
+                        
+                        if ($record->solvent) {
+                            $parts[] = '<div class="flex items-center gap-1"><span class="text-xs text-gray-500 dark:text-gray-400">Solvent:</span> <span class="text-gray-700 dark:text-gray-300">' . e($record->solvent->name) . '</span></div>';
+                        }
+                        
+                        if ($record->spectrumTypes && $record->spectrumTypes->isNotEmpty()) {
+                            $spectrums = $record->spectrumTypes->pluck('name')->map(fn($name) => e($name))->join(', ');
+                            $parts[] = '<div class="flex items-center gap-1"><span class="text-xs text-gray-500 dark:text-gray-400">Types:</span> <span class="text-sm text-gray-600 dark:text-gray-400">' . $spectrums . '</span></div>';
+                        }
+                        
+                        return implode('', $parts);
+                    })
+                    ->wrap(),
 
                 Tables\Columns\TextColumn::make('priority')
                     ->badge()
@@ -106,7 +134,7 @@ class SampleResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->since()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Updated')
@@ -166,9 +194,15 @@ class SampleResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('View Sample'),
+                Tables\Actions\EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Edit Sample'),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton()
+                    ->tooltip('Delete Sample'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
